@@ -1,11 +1,24 @@
+/**
+ * PostgreSQL connection pool used by Booklyte.
+ *
+ * @module db/pool
+ */
+
 import pg from 'pg';
 
-const db = new pg.Pool({
-    user: process.env.DB_USER,
+const { Pool } = pg;
+
+/**
+ * Application database connection pool.
+ *
+ * @type {Pool}
+ */
+const pool = new Pool({
     host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
 });
 
-export default db;
+export default pool;

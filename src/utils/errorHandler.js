@@ -1,5 +1,6 @@
 /**
  * Handles service errors in a centralized manner.
+ * @module errorHandler
  */
 
 /**

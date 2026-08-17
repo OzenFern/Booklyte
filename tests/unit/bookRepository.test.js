@@ -3,13 +3,6 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('../../src/db/pool.js', () => ({
-    default: {
-        query: vi.fn(),
-    },
-}));
-
 import pool from '../../src/db/pool.js';
 import {
     createBook,
@@ -20,13 +13,22 @@ import {
     putBook,
 } from '../../src/repositories/bookRepository.js';
 
+vi.mock('../../src/db/pool.js', () => ({
+    default: {
+        query: vi.fn(),
+    },
+}));
+
 describe('bookRepository', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     it('getAllBooks fetches every book from the database', async () => {
-        const books = [{ id: 1, title: 'Dune' }, { id: 2, title: 'Foundation' }];
+        const books = [
+            { id: 1, title: 'Dune' },
+            { id: 2, title: 'Foundation' },
+        ];
         pool.query.mockResolvedValue({ rows: books });
 
         await expect(getAllBooks()).resolves.toEqual(books);
@@ -82,13 +84,24 @@ describe('bookRepository', () => {
         await expect(putBook(5, bookInput)).resolves.toEqual(updatedBook);
         expect(pool.query).toHaveBeenCalledWith(
             'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *',
-            ['OL54321M', 'Jane Eyre', 'A Gothic novel', 'https://example.com/jane.jpg', '1847-10-16', 5],
+            [
+                'OL54321M',
+                'Jane Eyre',
+                'A Gothic novel',
+                'https://example.com/jane.jpg',
+                '1847-10-16',
+                5,
+            ],
         );
     });
 
     it('patchBook updates only the supplied fields and returns the changed record', async () => {
         const bookInput = { title: 'The Left Hand of Darkness', published_date: '1969-01-01' };
-        const patchedBook = { id: 12, title: 'The Left Hand of Darkness', published_date: '1969-01-01' };
+        const patchedBook = {
+            id: 12,
+            title: 'The Left Hand of Darkness',
+            published_date: '1969-01-01',
+        };
         pool.query.mockResolvedValue({ rows: [patchedBook] });
 
         await expect(patchBook(12, bookInput)).resolves.toEqual(patchedBook);
@@ -103,6 +116,9 @@ describe('bookRepository', () => {
         pool.query.mockResolvedValue({ rows: [deletedBook] });
 
         await expect(deleteBook(3)).resolves.toEqual(deletedBook);
-        expect(pool.query).toHaveBeenCalledWith('DELETE FROM books WHERE book_id = $1 RETURNING *', [3]);
+        expect(pool.query).toHaveBeenCalledWith(
+            'DELETE FROM books WHERE book_id = $1 RETURNING *',
+            [3],
+        );
     });
 });

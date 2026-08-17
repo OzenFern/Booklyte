@@ -36,8 +36,15 @@ export async function getBookById(id) {
  * @returns {Promise<Object>} A promise that resolves to the created book object.
  */
 export async function createBook(book) {
-    const query = 'INSERT INTO books (openlibrary_id, title,description,cover_url, published_date) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-    const values = [book.openlibrary_id, book.title, book.description, book.cover_url, book.published_date];
+    const query =
+        'INSERT INTO books (openlibrary_id, title,description,cover_url, published_date) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    const values = [
+        book.openlibrary_id,
+        book.title,
+        book.description,
+        book.cover_url,
+        book.published_date,
+    ];
     const { rows } = await pool.query(query, values);
     return rows[0];
 }
@@ -54,8 +61,16 @@ export async function createBook(book) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
  */
 export async function putBook(id, book) {
-    const query = 'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *';
-    const values = [book.openlibrary_id, book.title, book.description, book.cover_url, book.published_date, id];
+    const query =
+        'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *';
+    const values = [
+        book.openlibrary_id,
+        book.title,
+        book.description,
+        book.cover_url,
+        book.published_date,
+        id,
+    ];
 
     const { rows } = await pool.query(query, values);
     return rows[0] ?? null;

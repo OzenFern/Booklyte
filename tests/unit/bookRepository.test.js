@@ -38,7 +38,7 @@ describe('bookRepository', () => {
         pool.query.mockResolvedValue({ rows: [expectedBook] });
 
         await expect(getBookById(42)).resolves.toEqual(expectedBook);
-        expect(pool.query).toHaveBeenCalledWith('SELECT * FROM books WHERE id = $1', [42]);
+        expect(pool.query).toHaveBeenCalledWith('SELECT * FROM books WHERE book_id = $1', [42]);
 
         pool.query.mockResolvedValue({ rows: [] });
         await expect(getBookById(99)).resolves.toBeNull();
@@ -81,7 +81,7 @@ describe('bookRepository', () => {
 
         await expect(putBook(5, bookInput)).resolves.toEqual(updatedBook);
         expect(pool.query).toHaveBeenCalledWith(
-            'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE id = $6 RETURNING *',
+            'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *',
             ['OL54321M', 'Jane Eyre', 'A Gothic novel', 'https://example.com/jane.jpg', '1847-10-16', 5],
         );
     });
@@ -93,7 +93,7 @@ describe('bookRepository', () => {
 
         await expect(patchBook(12, bookInput)).resolves.toEqual(patchedBook);
         expect(pool.query).toHaveBeenCalledWith(
-            'UPDATE books SET title = $1, published_date = $2 WHERE id = $3 RETURNING *',
+            'UPDATE books SET title = $1, published_date = $2 WHERE book_id = $3 RETURNING *',
             ['The Left Hand of Darkness', '1969-01-01', 12],
         );
     });
@@ -103,6 +103,6 @@ describe('bookRepository', () => {
         pool.query.mockResolvedValue({ rows: [deletedBook] });
 
         await expect(deleteBook(3)).resolves.toEqual(deletedBook);
-        expect(pool.query).toHaveBeenCalledWith('DELETE FROM books WHERE id = $1 RETURNING *', [3]);
+        expect(pool.query).toHaveBeenCalledWith('DELETE FROM books WHERE book_id = $1 RETURNING *', [3]);
     });
 });

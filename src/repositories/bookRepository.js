@@ -20,7 +20,7 @@ export async function getAllBooks() {
  * @returns {Promise<Object|null>} A promise that resolves to the book object if found, or null if not found.
  */
 export async function getBookById(id) {
-    const query = 'SELECT * FROM books WHERE id = $1';
+    const query = 'SELECT * FROM books WHERE book_id = $1';
     const { rows } = await pool.query(query, [id]);
     return rows[0] ?? null;
 }
@@ -54,7 +54,7 @@ export async function createBook(book) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
  */
 export async function putBook(id, book) {
-    const query = 'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE id = $6 RETURNING *';
+    const query = 'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *';
     const values = [book.openlibrary_id, book.title, book.description, book.cover_url, book.published_date, id];
 
     const { rows } = await pool.query(query, values);
@@ -74,7 +74,7 @@ export async function patchBook(id, book) {
 
     // Add the id as the last parameter for the WHERE clause
     values.push(id);
-    const query = `UPDATE books SET ${setClause} WHERE id = $${fields.length + 1} RETURNING *`;
+    const query = `UPDATE books SET ${setClause} WHERE book_id = $${fields.length + 1} RETURNING *`;
 
     const { rows } = await pool.query(query, values);
     return rows[0] ?? null;
@@ -86,7 +86,7 @@ export async function patchBook(id, book) {
  * @returns {Promise<Object|null>} A promise that resolves to the deleted book object if found, or null if not found.
  */
 export async function deleteBook(book_id) {
-    const query = 'DELETE FROM books WHERE id = $1 RETURNING *';
+    const query = 'DELETE FROM books WHERE book_id = $1 RETURNING *';
 
     const { rows } = await pool.query(query, [book_id]);
     return rows[0] ?? null;

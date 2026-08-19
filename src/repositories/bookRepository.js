@@ -3,6 +3,7 @@
  * @module bookRepository
  */
 import pool from '../db/pool.js';
+import { getAuthorsByBookId } from './authorRepository.js';
 
 /**
  * Retrieves all books from the database.
@@ -15,14 +16,21 @@ export async function getAllBooks() {
 }
 
 /**
- * Retrieves a book by its ID from the database.
+ * Retrieves a book by its ID from the database, including its authors.
  * @param {number} id - The ID of the book to retrieve.
- * @returns {Promise<Object|null>} A promise that resolves to the book object if found, or null if not found.
+ * @returns {Promise<Object|null>} A promise that resolves to the book object with authors if found, or null if not found.
  */
 export async function getBookById(id) {
     const query = 'SELECT * FROM books WHERE book_id = $1';
     const { rows } = await pool.query(query, [id]);
-    return rows[0] ?? null;
+    const book = rows[0] ?? null;
+
+    if (book) {
+        const authors = await getAuthorsByBookId(id);
+        return { ...book, authors };
+    }
+
+    return null;
 }
 
 /**

@@ -6,10 +6,9 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import * as bookRepository from '../../src/repositories/bookRepository.js';
 import * as bookService from '../../src/services/bookService.js';
-import { handleServiceError } from '../../src/utils/errorHandler.js';
 
+// Hoist the mocks to ensure they are available before the service module is imported.
 const mocks = vi.hoisted(() => ({
     getAllBooks: vi.fn(),
     getBookById: vi.fn(),

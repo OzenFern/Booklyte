@@ -81,13 +81,8 @@ export async function updateAuthor(id, author) {
  * @returns {Promise<void>}
  */
 export async function associateAuthorWithBook(authorId, bookId) {
-    try {
         const query = 'INSERT INTO book_authors (book_id, author_id) VALUES ($1, $2)';
         await pool.query(query, [bookId, authorId]);
-    } catch (error) {
-        console.error('Error associating author with book:', error);
-        throw new Error('Failed to associate author with book');
-    }
 }
 
 /**

@@ -4,7 +4,9 @@
  * @module bookService
  */
 import * as bk from '../repositories/bookRepository.js';
+import pool from "../db/pool.js";
 import { handleServiceError } from '../utils/errorHandler.js';
+import {associateAuthorWithBook, createAuthor, findByOpenLibraryId} from "../repositories/authorRepository.js";
 
 /**
  * Retrieves all books from the database.
@@ -32,16 +34,37 @@ export async function getBookById(id) {
 }
 
 /**
- * Creates a new book in the database.
+ * Creates a new book, adds and associates authors in the database.
  * @param {Object} book - The book object to create.
  * @returns {Promise<Object>} A promise that resolves to the created book object.
  */
 export async function createBook(book) {
-    try {
-        return await bk.createBook(book);
-    } catch (error) {
-        return handleServiceError(error, 'Failed to create book.');
-    }
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // Create the book
+            const createdBook = await bk.createBook(book);
+
+            // If authors are provided, create them and associate with the book
+            if (book.authors && Array.isArray(book.authors)) {
+                for (const author of book.authors) {
+                    let existingAuthor = await findByOpenLibraryId(author.openlibrary_id);
+                    if (!existingAuthor) {
+                        existingAuthor = await createAuthor(author);
+                    }
+                    // Associate the author with the book
+                    await associateAuthorWithBook(existingAuthor.author_id, createdBook.book_id);
+                }
+            }
+            await client.query('COMMIT');
+            return createdBook;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            return handleServiceError(error, 'Failed to create book.');
+        } finally {
+            client.release();
+        }
 }
 
 /**

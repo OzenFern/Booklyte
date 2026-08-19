@@ -4,6 +4,7 @@
  */
 import pool from '../db/pool.js';
 import { getAuthorsByBookId } from './authorRepository.js';
+import {destructureAndValidate} from "../utils/helpers.js";
 
 /**
  * Retrieves all books from the database.
@@ -91,8 +92,7 @@ export async function putBook(id, book) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
  */
 export async function patchBook(id, book) {
-    const fields = Object.keys(book);
-    const values = Object.values(book);
+    const {fields, values} = destructureAndValidate(book);
     const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
 
     // Add the id as the last parameter for the WHERE clause

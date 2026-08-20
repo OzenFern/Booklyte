@@ -97,13 +97,13 @@ export async function getLibraryBookById(id) {
 /**
  * Adds a book to the library in the database.
  * @param {number} bookId - The ID of the book to add to the library.
- * @param {number} libraryId - The ID of the library to which the book should be added.
  * @param {string} status - The status of the library book (e.g. 'want_to_read', 'reading', 'completed', 'dropped').
  * @returns {Promise<Object>} A promise that resolves to the added library book object.
  */
-export function addBookToLibrary(bookId, libraryId, status) {
-    const query = 'INSERT INTO library_books (book_id, library_book_id, status) VALUES ($1, $2, $3) RETURNING *';
-    return pool.query(query, [bookId, libraryId, status]);
+export async function addBookToLibrary(bookId, status) {
+    const query = 'INSERT INTO library_books (book_id, status) VALUES ($1, $2) RETURNING *';
+    const {rows} = await pool.query(query, [bookId, status]);
+    return rows[0];
 }
 
 /**
@@ -112,12 +112,13 @@ export function addBookToLibrary(bookId, libraryId, status) {
  * @param {Object} updates - An object containing the properties to update.
  * @returns {Promise<Object>} A promise that resolves to the updated library book object.
  */
-export function updateLibraryBook(id, updates) {
+export async function updateLibraryBook(id, updates) {
     const {fields, values} = destructureAndValidate(updates);
     const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
 
     const query = `UPDATE library_books SET ${setClause} WHERE library_book_id = $${values.length + 1} RETURNING *`;
-    return pool.query(query, [...values, id]);
+    const {rows} = await pool.query(query, [...values, id]);
+    return rows[0];
 }
 
 /**
@@ -125,7 +126,7 @@ export function updateLibraryBook(id, updates) {
  * @param {number} id - The ID of the library book to remove.
  * @returns {Promise<void>} A promise that resolves when the book is removed from the library.
  */
-export function removeBookFromLibrary(id) {
+export async function removeBookFromLibrary(id) {
     const query = 'DELETE FROM library_books WHERE library_book_id = $1';
-    return pool.query(query, [id]);
+    await pool.query(query, [id]);
 }

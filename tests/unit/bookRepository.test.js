@@ -130,7 +130,7 @@ describe('bookRepository', () => {
 
         await expect(putBook(5, bookInput)).resolves.toEqual(updatedBook);
         expect(pool.query).toHaveBeenCalledWith(
-            'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *',
+            'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5, updated_at = CURRENT_TIMESTAMP WHERE book_id = $6 RETURNING *',
             [
                 'OL54321M',
                 'Jane Eyre',
@@ -154,7 +154,7 @@ describe('bookRepository', () => {
 
         await expect(patchBook(12, bookInput)).resolves.toEqual(patchedBook);
         expect(pool.query).toHaveBeenCalledWith(
-            'UPDATE books SET title = $1, published_date = $2 WHERE book_id = $3 RETURNING *',
+            'UPDATE books SET title = $1, published_date = $2, updated_at = CURRENT_TIMESTAMP WHERE book_id = $3 RETURNING *',
             ['The Left Hand of Darkness', '1969-01-01', 12],
         );
     });

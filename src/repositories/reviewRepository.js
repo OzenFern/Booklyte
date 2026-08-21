@@ -59,7 +59,7 @@ export async function updateReview(id, review) {
 
     // Add the id as the last parameter for the WHERE clause
     values.push(id);
-    const query = `UPDATE reviews SET ${setClause} WHERE review_id = $${fields.length + 1} RETURNING *`;
+    const query = `UPDATE reviews SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE review_id = $${fields.length + 1} RETURNING *`;
 
     const { rows } = await pool.query(query, values);
     return rows[0] ?? null;

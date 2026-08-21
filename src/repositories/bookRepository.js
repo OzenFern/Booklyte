@@ -133,7 +133,7 @@ export async function createBook(book) {
  */
 export async function putBook(id, book) {
     const query =
-        'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5 WHERE book_id = $6 RETURNING *';
+        'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5, updated_at = CURRENT_TIMESTAMP WHERE book_id = $6 RETURNING *';
     const values = [
         book.openlibrary_id,
         book.title,
@@ -159,7 +159,7 @@ export async function patchBook(id, book) {
 
     // Add the id as the last parameter for the WHERE clause
     values.push(id);
-    const query = `UPDATE books SET ${setClause} WHERE book_id = $${fields.length + 1} RETURNING *`;
+    const query = `UPDATE books SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE book_id = $${fields.length + 1} RETURNING *`;
 
     const { rows } = await pool.query(query, values);
     return rows[0] ?? null;

@@ -10,9 +10,10 @@ import {validateId} from "../utils/validationHandler.js";
 /**
  * Validates review data against database constraints.
  * @param {Object} review - The review object to validate.
+ * @param {boolean} isUpdate - Whether this is an update operation (library_book_id not required).
  * @returns {{valid: boolean, error: string|null}} Validation result.
  */
-function validateReview(review) {
+function validateReview(review, isUpdate = false) {
     // Validate rating is between 0 and 5
     if (review.rating != null) {
         if (typeof review.rating !== 'number' || review.rating < 0 || review.rating > 5) {
@@ -23,8 +24,8 @@ function validateReview(review) {
         }
     }
 
-    // Validate library_book_id is provided
-    if (review.library_book_id == null) {
+    // Validate library_book_id is provided (only for create operations)
+    if (!isUpdate && review.library_book_id == null) {
         return {
             valid: false,
             error: 'Library book ID is required.'
@@ -129,7 +130,7 @@ export async function updateReview(id, review) {
 
         // Validate review data if rating is being updated
         if (review.rating !== undefined) {
-            const validation = validateReview({ rating: review.rating });
+            const validation = validateReview({ rating: review.rating }, true);
             if (!validation.valid) {
                 return handleServiceError(
                     new Error(validation.error),

@@ -3,7 +3,7 @@
  * @module reviewRepository
  */
 import pool from '../db/pool.js';
-import {destructureAndValidate} from "../utils/helpers.js";
+import {destructureAndValidate} from "../utils/validationHandler.js";
 
 /**
  * Retrieves a review by its library book ID from the database.

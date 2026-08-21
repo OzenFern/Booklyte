@@ -5,6 +5,7 @@
  */
 import * as lr from '../repositories/libraryRepository.js';
 import { handleServiceError } from '../utils/errorHandler.js';
+import {validateId} from "../utils/validationHandler.js";
 
 /**
  * Retrieves all library books from the database.
@@ -25,6 +26,11 @@ export async function getAllLibraryBooks() {
  */
 export async function getLibraryBookById(id) {
     try {
+        const idValidation = validateId(id, new Error('Invalid library book ID.'), 'Library book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         return await lr.getLibraryBookById(id);
     } catch (error) {
         return handleServiceError(error, `Failed to fetch library book with id ${id}.`);
@@ -39,6 +45,11 @@ export async function getLibraryBookById(id) {
  */
 export async function addBookToLibrary(bookId, status) {
     try {
+        const idValidation = validateId(bookId, new Error('Invalid book ID.'), 'Book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         return await lr.addBookToLibrary(bookId, status);
     } catch (error) {
         return handleServiceError(error, 'Failed to add book to library.');
@@ -53,6 +64,11 @@ export async function addBookToLibrary(bookId, status) {
  */
 export async function updateLibraryBook(id, updates) {
     try {
+        const idValidation = validateId(id, new Error('Invalid library book ID.'), 'Library book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         return await lr.updateLibraryBook(id, updates);
     } catch (error) {
         return handleServiceError(error, `Failed to update library book with id ${id}.`);
@@ -66,6 +82,11 @@ export async function updateLibraryBook(id, updates) {
  */
 export async function removeBookFromLibrary(id) {
     try {
+        const idValidation = validateId(id, new Error('Invalid library book ID.'), 'Library book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         return await lr.removeBookFromLibrary(id);
     } catch (error) {
         return handleServiceError(error, `Failed to remove library book with id ${id}.`);

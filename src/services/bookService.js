@@ -7,6 +7,7 @@ import * as bk from '../repositories/bookRepository.js';
 import pool from "../db/pool.js";
 import {handleServiceError} from '../utils/errorHandler.js';
 import {associateAuthorWithBook, createAuthor, findByOpenLibraryId} from "../repositories/authorRepository.js";
+import {validateId} from "../utils/validationHandler.js";
 
 /**
  * Retrieves all books from the database.
@@ -32,6 +33,10 @@ export async function getAllBooks() {
  */
 export async function getBookById(id) {
     try {
+        const idValidation = validateId(id, new Error('Invalid book ID.'), 'Book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
         const book = await bk.getBookById(id);
         if (book) {
             // Parse JSON string for authors that comes from PostgreSQL
@@ -90,6 +95,11 @@ export async function createBook(book) {
  */
 export async function putBook(id, book) {
     try {
+        const idValidation = validateId(id, new Error('Invalid book ID.'), 'Book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         const updatedBook = await bk.putBook(id, book);
         if (updatedBook) {
             // Fetch the updated book with authors using the updated repository function
@@ -109,6 +119,11 @@ export async function putBook(id, book) {
  */
 export async function patchBook(id, book) {
     try {
+        const idValidation = validateId(id, new Error('Invalid book ID.'), 'Book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         const updatedBook = await bk.patchBook(id, book);
         if (updatedBook) {
             // Fetch the updated book with authors using the updated repository function
@@ -127,6 +142,11 @@ export async function patchBook(id, book) {
  */
 export async function deleteBook(id) {
     try {
+        const idValidation = validateId(id, new Error('Invalid book ID.'), 'Book ID must be a valid number.');
+        if (!idValidation.success) {
+            return idValidation;
+        }
+
         return await bk.deleteBook(id);
     } catch (error) {
         return handleServiceError(error, `Failed to delete book with id ${id}.`);

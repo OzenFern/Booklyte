@@ -27,47 +27,68 @@ describe('bookRepository', () => {
         vi.clearAllMocks();
     });
 
-    it('getAllBooks fetches every book from the database', async () => {
-        // Arrange: simulate the database returning all rows.
+    it('getAllBooks fetches every book from the database with authors', async () => {
+        // Arrange: simulate the database returning all rows with authors as JSON.
         const books = [
-            { book_id: 1, title: 'Dune' },
-            { book_id: 2, title: 'Foundation' },
+            { 
+                book_id: 1, 
+                title: 'Dune',
+                authors: '[{"author_id": 1, "name": "Frank Herbert", "openlibrary_id": "OL1"}]'
+            },
+            { 
+                book_id: 2, 
+                title: 'Foundation',
+                authors: '[{"author_id": 2, "name": "Isaac Asimov", "openlibrary_id": "OL2"}]'
+            },
         ];
         pool.query.mockResolvedValue({ rows: books });
 
-        // Act/Assert: the repository should pass the expected SELECT query.
+        // Act/Assert: the repository should pass the expected SELECT query with LEFT JOIN.
         await expect(getAllBooks()).resolves.toEqual(books);
-        expect(pool.query).toHaveBeenCalledWith('SELECT * FROM books');
+        
+        const queryCall = pool.query.mock.calls[0][0];
+        expect(queryCall).toContain('SELECT');
+        expect(queryCall).toContain('b.book_id');
+        expect(queryCall).toContain('LEFT JOIN book_authors');
+        expect(queryCall).toContain('LEFT JOIN authors');
+        expect(queryCall).toContain('JSON_AGG');
+        expect(queryCall).toContain('JSON_BUILD_OBJECT');
+        expect(queryCall).toContain('GROUP BY');
     });
 
     it('getBookById returns the book with its authors when found', async () => {
-        // Arrange: the book exists and the author join query returns authors.
-        const expectedBook = { book_id: 42, title: 'The Hobbit' };
-        const authors = [{ author_id: 7, name: 'J.R.R. Tolkien' }];
-        pool.query
-            .mockResolvedValueOnce({ rows: [expectedBook] })
-            .mockResolvedValueOnce({ rows: authors });
+        // Arrange: the book exists with authors as JSON from the LEFT JOIN query.
+        const expectedBook = { 
+            book_id: 42, 
+            title: 'The Hobbit',
+            authors: '[{"author_id": 7, "name": "J.R.R. Tolkien", "openlibrary_id": "OL7"}]'
+        };
+        pool.query.mockResolvedValue({ rows: [expectedBook] });
 
-        await expect(getBookById(42)).resolves.toEqual({ ...expectedBook, authors });
-        expect(pool.query).toHaveBeenNthCalledWith(1, 'SELECT * FROM books WHERE book_id = $1', [42]);
-        expect(pool.query).toHaveBeenNthCalledWith(
-            2,
-            `
-        SELECT a.author_id, a.openlibrary_id, a.name, a.created_at
-        FROM authors a
-        INNER JOIN book_authors ba ON a.author_id = ba.author_id
-        WHERE ba.book_id = $1
-    `,
-            [42],
-        );
+        await expect(getBookById(42)).resolves.toEqual(expectedBook);
+        
+        const queryCall = pool.query.mock.calls[0][0];
+        expect(queryCall).toContain('SELECT');
+        expect(queryCall).toContain('b.book_id');
+        expect(queryCall).toContain('LEFT JOIN book_authors');
+        expect(queryCall).toContain('LEFT JOIN authors');
+        expect(queryCall).toContain('WHERE b.book_id = $1');
+        expect(queryCall).toContain('JSON_AGG');
+        expect(queryCall).toContain('JSON_BUILD_OBJECT');
+        expect(queryCall).toContain('GROUP BY');
+        expect(pool.query.mock.calls[0][1]).toEqual([42]);
     });
 
     it('getBookById returns null when the book does not exist', async () => {
-        // Arrange: no rows are returned for the lookup, so the repository should stop early.
+        // Arrange: no rows are returned for the lookup, so the repository should return null.
         pool.query.mockResolvedValue({ rows: [] });
 
         await expect(getBookById(99)).resolves.toBeNull();
         expect(pool.query).toHaveBeenCalledTimes(1);
+        
+        const queryCall = pool.query.mock.calls[0][0];
+        expect(queryCall).toContain('WHERE b.book_id = $1');
+        expect(pool.query.mock.calls[0][1]).toEqual([99]);
     });
 
     it('createBook inserts a new record and returns it', async () => {

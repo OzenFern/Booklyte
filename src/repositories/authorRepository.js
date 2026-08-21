@@ -3,7 +3,7 @@
  * @module authorRepository
  */
 import pool from '../db/pool.js';
-import {destructureAndValidate} from "../utils/helpers.js";
+import {destructureAndValidate} from "../utils/validationHandler.js";
 
 /**
  * Finds an author by their Open Library ID.

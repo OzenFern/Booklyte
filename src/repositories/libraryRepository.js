@@ -4,7 +4,7 @@
  */
 
 import pool from "../db/pool.js";
-import {destructureAndValidate} from "../utils/helpers.js";
+import {destructureAndValidate} from "../utils/validationHandler.js";
 
 /**
  * Retrieves all library books from the database.

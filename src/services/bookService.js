@@ -5,16 +5,21 @@
  */
 import * as bk from '../repositories/bookRepository.js';
 import pool from "../db/pool.js";
-import { handleServiceError } from '../utils/errorHandler.js';
+import {handleServiceError} from '../utils/errorHandler.js';
 import {associateAuthorWithBook, createAuthor, findByOpenLibraryId} from "../repositories/authorRepository.js";
 
 /**
  * Retrieves all books from the database.
- * @returns {Promise<Array | Object>} A promise that resolves to an array of book objects or an error object if not found.
+ * @returns {Promise<Array | Object>} A promise that resolves to an array of book objects with authors or an error object if not found.
  */
 export async function getAllBooks() {
     try {
-        return await bk.getAllBooks();
+        const books = await bk.getAllBooks();
+        // Parse JSON strings for authors that come from PostgreSQL
+        return books.map(book => ({
+            ...book,
+            authors: typeof book.authors === 'string' ? JSON.parse(book.authors) : book.authors
+        }));
     } catch (error) {
         return handleServiceError(error, 'Failed to fetch books.');
     }
@@ -23,11 +28,19 @@ export async function getAllBooks() {
 /**
  * Retrieves a book by its ID from the database.
  * @param {number} id - The ID of the book to retrieve.
- * @returns {Promise<Object|null>} A promise that resolves to the book object if found, or null if not found.
+ * @returns {Promise<Object|null>} A promise that resolves to the book object with authors if found, or null if not found.
  */
 export async function getBookById(id) {
     try {
-        return await bk.getBookById(id);
+        const book = await bk.getBookById(id);
+        if (book) {
+            // Parse JSON string for authors that comes from PostgreSQL
+            return {
+                ...book,
+                authors: typeof book.authors === 'string' ? JSON.parse(book.authors) : book.authors
+            };
+        }
+        return null;
     } catch (error) {
         return handleServiceError(error, `Failed to fetch book with id ${id}.`);
     }
@@ -36,7 +49,7 @@ export async function getBookById(id) {
 /**
  * Creates a new book, adds and associates authors in the database.
  * @param {Object} book - The book object to create.
- * @returns {Promise<Object>} A promise that resolves to the created book object.
+ * @returns {Promise<Object>} A promise that resolves to the created book object with authors.
  */
 export async function createBook(book) {
         const client = await pool.connect();
@@ -58,7 +71,9 @@ export async function createBook(book) {
                 }
             }
             await client.query('COMMIT');
-            return createdBook;
+
+            // Fetch the created book with authors using the updated repository function
+            return await bk.getBookById(createdBook.book_id);
         } catch (error) {
             await client.query('ROLLBACK');
             return handleServiceError(error, 'Failed to create book.');
@@ -71,11 +86,16 @@ export async function createBook(book) {
  * Completely updates an existing book in the database.
  * @param {number} id - The ID of the book to update.
  * @param {Object} book - The book object with updated properties.
- * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
+ * @returns {Promise<Object|null>} A promise that resolves to the updated book object with authors if found, or null if not found.
  */
 export async function putBook(id, book) {
     try {
-        return await bk.putBook(id, book);
+        const updatedBook = await bk.putBook(id, book);
+        if (updatedBook) {
+            // Fetch the updated book with authors using the updated repository function
+            return await bk.getBookById(updatedBook.book_id);
+        }
+        return null;
     } catch (error) {
         return handleServiceError(error, `Failed to update book with id ${id}.`);
     }
@@ -85,11 +105,16 @@ export async function putBook(id, book) {
  * Partially updates an existing book in the database.
  * @param {number} id - The ID of the book to update.
  * @param {Object} book - The book object with updated properties.
- * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
+ * @returns {Promise<Object|null>} A promise that resolves to the updated book object with authors if found, or null if not found.
  */
 export async function patchBook(id, book) {
     try {
-        return await bk.patchBook(id, book);
+        const updatedBook = await bk.patchBook(id, book);
+        if (updatedBook) {
+            // Fetch the updated book with authors using the updated repository function
+            return await bk.getBookById(updatedBook.book_id);
+        }
+        return null;
     } catch (error) {
         return handleServiceError(error, `Failed to patch book with id ${id}.`);
     }

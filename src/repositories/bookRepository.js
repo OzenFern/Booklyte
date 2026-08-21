@@ -3,15 +3,53 @@
  * @module bookRepository
  */
 import pool from '../db/pool.js';
-import { getAuthorsByBookId } from './authorRepository.js';
 import {destructureAndValidate} from "../utils/helpers.js";
 
 /**
- * Retrieves all books from the database.
- * @returns {Promise<Array>} A promise that resolves to an array of book objects.
+ * TODO: Join book and authors tables to get or update authors
+ * Simply the bookRepository functions to handle authors when creating or updating books.
+ */
+
+/**
+ * Retrieves all books from the database, including their authors.
+ * @returns {Promise<Array>} A promise that resolves to an array of book objects with authors.
  */
 export async function getAllBooks() {
-    const query = 'SELECT * FROM books';
+    const query = `SELECT
+                       b.book_id,
+                       b.openlibrary_id,
+                       b.title,
+                       b.description,
+                       b.cover_url,
+                       b.published_date,
+
+                       COALESCE(
+                                       JSON_AGG(
+                                       JSON_BUILD_OBJECT(
+                                               'author_id', a.author_id,
+                                               'name', a.name,
+                                               'openlibrary_id', a.openlibrary_id
+                                       )
+                                               ) FILTER (WHERE a.author_id IS NOT NULL),
+                                       '[]'
+                       ) AS authors
+
+                   FROM books b
+
+                            LEFT JOIN book_authors ba
+                                      ON b.book_id = ba.book_id
+
+                            LEFT JOIN authors a
+                                      ON ba.author_id = a.author_id
+
+                   GROUP BY
+                       b.book_id,
+                       b.openlibrary_id,
+                       b.title,
+                       b.description,
+                       b.cover_url,
+                       b.published_date`;
+
     const { rows } = await pool.query(query);
     return rows;
 }
@@ -22,16 +60,45 @@ export async function getAllBooks() {
  * @returns {Promise<Object|null>} A promise that resolves to the book object with authors if found, or null if not found.
  */
 export async function getBookById(id) {
-    const query = 'SELECT * FROM books WHERE book_id = $1';
+    const query = `SELECT
+                       b.book_id,
+                       b.openlibrary_id,
+                       b.title,
+                       b.description,
+                       b.cover_url,
+                       b.published_date,
+
+                       COALESCE(
+                                       JSON_AGG(
+                                       JSON_BUILD_OBJECT(
+                                               'author_id', a.author_id,
+                                               'name', a.name,
+                                               'openlibrary_id', a.openlibrary_id
+                                       )
+                                               ) FILTER (WHERE a.author_id IS NOT NULL),
+                                       '[]'
+                       ) AS authors
+
+                   FROM books b
+
+                            LEFT JOIN book_authors ba
+                                      ON b.book_id = ba.book_id
+
+                            LEFT JOIN authors a
+                                      ON ba.author_id = a.author_id
+
+                   WHERE b.book_id = $1
+
+                   GROUP BY
+                       b.book_id,
+                       b.openlibrary_id,
+                       b.title,
+                       b.description,
+                       b.cover_url,
+                       b.published_date`;
+
     const { rows } = await pool.query(query, [id]);
-    const book = rows[0] ?? null;
-
-    if (book) {
-        const authors = await getAuthorsByBookId(id);
-        return { ...book, authors };
-    }
-
-    return null;
+    return rows[0] ?? null;
 }
 
 /**

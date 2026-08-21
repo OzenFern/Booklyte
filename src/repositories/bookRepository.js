@@ -6,11 +6,6 @@ import pool from '../db/pool.js';
 import {destructureAndValidate} from "../utils/helpers.js";
 
 /**
- * TODO: Join book and authors tables to get or update authors
- * Simply the bookRepository functions to handle authors when creating or updating books.
- */
-
-/**
  * Retrieves all books from the database, including their authors.
  * @returns {Promise<Array>} A promise that resolves to an array of book objects with authors.
  */

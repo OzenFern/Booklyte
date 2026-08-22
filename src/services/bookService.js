@@ -101,7 +101,7 @@ export async function createBook(book) {
  * Search external books via Open Library.
  * @param {string} query - The search query string.
  * @param {number} [limit=20] - Maximum number of results to return.
- * @returns {{Promise<Array<Object> | Object>} A promise that resolves to an array of normalized book objects or an error object if the search fails.
+ * @returns {Promise<Array<Object> | Object>} A promise that resolves to an array of normalized book objects or an error object if the search fails.
  */
 export async function searchExternalBooks(query, limit = 20) {
   try {

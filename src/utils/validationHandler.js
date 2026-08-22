@@ -82,7 +82,7 @@ export function extractStringValue(value) {
  * Strictly parses a JSON string.
  *
  * @param {any} value - The value to parse.
- * @param {any} fallback - What to return if parsing fails (defaults to throwing an error).
+ * @param {any} fallback - What to return if parsing fails.
  * @returns {Object|Array|null} The parsed JSON, or the fallback if invalid.
  * @throws {Error} If parsing fails and no fallback is provided.
  *
@@ -91,10 +91,7 @@ export function extractStringValue(value) {
  * strictJsonParse('invalid json', {}) // Returns {}
  * strictJsonParse('invalid json') // Throws Error
  */
-export function strictJsonParse(
-  value,
-  fallback = throw new Error("Invalid JSON format."),
-) {
+export function strictJsonParse(value, fallback) {
   if (value == null) return fallback;
   if (typeof value === "object") return value; // Already parsed
 
@@ -103,11 +100,13 @@ export function strictJsonParse(
       return JSON.parse(value);
     } catch {
       // Returns a predictable default instead of a rogue string
-      return fallback;
+      if (fallback !== undefined) return fallback;
+      throw new Error("Invalid JSON format.");
     }
   }
 
-  return fallback;
+  if (fallback !== undefined) return fallback;
+  throw new Error("Invalid JSON format.");
 }
 
 /**

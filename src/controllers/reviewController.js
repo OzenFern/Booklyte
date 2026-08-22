@@ -34,13 +34,15 @@ function reviewNotFound(req, id, res) {
  * @param serviceResponse - The response object returned from the service layer.
  * @param req - The HTTP request object.
  * @param res - The HTTP response object.
- * @returns {*} - If the service response indicates failure, redirects to the library book page; otherwise, does nothing.
+ * @returns {boolean} - Returns true if error was handled (redirect sent), false otherwise.
  */
 function handleServiceErrorResponse(id, serviceResponse, req, res) {
   if (serviceResponse && serviceResponse.success === false) {
     req.flash("error", serviceResponse.message);
-    return res.redirect(`/library/${id}`);
+    res.redirect(`/library/${id}`);
+    return true;
   }
+  return false;
 }
 
 /**
@@ -57,7 +59,9 @@ export async function getReviewByLibraryBookId(req, res, next) {
   try {
     const review = await reviewService.getReviewByLibraryBookId(id);
 
-    handleServiceErrorResponse(id, review, req, res);
+    if (handleServiceErrorResponse(id, review, req, res)) {
+      return;
+    }
 
     if (!review) {
       return reviewNotFound(req, id, res);
@@ -103,7 +107,9 @@ export async function createReview(req, res, next) {
 
     const createdReview = await reviewService.createReview(reviewData);
 
-    handleServiceErrorResponse(id, createdReview, req, res);
+    if (handleServiceErrorResponse(id, createdReview, req, res)) {
+      return;
+    }
 
     req.flash("success", "Review created successfully.");
     res.redirect(`/library/${id}`);
@@ -132,7 +138,9 @@ export async function updateReview(req, res, next) {
     // First get the existing review to find its review_id
     const existingReview = await reviewService.getReviewByLibraryBookId(id);
 
-    handleServiceErrorResponse(id, existingReview, req, res);
+    if (handleServiceErrorResponse(id, existingReview, req, res)) {
+      return;
+    }
 
     if (!existingReview) {
       return reviewNotFound(req, id, res);
@@ -150,9 +158,8 @@ export async function updateReview(req, res, next) {
     );
 
     // Check if service returned an error object
-    if (updatedReview && updatedReview.success === false) {
-      req.flash("error", updatedReview.message);
-      return res.redirect(`/library/${id}`);
+    if (handleServiceErrorResponse(id, updatedReview, req, res)) {
+      return;
     }
 
     req.flash("success", "Review updated successfully.");
@@ -182,7 +189,9 @@ export async function deleteReview(req, res, next) {
     // First get the existing review to find its review_id
     const existingReview = await reviewService.getReviewByLibraryBookId(id);
 
-    handleServiceErrorResponse(id, existingReview, req, res);
+    if (handleServiceErrorResponse(id, existingReview, req, res)) {
+      return;
+    }
 
     if (!existingReview) {
       return reviewNotFound(req, id, res);
@@ -193,7 +202,9 @@ export async function deleteReview(req, res, next) {
       existingReview.review_id,
     );
 
-    handleServiceErrorResponse(id, deletedReview, req, res);
+    if (handleServiceErrorResponse(id, deletedReview, req, res)) {
+      return;
+    }
 
     req.flash("success", "Review deleted successfully.");
     res.redirect(`/library/${id}`);

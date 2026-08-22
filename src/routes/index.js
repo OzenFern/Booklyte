@@ -5,6 +5,7 @@
  * @module routes
  */
 
-export bookRoutes from "./bookRoutes.js";
-export libraryRoutes from "./libraryRoutes.js";
-export reviewsRoutes from "./reviewsRoutes.js";
+export { default as pageRoutes } from "./pageRoutes.js";
+export { default as bookRoutes } from "./bookRoutes.js";
+export { default as libraryRoutes } from "./libraryRoutes.js";
+export { default as reviewsRoutes } from "./reviewsRoutes.js";

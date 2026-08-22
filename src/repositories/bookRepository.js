@@ -155,7 +155,7 @@ export async function putBook(id, book) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
  */
 export async function patchBook(id, book) {
-  const { fields, values } = destructureAndValidate(book);
+  const { fields, values } = destructureAndValidate(book, true);
   const setClause = fields
     .map((field, index) => `${field} = $${index + 1}`)
     .join(", ");

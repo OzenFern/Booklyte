@@ -41,6 +41,7 @@
     "@eslint/js": "^10.0.1",
     "globals": "^17.11.0",
     "jsdoc": "^4.0.5",
+    "modern-jsdoc-template": "^1.0.0",
     "prettier": "^3.9.6",
     "vitest": "^4.1.10"
   }

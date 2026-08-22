@@ -7,7 +7,8 @@
   "plugins": [],
   "opts": {
     "destination": "./docs/",
-    "recurse": true
+    "recurse": true,
+    "template": "modern-jsdoc-template/default"
   },
   "templates": {
     "default": {

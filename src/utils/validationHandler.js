@@ -9,18 +9,34 @@ import { handleServiceError } from "./errorHandler.js";
 /**
  * Destructures an object into its keys and values, and validates that all required fields are present.
  * @param obj - The object to destructure and validate.
+ * @param {boolean} [allowPartial=false] - Whether to allow partial updates (missing fields are okay).
  * @returns {{fields: string[], values: unknown[]}}
  */
-export function destructureAndValidate(obj) {
+export function destructureAndValidate(obj, allowPartial = false) {
   const fields = Object.keys(obj);
   const values = Object.values(obj);
 
-  // Check for missing required fields
-  const missingFields = fields.filter(
-    (field) => obj[field] === undefined || obj[field] === null,
-  );
-  if (missingFields.length > 0) {
-    throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+  // Check for missing required fields (only if not allowing partial updates)
+  if (!allowPartial) {
+    const missingFields = fields.filter(
+      (field) => obj[field] == null,
+    );
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+    }
+  }
+
+  // Filter out undefined/null values for partial updates
+  if (allowPartial) {
+    const validFields = [];
+    const validValues = [];
+    fields.forEach((field, index) => {
+      if (obj[field] != null) {
+        validFields.push(field);
+        validValues.push(values[index]);
+      }
+    });
+    return { fields: validFields, values: validValues };
   }
 
   return { fields, values };
@@ -28,13 +44,14 @@ export function destructureAndValidate(obj) {
 
 /**
  * Validates that the provided ID is a number and not null or undefined.
- * @param {number} id - The ID to validate.
+ * @param {number|string} id - The ID to validate (can be string from route params).
  * @param {Error|unknown} errorObject - The error object to pass to the error handler if validation fails.
  * @param {string} errorMessage - The error message to pass to the error handler if validation fails.
  * @returns {{success: boolean, message: string, error: string|null}}
  */
 export function validateId(id, errorObject, errorMessage) {
-  if (!id || typeof id !== "number") {
+  const numericId = parseInt(id, 10); // Parse the ID as an integer
+  if (!id || isNaN(numericId)) {
     return handleServiceError(errorObject, errorMessage);
   }
   return { success: true, message: "ID is valid", error: null };

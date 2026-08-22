@@ -14,6 +14,8 @@ import {
   updateBook,
   patchBook,
   deleteBook,
+  searchExternalBooks,
+  importBook,
 } from "../controllers/bookController.js";
 
 const router = express.Router();
@@ -29,6 +31,12 @@ router.get("/", getAllBooks);
  * Display the form for creating a new book.
  */
 router.get("/new", showCreateBookForm);
+
+// External Open Library search
+router.get("/search", searchExternalBooks);
+
+// Import a book from Open Library by its work id
+router.post("/import/:openLibraryId", importBook);
 
 /**
  * POST /books

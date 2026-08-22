@@ -5,6 +5,8 @@
  * PostgreSQL pool and asserting the generated SQL and payloads.
  */
 
+// TODO: add tests for searching book by openlibrary_id.
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import pool from "../../src/db/pool.js";
 import {
@@ -80,6 +82,43 @@ describe("bookRepository", () => {
     expect(queryCall).toContain("JSON_BUILD_OBJECT");
     expect(queryCall).toContain("GROUP BY");
     expect(pool.query.mock.calls[0][1]).toEqual([42]);
+  });
+
+  it("getBookByOpenLibraryId returns the book with its authors when found", async () => {
+    // Arrange: the book exists with authors as JSON from the LEFT JOIN query.
+    const expectedBook = {
+      book_id: 101,
+      openlibrary_id: "OL101",
+      title: "A Wrinkle in Time",
+      authors:
+        '[{"author_id": 11, "name": "Madeleine L\'Engle", "openlibrary_id": "OL11"}]',
+    };
+    pool.query.mockResolvedValue({ rows: [expectedBook] });
+
+    await expect(getBookById("OL101", true)).resolves.toEqual(expectedBook);
+
+    const queryCall = pool.query.mock.calls[0][0];
+    expect(queryCall).toContain("SELECT");
+    expect(queryCall).toContain("b.book_id");
+    expect(queryCall).toContain("LEFT JOIN book_authors");
+    expect(queryCall).toContain("LEFT JOIN authors");
+    expect(queryCall).toContain("WHERE b.openlibrary_id = $1");
+    expect(queryCall).toContain("JSON_AGG");
+    expect(queryCall).toContain("JSON_BUILD_OBJECT");
+    expect(queryCall).toContain("GROUP BY");
+    expect(pool.query.mock.calls[0][1]).toEqual(["OL101"]);
+  });
+
+  it("getBookByOpenLibraryId returns null when the book does not exist", async () => {
+    // Arrange: no rows are returned for the lookup, so the repository should return null.
+    pool.query.mockResolvedValue({ rows: [] });
+
+    await expect(getBookById("OL999", true)).resolves.toBeNull();
+    expect(pool.query).toHaveBeenCalledTimes(1);
+
+    const queryCall = pool.query.mock.calls[0][0];
+    expect(queryCall).toContain("WHERE b.openlibrary_id = $1");
+    expect(pool.query.mock.calls[0][1]).toEqual(["OL999"]);
   });
 
   it("getBookById returns null when the book does not exist", async () => {

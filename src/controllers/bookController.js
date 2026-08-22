@@ -228,3 +228,48 @@ export async function deleteBook(req, res, next) {
     );
   }
 }
+
+/**
+ * Searches for books in the external Open Library database and renders the search results page.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ * @returns {Promise<void>}
+ */
+export async function searchExternalBooks(req, res, next) {
+  const { q } = req.query;
+  try {
+    const results = await bookService.searchExternalBooks(q);
+    // Render a view or return json depending on caller; returning JSON here
+    res.render("books/search_results", {
+      title: `Search: ${q}`,
+      results,
+      query: q,
+    });
+  } catch (error) {
+    handleControllerError(error, req, next, "Error searching external books.");
+  }
+}
+
+/**
+ * Imports a book from the external Open Library database and redirects to the newly created book.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ * @returns {Promise<void>}
+ */
+export async function importBook(req, res, next) {
+  const { openLibraryId } = req.params;
+  try {
+    const created = await bookService.importBookFromOpenLibrary(openLibraryId);
+    req.flash("success", "Book imported successfully.");
+    res.redirect(`/books/${created.book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      "Error importing book from Open Library.",
+    );
+  }
+}

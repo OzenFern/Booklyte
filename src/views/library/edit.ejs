@@ -1,0 +1,54 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-library" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Status Management</p>
+  <h1>Edit Library Entry</h1>
+  <p class="page-intro__lead">Change how this title appears in your reading flow.</p>
+</section>
+
+<section class="form-panel">
+  <form
+    action="/library/<%= libraryBook.library_book_id %>"
+    method="post"
+    hx-put="/library/<%= libraryBook.library_book_id %>"
+    class="form-stack"
+  >
+    <div class="form-field">
+      <label for="book_id">Book ID</label>
+      <input
+        id="book_id"
+        name="book_id"
+        type="number"
+        value="<%= libraryBook.book_id %>"
+        required
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="status">Status</label>
+      <select id="status" name="status" required>
+        <option value="want_to_read" <%= libraryBook.status === "want_to_read" ? "selected" : "" %>>
+          Want to Read
+        </option>
+        <option value="reading" <%= libraryBook.status === "reading" ? "selected" : "" %>>
+          Reading
+        </option>
+        <option value="completed" <%= libraryBook.status === "completed" ? "selected" : "" %>>
+          Completed
+        </option>
+        <option value="dropped" <%= libraryBook.status === "dropped" ? "selected" : "" %>>
+          Dropped
+        </option>
+      </select>
+    </div>
+
+    <div class="cluster">
+      <button type="submit" class="button button--solid">Save Entry</button>
+      <a href="/library/<%= libraryBook.library_book_id %>" class="button button--ghost">
+        Cancel
+      </a>
+    </div>
+  </form>
+</section>
+
+<%- include("../partials/layout-end") %>

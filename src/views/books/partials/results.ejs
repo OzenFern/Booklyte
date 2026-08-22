@@ -1,0 +1,22 @@
+<%
+  const hasQuery = typeof query === "string" && query.trim().length > 0;
+  const list = Array.isArray(results) ? results : [];
+%>
+
+<% if (!hasQuery) { %>
+  <div class="empty-state empty-state--subtle">
+    <h3>Type to search Open Library</h3>
+    <p>Use title, author, or keyword. Results update as you type.</p>
+  </div>
+<% } else if (!list.length) { %>
+  <div class="empty-state empty-state--subtle">
+    <h3>No matching titles</h3>
+    <p>Try a shorter query or a different spelling.</p>
+  </div>
+<% } else { %>
+  <div class="search-results-grid">
+    <% list.forEach((externalBook) => { %>
+      <%- include("result-card", { externalBook }) %>
+    <% }) %>
+  </div>
+<% } %>

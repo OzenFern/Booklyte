@@ -1,0 +1,15 @@
+<% if (importedBook && importedBook.book_id) { %>
+  <a class="button button--ghost" href="/books/<%= importedBook.book_id %>">
+    Imported. View Book
+  </a>
+<% } else { %>
+  <form
+    action="/books/import/<%= externalBook.openlibrary_id %>"
+    method="post"
+    hx-post="/books/import/<%= externalBook.openlibrary_id %>"
+    hx-target="#import-action-<%= externalBook.openlibrary_id %>"
+    hx-swap="outerHTML"
+  >
+    <button class="button button--solid" type="submit">Import to Booklyte</button>
+  </form>
+<% } %>

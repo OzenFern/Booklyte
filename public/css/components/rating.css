@@ -1,0 +1,18 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.star {
+  color: #5b5f5b;
+}
+
+.star.is-filled {
+  color: var(--color-accent-strong);
+}
+
+.rating__text {
+  color: var(--color-muted);
+}

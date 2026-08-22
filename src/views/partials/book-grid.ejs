@@ -1,0 +1,13 @@
+<% if (Array.isArray(books) && books.length > 0) { %>
+  <div class="book-grid">
+    <% books.forEach((book) => { %>
+      <%- include("book-card", { book }) %>
+    <% }) %>
+  </div>
+<% } else { %>
+  <section class="empty-state">
+    <h2>No books yet</h2>
+    <p>Search Open Library or add one manually to begin your shelf.</p>
+    <a href="/books/new" class="button button--solid">Add a Book</a>
+  </section>
+<% } %>

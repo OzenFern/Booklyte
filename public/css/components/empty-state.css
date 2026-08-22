@@ -1,0 +1,11 @@
+.empty-state {
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 0.9rem;
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.empty-state--subtle {
+  background: transparent;
+}

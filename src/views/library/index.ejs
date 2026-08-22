@@ -1,0 +1,19 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-library" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Personal Shelf</p>
+  <h1>Library</h1>
+  <p class="page-intro__lead">
+    Track what you want to read, what you are reading, and what you finished.
+  </p>
+</section>
+
+<section class="library-panel">
+  <div class="library-panel__head">
+    <h2>Your entries</h2>
+    <a href="/library/new" class="button button--ghost">Add by Book ID</a>
+  </div>
+  <%- include("partials/library-list", { libraryBooks }) %>
+</section>
+
+<%- include("../partials/layout-end") %>

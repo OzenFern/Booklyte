@@ -1,0 +1,53 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-books" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Catalog</p>
+  <h1>Books</h1>
+  <p class="page-intro__lead">
+    Keep your reading data clean. Import from Open Library or track manually.
+  </p>
+</section>
+
+<section class="search-panel">
+  <div class="search-panel__head">
+    <h2>Search Open Library</h2>
+    <a class="button button--ghost" href="/books/new">Manual entry</a>
+  </div>
+
+  <form action="/books/search" method="get" class="search-form">
+    <label for="open-library-query">Title or author</label>
+    <input
+      id="open-library-query"
+      type="search"
+      name="q"
+      placeholder="e.g. The Left Hand of Darkness"
+      autocomplete="off"
+      hx-get="/books/search"
+      hx-target="#external-search-results"
+      hx-trigger="input changed delay:350ms"
+      hx-indicator="#search-loading"
+    />
+  </form>
+
+  <div id="search-loading" class="loading-indicator htmx-indicator">
+    Searching Open Library...
+  </div>
+
+  <section id="external-search-results" class="search-results">
+    <div class="empty-state empty-state--subtle">
+      <h3>Search results appear here</h3>
+      <p>Start typing to fetch books from Open Library.</p>
+    </div>
+  </section>
+</section>
+
+<section class="books-local">
+  <div class="books-local__head">
+    <h2>Your local book records</h2>
+    <p>Stored in your own PostgreSQL-backed Booklyte data.</p>
+  </div>
+
+  <%- include("../partials/book-grid", { books }) %>
+</section>
+
+<%- include("../partials/layout-end") %>

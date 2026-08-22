@@ -1,0 +1,47 @@
+.search-panel,
+.books-local {
+  margin-bottom: var(--space-5);
+}
+
+.book-detail {
+  margin-top: var(--space-5);
+}
+
+.book-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 22rem) 1fr;
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.book-detail__cover {
+  width: 100%;
+  border-radius: 0.9rem;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  max-height: 36rem;
+}
+
+.book-detail__meta {
+  display: flex;
+  gap: var(--space-4);
+  color: var(--color-muted);
+  flex-wrap: wrap;
+}
+
+.book-detail__summary p {
+  max-width: 72ch;
+  color: var(--color-muted);
+  white-space: pre-wrap;
+}
+
+.book-detail__actions {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (max-width: 62rem) {
+  .book-detail__layout {
+    grid-template-columns: 1fr;
+  }
+}

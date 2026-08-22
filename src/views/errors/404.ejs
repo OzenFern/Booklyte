@@ -1,0 +1,13 @@
+<%- include("../partials/layout-start", { title: "Page Not Found", pageClass: "page-error" }) %>
+
+<section class="error-page">
+  <p class="page-intro__kicker">404</p>
+  <h1>That page is not in this chapter.</h1>
+  <p>
+    The URL does not match a Booklyte route. Head back to your catalog and
+    continue reading.
+  </p>
+  <a class="button button--solid" href="/books">Go to Books</a>
+</section>
+
+<%- include("../partials/layout-end") %>

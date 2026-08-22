@@ -1,0 +1,17 @@
+<%
+  const path = currentPath || "";
+  const isBooks = path.startsWith("/books");
+  const isLibrary = path.startsWith("/library");
+%>
+
+<nav class="site-nav" aria-label="Primary">
+  <a href="/books" class="site-nav__link <%= isBooks ? 'is-active' : '' %>">
+    Books
+  </a>
+  <a
+    href="/library"
+    class="site-nav__link <%= isLibrary ? 'is-active' : '' %>"
+  >
+    Library
+  </a>
+</nav>

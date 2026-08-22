@@ -1,0 +1,27 @@
+<%
+  const authors = Array.isArray(externalBook.authors) ? externalBook.authors : [];
+  const authorText = authors.length
+    ? authors.map((author) => author?.name).filter(Boolean).join(", ")
+    : "Unknown author";
+%>
+
+<article class="book-card book-card--external">
+  <img
+    class="book-card__cover"
+    src="<%= externalBook.cover_url || '' %>"
+    alt="Cover for <%= externalBook.title || 'Untitled book' %>"
+    loading="lazy"
+    data-cover-fallback
+  />
+  <div class="book-card__content">
+    <p class="book-card__eyebrow">Open Library</p>
+    <h3 class="book-card__title"><%= externalBook.title || "Untitled book" %></h3>
+    <p class="book-card__author"><%= authorText %></p>
+    <p class="book-card__meta">
+      <%= externalBook.published_date || "Unknown publication date" %>
+    </p>
+    <div id="import-action-<%= externalBook.openlibrary_id %>">
+      <%- include("import-action", { externalBook, importedBook: null }) %>
+    </div>
+  </div>
+</article>

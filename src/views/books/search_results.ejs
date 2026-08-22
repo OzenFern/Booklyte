@@ -1,0 +1,19 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-books" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Open Library</p>
+  <h1>Search Results</h1>
+  <p class="page-intro__lead">
+    Results for <strong><%= query || "your query" %></strong>.
+  </p>
+</section>
+
+<section class="search-results">
+  <%- include("partials/results", { results, query }) %>
+</section>
+
+<p class="cluster">
+  <a href="/books" class="button button--ghost">Back to Books</a>
+</p>
+
+<%- include("../partials/layout-end") %>

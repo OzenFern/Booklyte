@@ -1,0 +1,14 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-reviews" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Review</p>
+  <h1>Library Book Review</h1>
+  <p class="page-intro__lead">Add or revise your notes for this library entry.</p>
+  <a href="/library/<%= libraryBookId %>" class="text-link">Back to library book</a>
+</section>
+
+<section id="review-panel" class="review-panel">
+  <%- include("partials/review-panel", { review, libraryBookId }) %>
+</section>
+
+<%- include("../partials/layout-end") %>

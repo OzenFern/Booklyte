@@ -1,0 +1,12 @@
+<%- include("../partials/layout-start", { title: "Server Error", pageClass: "page-error" }) %>
+
+<section class="error-page">
+  <p class="page-intro__kicker">500</p>
+  <h1>Booklyte hit an unexpected error.</h1>
+  <p>
+    The request could not be completed right now. Try again from your book list.
+  </p>
+  <a class="button button--solid" href="/books">Return to Books</a>
+</section>
+
+<%- include("../partials/layout-end") %>

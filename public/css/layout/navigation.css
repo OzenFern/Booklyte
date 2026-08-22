@@ -1,0 +1,23 @@
+.site-nav {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.site-nav__link {
+  color: var(--color-muted);
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+
+.site-nav__link:hover,
+.site-nav__link:focus-visible {
+  color: var(--color-text);
+}
+
+.site-nav__link.is-active {
+  color: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+}

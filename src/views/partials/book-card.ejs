@@ -1,0 +1,51 @@
+<%
+  const sourceBook = book || {};
+  let authors = [];
+  if (Array.isArray(sourceBook.authors)) {
+    authors = sourceBook.authors;
+  } else if (typeof sourceBook.authors === "string") {
+    try {
+      authors = JSON.parse(sourceBook.authors);
+    } catch {
+      authors = [];
+    }
+  }
+
+  const authorText = authors.length
+    ? authors.map((author) => author?.name).filter(Boolean).join(", ")
+    : "Unknown author";
+%>
+
+<article class="book-card">
+  <a class="book-card__cover-link" href="/books/<%= sourceBook.book_id %>">
+    <img
+      class="book-card__cover"
+      src="<%= sourceBook.cover_url || '' %>"
+      alt="Cover for <%= sourceBook.title || 'Untitled book' %>"
+      loading="lazy"
+      data-cover-fallback
+    />
+  </a>
+  <div class="book-card__content">
+    <p class="book-card__eyebrow">Local collection</p>
+    <h3 class="book-card__title">
+      <a href="/books/<%= sourceBook.book_id %>">
+        <%= sourceBook.title || "Untitled book" %>
+      </a>
+    </h3>
+    <p class="book-card__author"><%= authorText %></p>
+    <p class="book-card__meta">
+      <%= sourceBook.published_date || "Unknown publication date" %>
+    </p>
+    <div class="book-card__actions">
+      <a class="button button--ghost" href="/books/<%= sourceBook.book_id %>">
+        Read details
+      </a>
+      <form action="/library" method="post" class="book-card__library-form">
+        <input type="hidden" name="book_id" value="<%= sourceBook.book_id %>" />
+        <input type="hidden" name="status" value="want_to_read" />
+        <button type="submit" class="button button--solid">Add to Library</button>
+      </form>
+    </div>
+  </div>
+</article>

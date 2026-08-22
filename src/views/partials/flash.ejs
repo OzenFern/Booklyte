@@ -1,11 +1,30 @@
-<% if (success && success.length > 0) { %>
-    <div class="flash flash-success">
-        <%= success[0] %>
-    </div>
-<% } %>
+<%
+  const flashTypes = [
+    { key: "success", className: "flash-success" },
+    { key: "error", className: "flash-error" },
+    { key: "warning", className: "flash-warning" },
+    { key: "info", className: "flash-info" },
+  ];
+%>
 
-<% if (error && error.length > 0) { %>
-    <div class="flash flash-error">
-        <%= error[0] %>
-    </div>
-<% } %>
+<section class="flash-stack" aria-live="polite">
+  <% flashTypes.forEach((type) => { %>
+    <%
+      const messages = locals[type.key];
+      const list = Array.isArray(messages) ? messages : [];
+    %>
+    <% list.forEach((message) => { %>
+      <article class="flash <%= type.className %>" role="status">
+        <p class="flash__message"><%= message %></p>
+        <button
+          type="button"
+          class="flash__dismiss"
+          data-flash-dismiss
+          aria-label="Dismiss message"
+        >
+          Dismiss
+        </button>
+      </article>
+    <% }) %>
+  <% }) %>
+</section>

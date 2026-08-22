@@ -1,0 +1,40 @@
+:root {
+  --color-bg: #0f1110;
+  --color-bg-soft: #181c1a;
+  --color-surface: #1f2622;
+  --color-surface-strong: #252f2a;
+  --color-text: #ece8de;
+  --color-muted: #a5a596;
+  --color-border: #36413a;
+  --color-accent: #d6b25c;
+  --color-accent-strong: #edca76;
+  --color-success: #5db38a;
+  --color-warning: #d4a24f;
+  --color-danger: #d56d67;
+  --color-info: #8ab7d9;
+
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  --radius: 0.5rem;
+  --container-max: 1120px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 260ms;
+}
+
+body {
+  background:
+    radial-gradient(circle at 0% 0%, #19211d, transparent 45%),
+    radial-gradient(circle at 100% 100%, #1f1910, transparent 50%),
+    var(--color-bg);
+  color: var(--color-text);
+}

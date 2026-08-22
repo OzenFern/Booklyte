@@ -1,0 +1,63 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-books" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Record Maintenance</p>
+  <h1>Edit Book</h1>
+  <p class="page-intro__lead">Update metadata without leaving this view.</p>
+</section>
+
+<section class="form-panel">
+  <form
+    action="/books/<%= book.book_id %>"
+    method="post"
+    hx-put="/books/<%= book.book_id %>"
+    class="form-stack"
+  >
+    <div class="form-field">
+      <label for="openlibrary_id">Open Library ID</label>
+      <input
+        id="openlibrary_id"
+        name="openlibrary_id"
+        value="<%= book.openlibrary_id || '' %>"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="title">Title</label>
+      <input id="title" name="title" value="<%= book.title || '' %>" required />
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="6">
+<%= book.description || '' %></textarea
+      >
+    </div>
+
+    <div class="form-field">
+      <label for="cover_url">Cover URL</label>
+      <input
+        id="cover_url"
+        name="cover_url"
+        type="url"
+        value="<%= book.cover_url || '' %>"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="published_date">Published Date</label>
+      <input
+        id="published_date"
+        name="published_date"
+        value="<%= book.published_date || '' %>"
+      />
+    </div>
+
+    <div class="cluster">
+      <button type="submit" class="button button--solid">Save Changes</button>
+      <a href="/books/<%= book.book_id %>" class="button button--ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include("../partials/layout-end") %>

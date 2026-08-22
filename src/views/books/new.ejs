@@ -1,0 +1,55 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-books" }) %>
+
+<section class="page-intro">
+  <p class="page-intro__kicker">Manual Entry</p>
+  <h1>Add Book</h1>
+  <p class="page-intro__lead">Create a local book record without importing.</p>
+</section>
+
+<section class="form-panel">
+  <form action="/books" method="post" class="form-stack">
+    <div class="form-field">
+      <label for="openlibrary_id">Open Library ID</label>
+      <input id="openlibrary_id" name="openlibrary_id" autocomplete="off" />
+    </div>
+
+    <div class="form-field">
+      <label for="title">Title</label>
+      <input id="title" name="title" required />
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="6"></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="cover_url">Cover URL</label>
+      <input id="cover_url" name="cover_url" type="url" />
+    </div>
+
+    <div class="form-field">
+      <label for="published_date">Published Date</label>
+      <input id="published_date" name="published_date" />
+    </div>
+
+    <fieldset class="form-fieldset">
+      <legend>Primary Author (Optional)</legend>
+      <div class="form-field">
+        <label for="author_name">Author Name</label>
+        <input id="author_name" name="authors[0][name]" />
+      </div>
+      <div class="form-field">
+        <label for="author_openlibrary_id">Author Open Library ID</label>
+        <input id="author_openlibrary_id" name="authors[0][openlibrary_id]" />
+      </div>
+    </fieldset>
+
+    <div class="cluster">
+      <button type="submit" class="button button--solid">Create Book</button>
+      <a href="/books" class="button button--ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include("../partials/layout-end") %>

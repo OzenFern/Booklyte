@@ -1,0 +1,71 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-books page-book-show" }) %>
+
+<article class="book-detail">
+  <a href="/books" class="text-link">Back to books</a>
+
+  <div class="book-detail__layout">
+    <div class="book-detail__cover-wrap">
+      <img
+        src="<%= book.cover_url || '' %>"
+        alt="Cover for <%= book.title || 'Untitled book' %>"
+        class="book-detail__cover"
+        data-cover-fallback
+      />
+    </div>
+
+    <div class="book-detail__content">
+      <p class="book-detail__kicker">Book Detail</p>
+      <h1><%= book.title || "Untitled book" %></h1>
+      <p class="book-detail__meta">
+        <%
+          const authors = Array.isArray(book.authors) ? book.authors : [];
+          const authorText = authors.length
+            ? authors.map((author) => author?.name).filter(Boolean).join(", ")
+            : "Unknown author";
+        %>
+        <span><%= authorText %></span>
+        <span><%= book.published_date || "Unknown publication date" %></span>
+      </p>
+
+      <section class="book-detail__summary">
+        <h2>Description</h2>
+        <p><%= book.description || "No description available yet." %></p>
+      </section>
+
+      <section class="book-detail__actions">
+        <form action="/library" method="post" class="inline-form">
+          <input type="hidden" name="book_id" value="<%= book.book_id %>" />
+          <label for="add-status">Add to Library as</label>
+          <select id="add-status" name="status">
+            <option value="want_to_read">Want to Read</option>
+            <option value="reading">Reading</option>
+            <option value="completed">Completed</option>
+            <option value="dropped">Dropped</option>
+          </select>
+          <button type="submit" class="button button--solid">
+            Save to Library
+          </button>
+        </form>
+
+        <div class="cluster">
+          <a href="/books/<%= book.book_id %>/edit" class="button button--ghost">
+            Edit book
+          </a>
+          <form
+            action="/books/<%= book.book_id %>"
+            method="post"
+            class="js-redirect-on-success"
+            data-success-redirect="/books"
+            hx-delete="/books/<%= book.book_id %>"
+            hx-confirm="Delete this book from Booklyte?"
+            hx-swap="none"
+          >
+            <button type="submit" class="button button--danger">Delete</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</article>
+
+<%- include("../partials/layout-end") %>

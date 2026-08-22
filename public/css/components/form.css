@@ -1,0 +1,68 @@
+.form-panel,
+.search-panel,
+.library-panel,
+.review-form-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.9rem;
+  padding: var(--space-5);
+}
+
+.form-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form-field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+label,
+legend {
+  font-weight: 500;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  background: #131715;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.7rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.inline-form {
+  display: grid;
+  gap: var(--space-3);
+  align-items: center;
+  max-width: 28rem;
+}
+
+.search-panel__head,
+.library-panel__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.search-form {
+  display: grid;
+  gap: var(--space-2);
+}

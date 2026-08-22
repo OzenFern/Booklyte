@@ -68,12 +68,13 @@ export async function addBookToLibrary(bookId, status) {
 }
 
 /**
- * Updates a library book in the database.
+ * Updates a library book completely or partially in the database.
  * @param {number} id - The ID of the library book to update.
  * @param {Object} updates - An object containing the properties to update.
- * @returns {Promise<Object>} A promise that resolves to the updated library book object.
+ * @param allowPartial - A boolean indicating whether to allow partial updates (default: true).
+ * @returns {Promise<Object|null>} A promise that resolves to the updated library book object if found, or null if not found.
  */
-export async function updateLibraryBook(id, updates) {
+export async function updateLibraryBook(id, updates, allowPartial = true) {
   try {
     const idValidation = validateId(
       id,
@@ -84,7 +85,7 @@ export async function updateLibraryBook(id, updates) {
       return idValidation;
     }
 
-    return await lr.updateLibraryBook(id, updates);
+    return await (allowPartial ? lr.patchLibraryBook(id, updates) : lr.putLibraryBook(id, updates));
   } catch (error) {
     return handleServiceError(
       error,

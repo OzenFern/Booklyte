@@ -71,7 +71,7 @@ export function validateId(id, errorObject, errorMessage) {
 export function normalizeId(keyOrId) {
   if (!keyOrId) return null;
 
-  const match = String(keyOrId).match(/([^\/]+)\/?$/);
+  const match = String(keyOrId).match(/([^/]+)\/?$/);
   return match ? match[1].trim() : null;
 }
 

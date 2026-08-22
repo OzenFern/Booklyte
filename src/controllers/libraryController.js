@@ -176,7 +176,7 @@ export async function patchLibraryBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedLibraryBook = await libraryService.patchLibraryBook(
+    const updatedLibraryBook = await libraryService.updateLibraryBook(
       id,
       req.body,
     );

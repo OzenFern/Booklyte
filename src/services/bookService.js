@@ -53,7 +53,7 @@ export async function getBookById(id) {
     if (book) {
       return {
         ...book,
-        authors: strictJsonParse(book.authors),
+        authors: strictJsonParse(book.authors, null),
       };
     }
     return null;
@@ -120,7 +120,12 @@ export async function importBookFromOpenLibrary(openLibraryId) {
   const client = await pool.connect();
   try {
     const existing = await bk.getBookById(openLibraryId, true);
-    if (existing) return existing;
+    if (existing) {
+      return {
+        ...existing,
+        authors: strictJsonParse(existing.authors, null),
+      };
+    }
 
     const result = await executeTransaction(client, async () => {
       const work = await openLibrary.getWorkDetails(openLibraryId);

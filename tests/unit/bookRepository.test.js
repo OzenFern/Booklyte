@@ -5,8 +5,6 @@
  * PostgreSQL pool and asserting the generated SQL and payloads.
  */
 
-// TODO: add tests for searching book by openlibrary_id.
-
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import pool from "../../src/db/pool.js";
 import {

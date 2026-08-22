@@ -6,7 +6,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import pool from "../../src/db/pool.js";
+import pool from "../../../src/db/pool.js";
 import {
   associateAuthorWithBook,
   createAuthor,
@@ -15,9 +15,9 @@ import {
   getAuthorById,
   getAuthorsByBookId,
   updateAuthor,
-} from "../../src/repositories/authorRepository.js";
+} from "../../../src/repositories/authorRepository.js";
 
-vi.mock("../../src/db/pool.js", () => ({
+vi.mock("../../../src/db/pool.js", () => ({
   default: {
     query: vi.fn(),
   },

@@ -6,7 +6,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as reviewService from "../../src/services/reviewService.js";
+import * as reviewService from "../../../src/services/reviewService.js";
 
 // Hoist the mocks to ensure they are available before the service module is imported.
 const mocks = vi.hoisted(() => ({
@@ -22,7 +22,7 @@ const mocks = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("../../src/repositories/reviewRepository.js", () => ({
+vi.mock("../../../src/repositories/reviewRepository.js", () => ({
   getReviewByLibraryBookId: mocks.getReviewByLibraryBookId,
   getReviewById: mocks.getReviewById,
   createReview: mocks.createReview,
@@ -30,7 +30,7 @@ vi.mock("../../src/repositories/reviewRepository.js", () => ({
   deleteReview: mocks.deleteReview,
 }));
 
-vi.mock("../../src/utils/errorHandler.js", () => ({
+vi.mock("../../../src/utils/errorHandler.js", () => ({
   handleServiceError: mocks.handleServiceError,
 }));
 

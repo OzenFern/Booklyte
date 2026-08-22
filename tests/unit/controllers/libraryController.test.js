@@ -6,7 +6,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as libraryController from "../../src/controllers/libraryController.js";
+import * as libraryController from "../../../src/controllers/libraryController.js";
 
 const mocks = vi.hoisted(() => ({
   getAllLibraryBooks: vi.fn(),
@@ -18,7 +18,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 // Reference the functions from the hoisted mocks object to allow assertions on their calls.
-vi.mock("../../src/services/libraryService.js", () => ({
+vi.mock("../../../src/services/libraryService.js", () => ({
   getAllLibraryBooks: mocks.getAllLibraryBooks,
   getLibraryBookById: mocks.getLibraryBookById,
   addBookToLibrary: mocks.addBookToLibrary,
@@ -26,7 +26,7 @@ vi.mock("../../src/services/libraryService.js", () => ({
   removeBookFromLibrary: mocks.removeBookFromLibrary,
 }));
 
-vi.mock("../../src/utils/errorHandler.js", () => ({
+vi.mock("../../../src/utils/errorHandler.js", () => ({
   handleControllerError: mocks.handleControllerError,
 }));
 

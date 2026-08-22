@@ -6,7 +6,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as bookService from "../../src/services/bookService.js";
+import * as bookService from "../../../src/services/bookService.js";
 
 // Hoist the mocks to ensure they are available before the service module is imported.
 const mocks = vi.hoisted(() => ({
@@ -27,13 +27,13 @@ const mocks = vi.hoisted(() => ({
   connect: vi.fn(),
 }));
 
-vi.mock("../../src/db/pool.js", () => ({
+vi.mock("../../../src/db/pool.js", () => ({
   default: {
     connect: mocks.connect,
   },
 }));
 
-vi.mock("../../src/repositories/bookRepository.js", () => ({
+vi.mock("../../../src/repositories/bookRepository.js", () => ({
   getAllBooks: mocks.getAllBooks,
   getBookById: mocks.getBookById,
   createBook: mocks.createBook,
@@ -42,13 +42,13 @@ vi.mock("../../src/repositories/bookRepository.js", () => ({
   deleteBook: mocks.deleteBook,
 }));
 
-vi.mock("../../src/repositories/authorRepository.js", () => ({
+vi.mock("../../../src/repositories/authorRepository.js", () => ({
   findByOpenLibraryId: mocks.findByOpenLibraryId,
   createAuthor: mocks.createAuthor,
   associateAuthorWithBook: mocks.associateAuthorWithBook,
 }));
 
-vi.mock("../../src/utils/errorHandler.js", () => ({
+vi.mock("../../../src/utils/errorHandler.js", () => ({
   handleServiceError: mocks.handleServiceError,
 }));
 

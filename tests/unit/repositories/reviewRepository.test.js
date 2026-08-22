@@ -6,16 +6,16 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import pool from "../../src/db/pool.js";
+import pool from "../../../src/db/pool.js";
 import {
   createReview,
   deleteReview,
   getReviewById,
   getReviewByLibraryBookId,
   updateReview,
-} from "../../src/repositories/reviewRepository.js";
+} from "../../../src/repositories/reviewRepository.js";
 
-vi.mock("../../src/db/pool.js", () => ({
+vi.mock("../../../src/db/pool.js", () => ({
   default: {
     query: vi.fn(),
   },

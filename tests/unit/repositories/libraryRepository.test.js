@@ -12,7 +12,8 @@ import {
   getLibraryBookById,
   getLibraryBooks,
   removeBookFromLibrary,
-  updateLibraryBook,
+  putLibraryBook,
+  patchLibraryBook,
 } from "../../../src/repositories/libraryRepository.js";
 
 vi.mock("../../../src/db/pool.js", () => ({
@@ -118,8 +119,30 @@ describe("libraryRepository", () => {
     );
   });
 
-  it("updateLibraryBook updates the library book and returns the updated row", async () => {
-    // Arrange: provide an update payload for the library book.
+  it("putLibraryBook completely updates the library book and returns the updated row", async () => {
+    // Arrange: provide a complete update payload for the library book.
+    const updates = { book_id: 42, status: "completed" };
+    const updatedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    pool.query.mockResolvedValue({ rows: [updatedLibraryBook] });
+
+    await expect(putLibraryBook(1, updates)).resolves.toEqual(
+      updatedLibraryBook,
+    );
+
+    const queryCall = pool.query.mock.calls[0][0];
+    expect(queryCall).toContain("UPDATE library_books");
+    expect(queryCall).toContain("SET book_id = $1, status = $2");
+    expect(queryCall).toContain("WHERE library_book_id = $3");
+    expect(queryCall).toContain("RETURNING *");
+    expect(pool.query.mock.calls[0][1]).toEqual([42, "completed", 1]);
+  });
+
+  it("patchLibraryBook partially updates the library book and returns the updated row", async () => {
+    // Arrange: provide a partial update payload for the library book.
     const updates = { status: "completed" };
     const updatedLibraryBook = {
       library_book_id: 1,
@@ -128,7 +151,7 @@ describe("libraryRepository", () => {
     };
     pool.query.mockResolvedValue({ rows: [updatedLibraryBook] });
 
-    await expect(updateLibraryBook(1, updates)).resolves.toEqual(
+    await expect(patchLibraryBook(1, updates)).resolves.toEqual(
       updatedLibraryBook,
     );
 
@@ -141,7 +164,7 @@ describe("libraryRepository", () => {
     expect(pool.query.mock.calls[0][1]).toEqual(["completed", 1]);
   });
 
-  it("updateLibraryBook updates multiple fields", async () => {
+  it("patchLibraryBook handles multiple fields", async () => {
     // Arrange: provide multiple fields to update.
     const updates = { status: "reading" };
     const updatedLibraryBook = {
@@ -151,7 +174,7 @@ describe("libraryRepository", () => {
     };
     pool.query.mockResolvedValue({ rows: [updatedLibraryBook] });
 
-    await expect(updateLibraryBook(1, updates)).resolves.toEqual(
+    await expect(patchLibraryBook(1, updates)).resolves.toEqual(
       updatedLibraryBook,
     );
 
@@ -163,13 +186,18 @@ describe("libraryRepository", () => {
     expect(pool.query.mock.calls[0][1]).toEqual(["reading", 1]);
   });
 
-  it("removeBookFromLibrary removes a library book", async () => {
-    // Arrange: mock the delete operation.
-    pool.query.mockResolvedValue({ rows: [] });
+  it("removeBookFromLibrary removes a library book and returns the deleted row", async () => {
+    // Arrange: mock the delete operation to return the deleted book.
+    const deletedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    pool.query.mockResolvedValue({ rows: [deletedLibraryBook] });
 
-    await expect(removeBookFromLibrary(1)).resolves.toBeUndefined();
+    await expect(removeBookFromLibrary(1)).resolves.toEqual(deletedLibraryBook);
     expect(pool.query).toHaveBeenCalledWith(
-      "DELETE FROM library_books WHERE library_book_id = $1",
+      "DELETE FROM library_books WHERE library_book_id = $1 RETURNING *",
       [1],
     );
   });

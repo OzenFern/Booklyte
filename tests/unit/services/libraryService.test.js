@@ -13,7 +13,8 @@ const mocks = vi.hoisted(() => ({
   getLibraryBooks: vi.fn(),
   getLibraryBookById: vi.fn(),
   addBookToLibrary: vi.fn(),
-  updateLibraryBook: vi.fn(),
+  putLibraryBook: vi.fn(),
+  patchLibraryBook: vi.fn(),
   removeBookFromLibrary: vi.fn(),
   handleServiceError: vi.fn((error, message) => ({
     success: false,
@@ -26,7 +27,8 @@ vi.mock("../../../src/repositories/libraryRepository.js", () => ({
   getLibraryBooks: mocks.getLibraryBooks,
   getLibraryBookById: mocks.getLibraryBookById,
   addBookToLibrary: mocks.addBookToLibrary,
-  updateLibraryBook: mocks.updateLibraryBook,
+  putLibraryBook: mocks.putLibraryBook,
+  patchLibraryBook: mocks.patchLibraryBook,
   removeBookFromLibrary: mocks.removeBookFromLibrary,
 }));
 
@@ -136,7 +138,7 @@ describe("libraryService", () => {
     );
   });
 
-  it("updateLibraryBook delegates to the repository and returns the result", async () => {
+  it("updateLibraryBook delegates to patchLibraryBook for partial updates", async () => {
     // Arrange: the repository resolves with the updated library book.
     const updatedLibraryBook = {
       library_book_id: 1,
@@ -144,19 +146,55 @@ describe("libraryService", () => {
       status: "completed",
     };
     const updates = { status: "completed" };
-    mocks.updateLibraryBook.mockResolvedValue(updatedLibraryBook);
+    mocks.patchLibraryBook.mockResolvedValue(updatedLibraryBook);
 
     // Act/Assert: the service should pass through the repository data.
+    await expect(libraryService.updateLibraryBook(1, updates, true)).resolves.toEqual(
+      updatedLibraryBook,
+    );
+    expect(mocks.patchLibraryBook).toHaveBeenCalledWith(1, updates);
+    expect(mocks.putLibraryBook).not.toHaveBeenCalled();
+  });
+
+  it("updateLibraryBook delegates to putLibraryBook for complete updates", async () => {
+    // Arrange: the repository resolves with the updated library book.
+    const updatedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    const updates = { book_id: 42, status: "completed" };
+    mocks.putLibraryBook.mockResolvedValue(updatedLibraryBook);
+
+    // Act/Assert: the service should pass through the repository data.
+    await expect(libraryService.updateLibraryBook(1, updates, false)).resolves.toEqual(
+      updatedLibraryBook,
+    );
+    expect(mocks.putLibraryBook).toHaveBeenCalledWith(1, updates);
+    expect(mocks.patchLibraryBook).not.toHaveBeenCalled();
+  });
+
+  it("updateLibraryBook defaults to partial updates", async () => {
+    // Arrange: the repository resolves with the updated library book.
+    const updatedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    const updates = { status: "completed" };
+    mocks.patchLibraryBook.mockResolvedValue(updatedLibraryBook);
+
+    // Act/Assert: the service should default to partial updates.
     await expect(libraryService.updateLibraryBook(1, updates)).resolves.toEqual(
       updatedLibraryBook,
     );
-    expect(mocks.updateLibraryBook).toHaveBeenCalledWith(1, updates);
+    expect(mocks.patchLibraryBook).toHaveBeenCalledWith(1, updates);
   });
 
   it("updateLibraryBook handles repository errors", async () => {
     // Arrange: a repository failure should be normalized to a service error payload.
     const error = new Error("Update failed");
-    mocks.updateLibraryBook.mockRejectedValue(error);
+    mocks.patchLibraryBook.mockRejectedValue(error);
 
     await expect(
       libraryService.updateLibraryBook(1, { status: "reading" }),
@@ -172,13 +210,18 @@ describe("libraryService", () => {
   });
 
   it("removeBookFromLibrary delegates to the repository and returns the result", async () => {
-    // Arrange: the repository resolves successfully.
-    mocks.removeBookFromLibrary.mockResolvedValue(undefined);
+    // Arrange: the repository resolves with the deleted library book.
+    const deletedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    mocks.removeBookFromLibrary.mockResolvedValue(deletedLibraryBook);
 
     // Act/Assert: the service should pass through the repository call.
     await expect(
       libraryService.removeBookFromLibrary(1),
-    ).resolves.toBeUndefined();
+    ).resolves.toEqual(deletedLibraryBook);
     expect(mocks.removeBookFromLibrary).toHaveBeenCalledWith(1);
   });
 

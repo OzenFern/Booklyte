@@ -164,8 +164,54 @@ describe("libraryController", () => {
     });
   });
 
-  it("updateLibraryBook flashes success and redirects to the updated library book", async () => {
-    // Arrange: the update operation resolves to a saved library book object.
+  it("putLibraryBook flashes success and redirects to the updated library book", async () => {
+    // Arrange: the complete update operation resolves to a saved library book object.
+    const req = {
+      params: { id: "1" },
+      body: { book_id: 42, status: "completed" },
+      flash: vi.fn(),
+    };
+    const res = { redirect: vi.fn() };
+    const next = vi.fn();
+    const updatedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    mocks.updateLibraryBook.mockResolvedValue(updatedLibraryBook);
+
+    await libraryController.putLibraryBook(req, res, next);
+
+    expect(mocks.updateLibraryBook).toHaveBeenCalledWith("1", req.body, false);
+    expect(req.flash).toHaveBeenCalledWith(
+      "success",
+      "Library book updated successfully.",
+    );
+    expect(res.redirect).toHaveBeenCalledWith("/library/1");
+  });
+
+  it("putLibraryBook redirects when the library book is missing", async () => {
+    // Arrange: the service returns null for the complete update operation.
+    const req = {
+      params: { id: "99" },
+      body: { book_id: 42, status: "completed" },
+      flash: vi.fn(),
+    };
+    const res = { redirect: vi.fn() };
+    const next = vi.fn();
+    mocks.updateLibraryBook.mockResolvedValue(null);
+
+    await libraryController.putLibraryBook(req, res, next);
+
+    expect(req.flash).toHaveBeenCalledWith(
+      "error",
+      "Library book with ID 99 not found.",
+    );
+    expect(res.redirect).toHaveBeenCalledWith("/library");
+  });
+
+  it("patchLibraryBook flashes success and redirects to the updated library book", async () => {
+    // Arrange: the partial update operation resolves to a saved library book object.
     const req = {
       params: { id: "1" },
       body: { status: "completed" },
@@ -180,8 +226,9 @@ describe("libraryController", () => {
     };
     mocks.updateLibraryBook.mockResolvedValue(updatedLibraryBook);
 
-    await libraryController.updateLibraryBook(req, res, next);
+    await libraryController.patchLibraryBook(req, res, next);
 
+    expect(mocks.updateLibraryBook).toHaveBeenCalledWith("1", req.body);
     expect(req.flash).toHaveBeenCalledWith(
       "success",
       "Library book updated successfully.",
@@ -189,8 +236,8 @@ describe("libraryController", () => {
     expect(res.redirect).toHaveBeenCalledWith("/library/1");
   });
 
-  it("updateLibraryBook redirects when the library book is missing", async () => {
-    // Arrange: the service returns null for the update operation.
+  it("patchLibraryBook redirects when the library book is missing", async () => {
+    // Arrange: the service returns null for the partial update operation.
     const req = {
       params: { id: "99" },
       body: { status: "completed" },
@@ -200,7 +247,7 @@ describe("libraryController", () => {
     const next = vi.fn();
     mocks.updateLibraryBook.mockResolvedValue(null);
 
-    await libraryController.updateLibraryBook(req, res, next);
+    await libraryController.patchLibraryBook(req, res, next);
 
     expect(req.flash).toHaveBeenCalledWith(
       "error",

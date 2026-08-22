@@ -132,17 +132,51 @@ export async function showEditLibraryBookForm(req, res, next) {
 }
 
 /**
- * Updates a library book and redirects to its details page.
+ * Completely updates a library book and redirects to its details page.
  *
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  * @param {Function} next - Express middleware function used to pass errors.
  */
-export async function updateLibraryBook(req, res, next) {
+export async function putLibraryBook(req, res, next) {
   const { id } = req.params;
 
   try {
     const updatedLibraryBook = await libraryService.updateLibraryBook(
+      id,
+      req.body,
+      false
+    );
+
+    if (!updatedLibraryBook) {
+      return libraryBookNotFound(req, id, res);
+    }
+
+    req.flash("success", "Library book updated successfully.");
+
+    res.redirect(`/library/${updatedLibraryBook.library_book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error updating library book with ID ${id}.`,
+    );
+  }
+}
+
+/**
+ * Partially updates a library book and redirects to its details page.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function patchLibraryBook(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const updatedLibraryBook = await libraryService.patchLibraryBook(
       id,
       req.body,
     );
@@ -159,7 +193,7 @@ export async function updateLibraryBook(req, res, next) {
       error,
       req,
       next,
-      `Error updating library book with ID ${id}.`,
+      `Error partially updating library book with ID ${id}.`,
     );
   }
 }

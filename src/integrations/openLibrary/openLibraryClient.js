@@ -1,3 +1,9 @@
+/**
+ * Open Library API Client
+ * Provides methods to interact with the Open Library API for searching books,
+ * retrieving work and author details, and constructing cover image URLs.
+ * @module openLibraryClient
+ */
 import axios from "axios";
 import { normalizeId } from "../../utils/validationHandler.js";
 

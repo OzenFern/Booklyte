@@ -1,3 +1,8 @@
+/**
+ * This module provides functions to interact with the Open Library API.
+ * It includes methods for searching books and retrieving detailed information about works.
+ * @module openLibraryService
+ */
 import * as olc from "./openLibraryClient.js";
 import {
   normalizeId,

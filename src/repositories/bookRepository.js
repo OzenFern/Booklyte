@@ -52,9 +52,10 @@ export async function getAllBooks() {
 /**
  * Retrieves a book by its ID from the database, including its authors.
  * @param {number} id - The ID of the book to retrieve.
+ * @param {boolean} byOpenLibraryId - Whether to retrieve the book by its Open Library ID.
  * @returns {Promise<Object|null>} A promise that resolves to the book object with authors if found, or null if not found.
  */
-export async function getBookById(id) {
+export async function getBookById(id, byOpenLibraryId = false) {
   const query = `SELECT
                        b.book_id,
                        b.openlibrary_id,
@@ -82,7 +83,7 @@ export async function getBookById(id) {
                             LEFT JOIN authors a
                                       ON ba.author_id = a.author_id
 
-                   WHERE b.book_id = $1
+                   WHERE ${byOpenLibraryId ? "b.openlibrary_id" : "b.book_id"} = $1
 
                    GROUP BY
                        b.book_id,

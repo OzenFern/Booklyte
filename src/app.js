@@ -5,12 +5,13 @@ import { fileURLToPath } from "url";
 import env from "./config/env.js";
 import session from "express-session";
 import flash from "connect-flash";
-import { bookRoutes, reviewsRoutes, libraryRoutes } from "./routes/index.js";
 import {
-  notFoundHandler,
-  errorHandler,
-  cacheMiddleware,
-} from "./middlewares/index.js";
+  pageRoutes,
+  bookRoutes,
+  reviewsRoutes,
+  libraryRoutes,
+} from "./routes/index.js";
+import { notFoundHandler, errorHandler } from "./middlewares/index.js";
 
 const app = express();
 
@@ -38,6 +39,9 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.warning = req.flash("warning");
+  res.locals.info = req.flash("info");
+  res.locals.currentPath = req.path;
 
   next();
 });
@@ -60,7 +64,13 @@ app.use(morgan("dev"));
 // TODO: Add compression middleware for response compression
 // TODO: Add cache middleware for caching static assets
 
-// TODO: Add routes for the application
+// TODO: Delete the following comment after development
+// app.get("/", (req, res) => {
+//   res.redirect("/books");
+//   //   res.render("errors/500");// Temporary placeholder for the home route
+// });
+
+app.use("/", pageRoutes);
 app.use("/books", bookRoutes);
 app.use("/library/books", reviewsRoutes);
 app.use("/library", libraryRoutes);

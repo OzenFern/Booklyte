@@ -12,7 +12,7 @@
  * @module reviewController
  */
 
-import * as reviewService from "../services/reviewService.js";
+import * as rs from "../services/reviewService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
@@ -57,19 +57,22 @@ export async function getReviewByLibraryBookId(req, res, next) {
   const { id } = req.params;
 
   try {
-    const review = await reviewService.getReviewByLibraryBookId(id);
+    const review = await rs.getReviewByLibraryBookId(id);
 
     if (handleServiceErrorResponse(id, review, req, res)) {
       return;
     }
 
-    if (!review) {
-      return reviewNotFound(req, id, res);
+    if (req.get("HX-Request")) {
+      return res.render("reviews/partials/review-panel", {
+        review: review ?? null,
+        libraryBookId: id,
+      });
     }
 
     res.render("reviews/show", {
       title: "Review",
-      review,
+      review: review ?? null,
       libraryBookId: id,
     });
   } catch (error) {
@@ -105,10 +108,17 @@ export async function createReview(req, res, next) {
       review_text: req.body.review_text,
     };
 
-    const createdReview = await reviewService.createReview(reviewData);
+    const createdReview = await rs.createReview(reviewData);
 
     if (handleServiceErrorResponse(id, createdReview, req, res)) {
       return;
+    }
+
+    if (req.get("HX-Request")) {
+      return res.render("reviews/partials/review-panel", {
+        review: createdReview,
+        libraryBookId: id,
+      });
     }
 
     req.flash("success", "Review created successfully.");
@@ -136,7 +146,7 @@ export async function updateReview(req, res, next) {
 
   try {
     // First get the existing review to find its review_id
-    const existingReview = await reviewService.getReviewByLibraryBookId(id);
+    const existingReview = await rs.getReviewByLibraryBookId(id);
 
     if (handleServiceErrorResponse(id, existingReview, req, res)) {
       return;
@@ -152,7 +162,7 @@ export async function updateReview(req, res, next) {
       review_text: req.body.review_text,
     };
 
-    const updatedReview = await reviewService.updateReview(
+    const updatedReview = await rs.updateReview(
       existingReview.review_id,
       reviewData,
     );
@@ -160,6 +170,17 @@ export async function updateReview(req, res, next) {
     // Check if service returned an error object
     if (handleServiceErrorResponse(id, updatedReview, req, res)) {
       return;
+    }
+
+    if (req.get("HX-Request")) {
+      const review = await rs.getReviewByLibraryBookId(id);
+      if (handleServiceErrorResponse(id, review, req, res)) {
+        return;
+      }
+      return res.render("reviews/partials/review-panel", {
+        review,
+        libraryBookId: id,
+      });
     }
 
     req.flash("success", "Review updated successfully.");
@@ -187,7 +208,7 @@ export async function deleteReview(req, res, next) {
 
   try {
     // First get the existing review to find its review_id
-    const existingReview = await reviewService.getReviewByLibraryBookId(id);
+    const existingReview = await rs.getReviewByLibraryBookId(id);
 
     if (handleServiceErrorResponse(id, existingReview, req, res)) {
       return;
@@ -198,12 +219,19 @@ export async function deleteReview(req, res, next) {
     }
 
     // Delete the review using the review_id
-    const deletedReview = await reviewService.deleteReview(
+    const deletedReview = await rs.deleteReview(
       existingReview.review_id,
     );
 
     if (handleServiceErrorResponse(id, deletedReview, req, res)) {
       return;
+    }
+
+    if (req.get("HX-Request")) {
+      return res.render("reviews/partials/review-panel", {
+        review: null,
+        libraryBookId: id,
+      });
     }
 
     req.flash("success", "Review deleted successfully.");

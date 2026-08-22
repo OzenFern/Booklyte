@@ -12,7 +12,8 @@ import {
   getLibraryBookById,
   removeBookFromLibrary,
   showEditLibraryBookForm,
-  updateLibraryBook,
+  putLibraryBook,
+  patchLibraryBook,
 } from "../controllers/libraryController.js";
 
 const router = express.Router();
@@ -49,15 +50,15 @@ router.get("/:id/edit", showEditLibraryBookForm);
 
 /**
  * PUT /library/:id
- * Update a library book.
+ * Completely update a library book.
  */
-router.put("/:id", updateLibraryBook);
+router.put("/:id", putLibraryBook);
 
 /**
  * PATCH /library/:id
  * Partially update a library book.
  */
-router.patch("/:id", updateLibraryBook);
+router.patch("/:id", patchLibraryBook);
 
 /**
  * DELETE /library/:id

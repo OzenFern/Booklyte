@@ -6,7 +6,7 @@
  * @module bookController
  */
 
-import * as bookService from "../services/bookService.js";
+import * as bs from "../services/bookService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
@@ -30,7 +30,7 @@ function bookNotFound(req, id, res) {
  */
 export async function getAllBooks(req, res, next) {
   try {
-    const books = await bookService.getAllBooks();
+    const books = await bs.getAllBooks();
 
     res.render("books/index", {
       title: "My Books",
@@ -52,7 +52,7 @@ export async function getBookById(req, res, next) {
   const { id } = req.params;
 
   try {
-    const book = await bookService.getBookById(id);
+    const book = await bs.getBookById(id);
 
     if (!book) {
       return bookNotFound(req, id, res);
@@ -102,7 +102,7 @@ export function showCreateBookForm(req, res) {
  */
 export async function createBook(req, res, next) {
   try {
-    const newBook = await bookService.createBook(req.body);
+    const newBook = await bs.createBook(req.body);
 
     req.flash("success", "Book created successfully.");
 
@@ -123,7 +123,7 @@ export async function showEditBookForm(req, res, next) {
   const { id } = req.params;
 
   try {
-    const book = await bookService.getBookById(id);
+    const book = await bs.getBookById(id);
 
     if (!book) {
       return bookNotFound(req, id, res);
@@ -154,7 +154,7 @@ export async function updateBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedBook = await bookService.putBook(id, req.body);
+    const updatedBook = await bs.putBook(id, req.body);
 
     if (!updatedBook) {
       return bookNotFound(req, id, res);
@@ -184,7 +184,7 @@ export async function patchBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedBook = await bookService.patchBook(id, req.body);
+    const updatedBook = await bs.patchBook(id, req.body);
 
     if (!updatedBook) {
       return bookNotFound(req, id, res);
@@ -214,7 +214,7 @@ export async function deleteBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    await bookService.deleteBook(id);
+    await bs.deleteBook(id);
 
     req.flash("success", "Book deleted successfully.");
 
@@ -239,12 +239,22 @@ export async function deleteBook(req, res, next) {
 export async function searchExternalBooks(req, res, next) {
   const { q } = req.query;
   try {
-    const results = await bookService.searchExternalBooks(q);
-    // Render a view or return json depending on caller; returning JSON here
+    const normalizedQuery = typeof q === "string" ? q.trim() : "";
+    const results = normalizedQuery
+      ? await bs.searchExternalBooks(normalizedQuery)
+      : [];
+
+    if (req.get("HX-Request")) {
+      return res.render("books/partials/results", {
+        results,
+        query: normalizedQuery,
+      });
+    }
+
     res.render("books/search_results", {
-      title: `Search: ${q}`,
+      title: `Search: ${normalizedQuery || "Books"}`,
       results,
-      query: q,
+      query: normalizedQuery,
     });
   } catch (error) {
     handleControllerError(error, req, next, "Error searching external books.");
@@ -261,7 +271,14 @@ export async function searchExternalBooks(req, res, next) {
 export async function importBook(req, res, next) {
   const { openLibraryId } = req.params;
   try {
-    const created = await bookService.importBookFromOpenLibrary(openLibraryId);
+    const created = await bs.importBookFromOpenLibrary(openLibraryId);
+    if (req.get("HX-Request")) {
+      return res.render("books/partials/import-action", {
+        externalBook: { openlibrary_id: openLibraryId },
+        importedBook: created,
+      });
+    }
+
     req.flash("success", "Book imported successfully.");
     res.redirect(`/books/${created.book_id}`);
   } catch (error) {

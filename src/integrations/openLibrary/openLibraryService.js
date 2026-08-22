@@ -72,7 +72,7 @@ export async function getWorkDetails(openLibraryId) {
           openlibrary_id: normalizeId(author.key),
           name: author.name ?? null,
         };
-      } catch (err) {
+      } catch {
         return null;
       }
     }),

@@ -108,28 +108,46 @@ export async function addBookToLibrary(bookId, status) {
 }
 
 /**
- * Updates a library book in the database.
+ * Completely updates a library book in the database.
  * @param {number} id - The ID of the library book to update.
  * @param {Object} updates - An object containing the properties to update.
- * @returns {Promise<Object>} A promise that resolves to the updated library book object.
+ * @returns {Promise<Object|null>} A promise that resolves to the updated library book object if found, or null if not found.
  */
-export async function updateLibraryBook(id, updates) {
-  const { fields, values } = destructureAndValidate(updates);
+export async function putLibraryBook(id, updates) {
+  const query =
+    "UPDATE library_books SET book_id = $1, status = $2 WHERE library_book_id = $3 RETURNING *";
+  const { rows } = await pool.query(query, [
+    updates.book_id,
+    updates.status,
+    id,
+  ]);
+  return rows[0] ?? null;
+}
+
+/**
+ * Partially updates a library book in the database.
+ * @param {number} id - The ID of the library book to update.
+ * @param {Object} updates - An object containing the properties to update.
+ * @returns {Promise<Object|null>} A promise that resolves to the updated library book object if found, or null if not found.
+ */
+export async function patchLibraryBook(id, updates) {
+  const { fields, values } = destructureAndValidate(updates, true);
   const setClause = fields
     .map((field, index) => `${field} = $${index + 1}`)
     .join(", ");
 
   const query = `UPDATE library_books SET ${setClause} WHERE library_book_id = $${values.length + 1} RETURNING *`;
   const { rows } = await pool.query(query, [...values, id]);
-  return rows[0];
+  return rows[0] ?? null;
 }
 
 /**
  * Removes a book from the library in the database.
  * @param {number} id - The ID of the library book to remove.
- * @returns {Promise<void>} A promise that resolves when the book is removed from the library.
+ * @returns {Promise<Object|null>} A promise that resolves to the deleted library book object if found, or null if not found.
  */
 export async function removeBookFromLibrary(id) {
-  const query = "DELETE FROM library_books WHERE library_book_id = $1";
-  await pool.query(query, [id]);
+  const query = "DELETE FROM library_books WHERE library_book_id = $1 RETURNING *";
+  const { rows } = await pool.query(query, [id]);
+  return rows[0] ?? null;
 }

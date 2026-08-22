@@ -87,10 +87,7 @@ export async function getLibraryBookById(req, res, next) {
 export async function addBookToLibrary(req, res, next) {
   try {
     const { book_id, status } = req.body;
-    const newLibraryBook = await ls.addBookToLibrary(
-      book_id,
-      status,
-    );
+    const newLibraryBook = await ls.addBookToLibrary(book_id, status);
 
     req.flash("success", "Book added to library successfully.");
 
@@ -142,11 +139,7 @@ export async function putLibraryBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedLibraryBook = await ls.updateLibraryBook(
-      id,
-      req.body,
-      false,
-    );
+    const updatedLibraryBook = await ls.updateLibraryBook(id, req.body, false);
 
     if (!updatedLibraryBook) {
       return libraryBookNotFound(req, id, res);
@@ -176,10 +169,7 @@ export async function patchLibraryBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedLibraryBook = await ls.updateLibraryBook(
-      id,
-      req.body,
-    );
+    const updatedLibraryBook = await ls.updateLibraryBook(id, req.body);
 
     if (!updatedLibraryBook) {
       return libraryBookNotFound(req, id, res);

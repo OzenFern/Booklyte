@@ -219,9 +219,7 @@ export async function deleteReview(req, res, next) {
     }
 
     // Delete the review using the review_id
-    const deletedReview = await rs.deleteReview(
-      existingReview.review_id,
-    );
+    const deletedReview = await rs.deleteReview(existingReview.review_id);
 
     if (handleServiceErrorResponse(id, deletedReview, req, res)) {
       return;

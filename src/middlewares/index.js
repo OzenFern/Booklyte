@@ -5,6 +5,6 @@
  * @module middlewares
  */
 
-export notFoundHandler from "./notFound.js";
-export errorHandler from "./errorHandler.js";
-export cacheMiddleware from "./cache.js";
+export { default as notFoundHandler } from "./notFound.js";
+export { default as errorHandler } from "./errorHandler.js";
+export { default as cacheMiddleware } from "./cache.js";

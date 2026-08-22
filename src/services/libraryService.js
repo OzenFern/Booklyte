@@ -85,7 +85,9 @@ export async function updateLibraryBook(id, updates, allowPartial = true) {
       return idValidation;
     }
 
-    return await (allowPartial ? lr.patchLibraryBook(id, updates) : lr.putLibraryBook(id, updates));
+    return await (allowPartial
+      ? lr.patchLibraryBook(id, updates)
+      : lr.putLibraryBook(id, updates));
   } catch (error) {
     return handleServiceError(
       error,

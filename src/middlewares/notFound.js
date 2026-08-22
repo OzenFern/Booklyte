@@ -14,7 +14,7 @@
  */
 const notFoundHandler = (req, res) => {
   console.warn(`[Booklyte 404] Cannot ${req.method} ${req.originalUrl}`);
-  
+
   return res.status(404).render("errors/404");
 };
 

@@ -6,7 +6,11 @@ import env from "./config/env.js";
 import session from "express-session";
 import flash from "connect-flash";
 import { bookRoutes, reviewsRoutes, libraryRoutes } from "./routes/index.js";
-import { notFoundHandler, errorHandler, cacheMiddleware } from "./middlewares/index.js";
+import {
+  notFoundHandler,
+  errorHandler,
+  cacheMiddleware,
+} from "./middlewares/index.js";
 
 const app = express();
 

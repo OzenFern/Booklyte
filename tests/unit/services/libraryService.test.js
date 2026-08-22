@@ -149,9 +149,9 @@ describe("libraryService", () => {
     mocks.patchLibraryBook.mockResolvedValue(updatedLibraryBook);
 
     // Act/Assert: the service should pass through the repository data.
-    await expect(libraryService.updateLibraryBook(1, updates, true)).resolves.toEqual(
-      updatedLibraryBook,
-    );
+    await expect(
+      libraryService.updateLibraryBook(1, updates, true),
+    ).resolves.toEqual(updatedLibraryBook);
     expect(mocks.patchLibraryBook).toHaveBeenCalledWith(1, updates);
     expect(mocks.putLibraryBook).not.toHaveBeenCalled();
   });
@@ -167,9 +167,9 @@ describe("libraryService", () => {
     mocks.putLibraryBook.mockResolvedValue(updatedLibraryBook);
 
     // Act/Assert: the service should pass through the repository data.
-    await expect(libraryService.updateLibraryBook(1, updates, false)).resolves.toEqual(
-      updatedLibraryBook,
-    );
+    await expect(
+      libraryService.updateLibraryBook(1, updates, false),
+    ).resolves.toEqual(updatedLibraryBook);
     expect(mocks.putLibraryBook).toHaveBeenCalledWith(1, updates);
     expect(mocks.patchLibraryBook).not.toHaveBeenCalled();
   });
@@ -219,9 +219,9 @@ describe("libraryService", () => {
     mocks.removeBookFromLibrary.mockResolvedValue(deletedLibraryBook);
 
     // Act/Assert: the service should pass through the repository call.
-    await expect(
-      libraryService.removeBookFromLibrary(1),
-    ).resolves.toEqual(deletedLibraryBook);
+    await expect(libraryService.removeBookFromLibrary(1)).resolves.toEqual(
+      deletedLibraryBook,
+    );
     expect(mocks.removeBookFromLibrary).toHaveBeenCalledWith(1);
   });
 

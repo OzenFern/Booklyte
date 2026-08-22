@@ -24,7 +24,10 @@ const errorHandler = (err, req, res, next) => {
   }
 
   return res.status(500).render("errors/500", {
-    error: process.env.NODE_ENV === "development" ? err.message : "Internal Server Error"
+    error:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Internal Server Error",
   });
 };
 

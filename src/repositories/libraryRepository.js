@@ -147,7 +147,8 @@ export async function patchLibraryBook(id, updates) {
  * @returns {Promise<Object|null>} A promise that resolves to the deleted library book object if found, or null if not found.
  */
 export async function removeBookFromLibrary(id) {
-  const query = "DELETE FROM library_books WHERE library_book_id = $1 RETURNING *";
+  const query =
+    "DELETE FROM library_books WHERE library_book_id = $1 RETURNING *";
   const { rows } = await pool.query(query, [id]);
   return rows[0] ?? null;
 }

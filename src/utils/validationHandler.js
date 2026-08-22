@@ -18,9 +18,7 @@ export function destructureAndValidate(obj, allowPartial = false) {
 
   // Check for missing required fields (only if not allowing partial updates)
   if (!allowPartial) {
-    const missingFields = fields.filter(
-      (field) => obj[field] == null,
-    );
+    const missingFields = fields.filter((field) => obj[field] == null);
     if (missingFields.length > 0) {
       throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
     }

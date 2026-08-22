@@ -145,7 +145,7 @@ export async function putLibraryBook(req, res, next) {
     const updatedLibraryBook = await libraryService.updateLibraryBook(
       id,
       req.body,
-      false
+      false,
     );
 
     if (!updatedLibraryBook) {

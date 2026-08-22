@@ -6,12 +6,13 @@
 
 import express from 'express';
 import {
+    addBookToLibrary,
+    displayNewLibraryBook,
     getAllLibraryBooks,
     getLibraryBookById,
-    addBookToLibrary,
+    removeBookFromLibrary,
     showEditLibraryBookForm,
     updateLibraryBook,
-    removeBookFromLibrary,
 } from '../controllers/libraryController.js';
 
 const router = express.Router();
@@ -26,11 +27,7 @@ router.get('/', getAllLibraryBooks);
  * GET /library/new
  * Display the form for adding a book to the library.
  */
-router.get('/new', (req, res) => {
-    res.render('library/new', {
-        title: 'Add Book to Library',
-    });
-});
+router.get('/new', displayNewLibraryBook);
 
 /**
  * POST /library

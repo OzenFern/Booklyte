@@ -7,7 +7,7 @@
  */
 
 import * as libraryService from '../services/libraryService.js';
-import { handleControllerError } from '../utils/errorHandler.js';
+import {handleControllerError} from '../utils/errorHandler.js';
 
 /**
  * Handles the case when a library book is not found.
@@ -162,4 +162,15 @@ export async function removeBookFromLibrary(req, res, next) {
     } catch (error) {
         handleControllerError(error, req, next, `Error removing library book with ID ${id}.`);
     }
+}
+
+/**
+ * Renders the form for adding a new book to the library.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
+export function displayNewLibraryBook(req, res) {
+    res.render('library/new', {
+        title: 'Add Book to Library',
+    });
 }

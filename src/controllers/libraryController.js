@@ -6,7 +6,7 @@
  * @module libraryController
  */
 
-import * as libraryService from "../services/libraryService.js";
+import * as ls from "../services/libraryService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
@@ -30,7 +30,7 @@ function libraryBookNotFound(req, id, res) {
  */
 export async function getAllLibraryBooks(req, res, next) {
   try {
-    const libraryBooks = await libraryService.getAllLibraryBooks();
+    const libraryBooks = await ls.getAllLibraryBooks();
 
     res.render("library/index", {
       title: "My Library",
@@ -52,7 +52,7 @@ export async function getLibraryBookById(req, res, next) {
   const { id } = req.params;
 
   try {
-    const libraryBook = await libraryService.getLibraryBookById(id);
+    const libraryBook = await ls.getLibraryBookById(id);
 
     if (!libraryBook) {
       return libraryBookNotFound(req, id, res);
@@ -87,7 +87,7 @@ export async function getLibraryBookById(req, res, next) {
 export async function addBookToLibrary(req, res, next) {
   try {
     const { book_id, status } = req.body;
-    const newLibraryBook = await libraryService.addBookToLibrary(
+    const newLibraryBook = await ls.addBookToLibrary(
       book_id,
       status,
     );
@@ -111,7 +111,7 @@ export async function showEditLibraryBookForm(req, res, next) {
   const { id } = req.params;
 
   try {
-    const libraryBook = await libraryService.getLibraryBookById(id);
+    const libraryBook = await ls.getLibraryBookById(id);
 
     if (!libraryBook) {
       return libraryBookNotFound(req, id, res);
@@ -142,7 +142,7 @@ export async function putLibraryBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedLibraryBook = await libraryService.updateLibraryBook(
+    const updatedLibraryBook = await ls.updateLibraryBook(
       id,
       req.body,
       false,
@@ -176,13 +176,20 @@ export async function patchLibraryBook(req, res, next) {
   const { id } = req.params;
 
   try {
-    const updatedLibraryBook = await libraryService.updateLibraryBook(
+    const updatedLibraryBook = await ls.updateLibraryBook(
       id,
       req.body,
     );
 
     if (!updatedLibraryBook) {
       return libraryBookNotFound(req, id, res);
+    }
+
+    if (req.get("HX-Request")) {
+      const libraryBook = await ls.getLibraryBookById(
+        updatedLibraryBook.library_book_id,
+      );
+      return res.render("library/partials/book-row", { libraryBook });
     }
 
     req.flash("success", "Library book updated successfully.");
@@ -209,7 +216,14 @@ export async function removeBookFromLibrary(req, res, next) {
   const { id } = req.params;
 
   try {
-    await libraryService.removeBookFromLibrary(id);
+    const deletedLibraryBook = await ls.removeBookFromLibrary(id);
+
+    if (req.get("HX-Request")) {
+      if (!deletedLibraryBook) {
+        return libraryBookNotFound(req, id, res);
+      }
+      return res.status(204).send("");
+    }
 
     req.flash("success", "Book removed from library successfully.");
 

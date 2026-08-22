@@ -12,8 +12,8 @@
  * @module reviewController
  */
 
-import * as reviewService from '../services/reviewService.js';
-import { handleControllerError } from '../utils/errorHandler.js';
+import * as reviewService from "../services/reviewService.js";
+import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
  * Handles the case when a review is not found.
@@ -23,8 +23,8 @@ import { handleControllerError } from '../utils/errorHandler.js';
  * @returns {*} Redirects to the library book page with an error flash message.
  */
 function reviewNotFound(req, id, res) {
-    req.flash('error', `Review for library book with ID ${id} not found.`);
-    return res.redirect(`/library/${id}`);
+  req.flash("error", `Review for library book with ID ${id} not found.`);
+  return res.redirect(`/library/${id}`);
 }
 
 /**
@@ -37,10 +37,10 @@ function reviewNotFound(req, id, res) {
  * @returns {*} - If the service response indicates failure, redirects to the library book page; otherwise, does nothing.
  */
 function handleServiceErrorResponse(id, serviceResponse, req, res) {
-    if (serviceResponse && serviceResponse.success === false) {
-        req.flash('error', serviceResponse.message);
-        return res.redirect(`/library/${id}`);
-    }
+  if (serviceResponse && serviceResponse.success === false) {
+    req.flash("error", serviceResponse.message);
+    return res.redirect(`/library/${id}`);
+  }
 }
 
 /**
@@ -52,25 +52,30 @@ function handleServiceErrorResponse(id, serviceResponse, req, res) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function getReviewByLibraryBookId(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const review = await reviewService.getReviewByLibraryBookId(id);
+  try {
+    const review = await reviewService.getReviewByLibraryBookId(id);
 
-        handleServiceErrorResponse(id, review, req, res);
+    handleServiceErrorResponse(id, review, req, res);
 
-        if (!review) {
-            return reviewNotFound(req, id, res);
-        }
-
-        res.render('reviews/show', {
-            title: 'Review',
-            review,
-            libraryBookId: id
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, `Error retrieving review for library book with ID ${id}.`);
+    if (!review) {
+      return reviewNotFound(req, id, res);
     }
+
+    res.render("reviews/show", {
+      title: "Review",
+      review,
+      libraryBookId: id,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving review for library book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -87,25 +92,24 @@ export async function getReviewByLibraryBookId(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function createReview(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const reviewData = {
-            library_book_id: parseInt(id),
-            rating: req.body.rating,
-            review_text: req.body.review_text
-        };
+  try {
+    const reviewData = {
+      library_book_id: parseInt(id),
+      rating: req.body.rating,
+      review_text: req.body.review_text,
+    };
 
-        const createdReview = await reviewService.createReview(reviewData);
+    const createdReview = await reviewService.createReview(reviewData);
 
-        handleServiceErrorResponse(id, createdReview, req, res);
+    handleServiceErrorResponse(id, createdReview, req, res);
 
-
-        req.flash('success', 'Review created successfully.');
-        res.redirect(`/library/${id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, 'Error creating review.');
-    }
+    req.flash("success", "Review created successfully.");
+    res.redirect(`/library/${id}`);
+  } catch (error) {
+    handleControllerError(error, req, next, "Error creating review.");
+  }
 }
 
 /**
@@ -122,37 +126,45 @@ export async function createReview(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function updateReview(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        // First get the existing review to find its review_id
-        const existingReview = await reviewService.getReviewByLibraryBookId(id);
+  try {
+    // First get the existing review to find its review_id
+    const existingReview = await reviewService.getReviewByLibraryBookId(id);
 
-        handleServiceErrorResponse(id, existingReview, req, res);
+    handleServiceErrorResponse(id, existingReview, req, res);
 
-        if (!existingReview) {
-            return reviewNotFound(req, id, res);
-        }
-
-        // Update the review using the review_id
-        const reviewData = {
-            rating: req.body.rating,
-            review_text: req.body.review_text
-        };
-
-        const updatedReview = await reviewService.updateReview(existingReview.review_id, reviewData);
-
-        // Check if service returned an error object
-        if (updatedReview && updatedReview.success === false) {
-            req.flash('error', updatedReview.message);
-            return res.redirect(`/library/${id}`);
-        }
-
-        req.flash('success', 'Review updated successfully.');
-        res.redirect(`/library/${id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, `Error updating review for library book with ID ${id}.`);
+    if (!existingReview) {
+      return reviewNotFound(req, id, res);
     }
+
+    // Update the review using the review_id
+    const reviewData = {
+      rating: req.body.rating,
+      review_text: req.body.review_text,
+    };
+
+    const updatedReview = await reviewService.updateReview(
+      existingReview.review_id,
+      reviewData,
+    );
+
+    // Check if service returned an error object
+    if (updatedReview && updatedReview.success === false) {
+      req.flash("error", updatedReview.message);
+      return res.redirect(`/library/${id}`);
+    }
+
+    req.flash("success", "Review updated successfully.");
+    res.redirect(`/library/${id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error updating review for library book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -164,26 +176,33 @@ export async function updateReview(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function deleteReview(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        // First get the existing review to find its review_id
-        const existingReview = await reviewService.getReviewByLibraryBookId(id);
+  try {
+    // First get the existing review to find its review_id
+    const existingReview = await reviewService.getReviewByLibraryBookId(id);
 
-        handleServiceErrorResponse(id, existingReview, req, res);
+    handleServiceErrorResponse(id, existingReview, req, res);
 
-        if (!existingReview) {
-            return reviewNotFound(req, id, res);
-        }
-
-        // Delete the review using the review_id
-        const deletedReview = await reviewService.deleteReview(existingReview.review_id);
-
-        handleServiceErrorResponse(id, deletedReview, req, res);
-
-        req.flash('success', 'Review deleted successfully.');
-        res.redirect(`/library/${id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, `Error deleting review for library book with ID ${id}.`);
+    if (!existingReview) {
+      return reviewNotFound(req, id, res);
     }
+
+    // Delete the review using the review_id
+    const deletedReview = await reviewService.deleteReview(
+      existingReview.review_id,
+    );
+
+    handleServiceErrorResponse(id, deletedReview, req, res);
+
+    req.flash("success", "Review deleted successfully.");
+    res.redirect(`/library/${id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error deleting review for library book with ID ${id}.`,
+    );
+  }
 }

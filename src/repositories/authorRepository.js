@@ -2,8 +2,8 @@
  * This module provides functions to interact with the authors table in the database.
  * @module authorRepository
  */
-import pool from '../db/pool.js';
-import {destructureAndValidate} from "../utils/validationHandler.js";
+import pool from "../db/pool.js";
+import { destructureAndValidate } from "../utils/validationHandler.js";
 
 /**
  * Finds an author by their Open Library ID.
@@ -11,9 +11,9 @@ import {destructureAndValidate} from "../utils/validationHandler.js";
  * @returns {Promise<Object|null>} A promise that resolves to the author object if found, or null if not found.
  */
 export async function findByOpenLibraryId(openLibraryId) {
-    const query = 'SELECT * FROM authors WHERE openlibrary_id = $1';
-    const { rows } = await pool.query(query, [openLibraryId]);
-    return rows[0] ?? null;
+  const query = "SELECT * FROM authors WHERE openlibrary_id = $1";
+  const { rows } = await pool.query(query, [openLibraryId]);
+  return rows[0] ?? null;
 }
 
 /**
@@ -24,10 +24,11 @@ export async function findByOpenLibraryId(openLibraryId) {
  * @returns {Promise<Object>} A promise that resolves to the created author object.
  */
 export async function createAuthor(author) {
-    const query = 'INSERT INTO authors (openlibrary_id, name) VALUES ($1, $2) RETURNING *';
-    const values = [author.openlibrary_id, author.name];
-    const { rows } = await pool.query(query, values);
-    return rows[0];
+  const query =
+    "INSERT INTO authors (openlibrary_id, name) VALUES ($1, $2) RETURNING *";
+  const values = [author.openlibrary_id, author.name];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
 }
 
 /**
@@ -36,14 +37,14 @@ export async function createAuthor(author) {
  * @returns {Promise<Array>} A promise that resolves to an array of author objects.
  */
 export async function getAuthorsByBookId(bookId) {
-    const query = `
+  const query = `
         SELECT a.author_id, a.openlibrary_id, a.name, a.created_at
         FROM authors a
         INNER JOIN book_authors ba ON a.author_id = ba.author_id
         WHERE ba.book_id = $1
     `;
-    const { rows } = await pool.query(query, [bookId]);
-    return rows;
+  const { rows } = await pool.query(query, [bookId]);
+  return rows;
 }
 
 /**
@@ -52,9 +53,9 @@ export async function getAuthorsByBookId(bookId) {
  * @returns {Promise<Object|null>} A promise that resolves to the author object if found, or null if not found.
  */
 export async function getAuthorById(id) {
-    const query = 'SELECT * FROM authors WHERE author_id = $1';
-    const { rows } = await pool.query(query, [id]);
-    return rows[0] ?? null;
+  const query = "SELECT * FROM authors WHERE author_id = $1";
+  const { rows } = await pool.query(query, [id]);
+  return rows[0] ?? null;
 }
 
 /**
@@ -64,14 +65,16 @@ export async function getAuthorById(id) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated author object if successful, or null if not found.
  */
 export async function updateAuthor(id, author) {
-    const {fields, values} = destructureAndValidate(author);
-    const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+  const { fields, values } = destructureAndValidate(author);
+  const setClause = fields
+    .map((field, index) => `${field} = $${index + 1}`)
+    .join(", ");
 
-    // Add the id as the last parameter for the WHERE clause
-    values.push(id);
-    const query = `UPDATE authors SET ${setClause} WHERE author_id = $${fields.length + 1} RETURNING *`;
-    const { rows } = await pool.query(query, values);
-    return rows[0] ?? null;
+  // Add the id as the last parameter for the WHERE clause
+  values.push(id);
+  const query = `UPDATE authors SET ${setClause} WHERE author_id = $${fields.length + 1} RETURNING *`;
+  const { rows } = await pool.query(query, values);
+  return rows[0] ?? null;
 }
 
 /**
@@ -81,8 +84,8 @@ export async function updateAuthor(id, author) {
  * @returns {Promise<void>}
  */
 export async function associateAuthorWithBook(authorId, bookId) {
-        const query = 'INSERT INTO book_authors (book_id, author_id) VALUES ($1, $2)';
-        await pool.query(query, [bookId, authorId]);
+  const query = "INSERT INTO book_authors (book_id, author_id) VALUES ($1, $2)";
+  await pool.query(query, [bookId, authorId]);
 }
 
 /**
@@ -90,7 +93,7 @@ export async function associateAuthorWithBook(authorId, bookId) {
  * @returns {Promise<Array>} A promise that resolves to an array of author objects.
  */
 export async function getAllAuthors() {
-    const query = 'SELECT * FROM authors';
-    const { rows } = await pool.query(query);
-    return rows;
+  const query = "SELECT * FROM authors";
+  const { rows } = await pool.query(query);
+  return rows;
 }

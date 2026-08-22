@@ -11,15 +11,15 @@
  * @returns {{ success: boolean, message: string, error: string }}
  */
 export function handleServiceError(error, message) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+  const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
-    console.error(message, error);
+  console.error(message, error);
 
-    return {
-        success: false,
-        message,
-        error: errorMessage,
-    };
+  return {
+    success: false,
+    message,
+    error: errorMessage,
+  };
 }
 
 /**
@@ -31,11 +31,14 @@ export function handleServiceError(error, message) {
  * @param {Function} next - The next middleware function.
  */
 export function handleControllerError(err, req, next, message = null) {
-    console.error('Controller error:', err);
+  console.error("Controller error:", err);
 
-    // Set a generic error message for the user
-    req.flash('error', message ?? 'An unexpected error occurred. Please try again later.');
+  // Set a generic error message for the user
+  req.flash(
+    "error",
+    message ?? "An unexpected error occurred. Please try again later.",
+  );
 
-    // Pass the error to the next middleware (could be an error handler)
-    next(err);
+  // Pass the error to the next middleware (could be an error handler)
+  next(err);
 }

@@ -6,8 +6,8 @@
  * @module bookController
  */
 
-import * as bookService from '../services/bookService.js';
-import { handleControllerError } from '../utils/errorHandler.js';
+import * as bookService from "../services/bookService.js";
+import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
  * Handles the case when a book is not found.
@@ -17,8 +17,8 @@ import { handleControllerError } from '../utils/errorHandler.js';
  * @returns {*} Redirects to the books index page with an error flash message.
  */
 function bookNotFound(req, id, res) {
-    req.flash('error', `Book with ID ${id} not found.`);
-    return res.redirect('/books');
+  req.flash("error", `Book with ID ${id} not found.`);
+  return res.redirect("/books");
 }
 
 /**
@@ -29,16 +29,16 @@ function bookNotFound(req, id, res) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function getAllBooks(req, res, next) {
-    try {
-        const books = await bookService.getAllBooks();
+  try {
+    const books = await bookService.getAllBooks();
 
-        res.render('books/index', {
-            title: 'My Books',
-            books,
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, 'Error retrieving books.');
-    }
+    res.render("books/index", {
+      title: "My Books",
+      books,
+    });
+  } catch (error) {
+    handleControllerError(error, req, next, "Error retrieving books.");
+  }
 }
 
 /**
@@ -49,22 +49,27 @@ export async function getAllBooks(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function getBookById(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const book = await bookService.getBookById(id);
+  try {
+    const book = await bookService.getBookById(id);
 
-        if (!book) {
-            return bookNotFound(req, id, res);
-        }
-
-        res.render('books/show', {
-            title: book.title,
-            book,
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, `Error retrieving book with ID ${id}.`);
+    if (!book) {
+      return bookNotFound(req, id, res);
     }
+
+    res.render("books/show", {
+      title: book.title,
+      book,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -74,9 +79,9 @@ export async function getBookById(req, res, next) {
  * @param {Object} res - The HTTP response object.
  */
 export function showCreateBookForm(req, res) {
-    res.render('books/new', {
-        title: 'Add Book',
-    });
+  res.render("books/new", {
+    title: "Add Book",
+  });
 }
 
 /**
@@ -96,15 +101,15 @@ export function showCreateBookForm(req, res) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function createBook(req, res, next) {
-    try {
-        const newBook = await bookService.createBook(req.body);
+  try {
+    const newBook = await bookService.createBook(req.body);
 
-        req.flash('success', 'Book created successfully.');
+    req.flash("success", "Book created successfully.");
 
-        res.redirect(`/books/${newBook.book_id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, 'Error creating book.');
-    }
+    res.redirect(`/books/${newBook.book_id}`);
+  } catch (error) {
+    handleControllerError(error, req, next, "Error creating book.");
+  }
 }
 
 /**
@@ -115,22 +120,27 @@ export async function createBook(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function showEditBookForm(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const book = await bookService.getBookById(id);
+  try {
+    const book = await bookService.getBookById(id);
 
-        if (!book) {
-            return bookNotFound(req, id, res);
-        }
-
-        res.render('books/edit', {
-            title: `Edit ${book.title}`,
-            book,
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, `Error retrieving book with ID ${id}.`);
+    if (!book) {
+      return bookNotFound(req, id, res);
     }
+
+    res.render("books/edit", {
+      title: `Edit ${book.title}`,
+      book,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -141,21 +151,26 @@ export async function showEditBookForm(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function updateBook(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const updatedBook = await bookService.putBook(id, req.body);
+  try {
+    const updatedBook = await bookService.putBook(id, req.body);
 
-        if (!updatedBook) {
-            return bookNotFound(req, id, res);
-        }
-
-        req.flash('success', 'Book updated successfully.');
-
-        res.redirect(`/books/${updatedBook.book_id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, `Error updating book with ID ${id}.`);
+    if (!updatedBook) {
+      return bookNotFound(req, id, res);
     }
+
+    req.flash("success", "Book updated successfully.");
+
+    res.redirect(`/books/${updatedBook.book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error updating book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -166,21 +181,26 @@ export async function updateBook(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function patchBook(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const updatedBook = await bookService.patchBook(id, req.body);
+  try {
+    const updatedBook = await bookService.patchBook(id, req.body);
 
-        if (!updatedBook) {
-            return bookNotFound(req, id, res);
-        }
-
-        req.flash('success', 'Book updated successfully.');
-
-        res.redirect(`/books/${updatedBook.book_id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, `Error partially updating book with ID ${id}.`);
+    if (!updatedBook) {
+      return bookNotFound(req, id, res);
     }
+
+    req.flash("success", "Book updated successfully.");
+
+    res.redirect(`/books/${updatedBook.book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error partially updating book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -191,15 +211,20 @@ export async function patchBook(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function deleteBook(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        await bookService.deleteBook(id);
+  try {
+    await bookService.deleteBook(id);
 
-        req.flash('success', 'Book deleted successfully.');
+    req.flash("success", "Book deleted successfully.");
 
-        res.redirect('/books');
-    } catch (error) {
-        handleControllerError(error, req, next, `Error deleting book with ID ${id}.`);
-    }
+    res.redirect("/books");
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error deleting book with ID ${id}.`,
+    );
+  }
 }

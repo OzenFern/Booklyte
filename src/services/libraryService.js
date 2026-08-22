@@ -3,20 +3,20 @@
  * It acts as an intermediary between the controllers and the library repository.
  * @module libraryService
  */
-import * as lr from '../repositories/libraryRepository.js';
-import { handleServiceError } from '../utils/errorHandler.js';
-import {validateId} from "../utils/validationHandler.js";
+import * as lr from "../repositories/libraryRepository.js";
+import { handleServiceError } from "../utils/errorHandler.js";
+import { validateId } from "../utils/validationHandler.js";
 
 /**
  * Retrieves all library books from the database.
  * @returns {Promise<Array | Object>} A promise that resolves to an array of library book objects or an error object if not found.
  */
 export async function getAllLibraryBooks() {
-    try {
-        return await lr.getLibraryBooks();
-    } catch (error) {
-        return handleServiceError(error, 'Failed to fetch library books.');
-    }
+  try {
+    return await lr.getLibraryBooks();
+  } catch (error) {
+    return handleServiceError(error, "Failed to fetch library books.");
+  }
 }
 
 /**
@@ -25,16 +25,23 @@ export async function getAllLibraryBooks() {
  * @returns {Promise<Object|null>} A promise that resolves to the library book object if found, or null if not found.
  */
 export async function getLibraryBookById(id) {
-    try {
-        const idValidation = validateId(id, new Error('Invalid library book ID.'), 'Library book ID must be a valid number.');
-        if (!idValidation.success) {
-            return idValidation;
-        }
-
-        return await lr.getLibraryBookById(id);
-    } catch (error) {
-        return handleServiceError(error, `Failed to fetch library book with id ${id}.`);
+  try {
+    const idValidation = validateId(
+      id,
+      new Error("Invalid library book ID."),
+      "Library book ID must be a valid number.",
+    );
+    if (!idValidation.success) {
+      return idValidation;
     }
+
+    return await lr.getLibraryBookById(id);
+  } catch (error) {
+    return handleServiceError(
+      error,
+      `Failed to fetch library book with id ${id}.`,
+    );
+  }
 }
 
 /**
@@ -44,16 +51,20 @@ export async function getLibraryBookById(id) {
  * @returns {Promise<Object>} A promise that resolves to the added library book object.
  */
 export async function addBookToLibrary(bookId, status) {
-    try {
-        const idValidation = validateId(bookId, new Error('Invalid book ID.'), 'Book ID must be a valid number.');
-        if (!idValidation.success) {
-            return idValidation;
-        }
-
-        return await lr.addBookToLibrary(bookId, status);
-    } catch (error) {
-        return handleServiceError(error, 'Failed to add book to library.');
+  try {
+    const idValidation = validateId(
+      bookId,
+      new Error("Invalid book ID."),
+      "Book ID must be a valid number.",
+    );
+    if (!idValidation.success) {
+      return idValidation;
     }
+
+    return await lr.addBookToLibrary(bookId, status);
+  } catch (error) {
+    return handleServiceError(error, "Failed to add book to library.");
+  }
 }
 
 /**
@@ -63,16 +74,23 @@ export async function addBookToLibrary(bookId, status) {
  * @returns {Promise<Object>} A promise that resolves to the updated library book object.
  */
 export async function updateLibraryBook(id, updates) {
-    try {
-        const idValidation = validateId(id, new Error('Invalid library book ID.'), 'Library book ID must be a valid number.');
-        if (!idValidation.success) {
-            return idValidation;
-        }
-
-        return await lr.updateLibraryBook(id, updates);
-    } catch (error) {
-        return handleServiceError(error, `Failed to update library book with id ${id}.`);
+  try {
+    const idValidation = validateId(
+      id,
+      new Error("Invalid library book ID."),
+      "Library book ID must be a valid number.",
+    );
+    if (!idValidation.success) {
+      return idValidation;
     }
+
+    return await lr.updateLibraryBook(id, updates);
+  } catch (error) {
+    return handleServiceError(
+      error,
+      `Failed to update library book with id ${id}.`,
+    );
+  }
 }
 
 /**
@@ -81,14 +99,21 @@ export async function updateLibraryBook(id, updates) {
  * @returns {Promise<void | {success: boolean, message: string, error: string}>} A promise that resolves when the book is removed from the library.
  */
 export async function removeBookFromLibrary(id) {
-    try {
-        const idValidation = validateId(id, new Error('Invalid library book ID.'), 'Library book ID must be a valid number.');
-        if (!idValidation.success) {
-            return idValidation;
-        }
-
-        return await lr.removeBookFromLibrary(id);
-    } catch (error) {
-        return handleServiceError(error, `Failed to remove library book with id ${id}.`);
+  try {
+    const idValidation = validateId(
+      id,
+      new Error("Invalid library book ID."),
+      "Library book ID must be a valid number.",
+    );
+    if (!idValidation.success) {
+      return idValidation;
     }
+
+    return await lr.removeBookFromLibrary(id);
+  } catch (error) {
+    return handleServiceError(
+      error,
+      `Failed to remove library book with id ${id}.`,
+    );
+  }
 }

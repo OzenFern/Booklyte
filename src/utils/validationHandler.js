@@ -2,7 +2,7 @@
  * This file contains utility functions that can be used throughout the application.
  * @module validationHandler
  */
-import {handleServiceError} from "./errorHandler.js";
+import { handleServiceError } from "./errorHandler.js";
 
 // Helper for destructuring object into key-value pairs and validating required fields
 /**
@@ -11,16 +11,18 @@ import {handleServiceError} from "./errorHandler.js";
  * @returns {{fields: string[], values: unknown[]}}
  */
 export function destructureAndValidate(obj) {
-    const fields = Object.keys(obj);
-    const values = Object.values(obj);
+  const fields = Object.keys(obj);
+  const values = Object.values(obj);
 
-    // Check for missing required fields
-    const missingFields = fields.filter((field) => obj[field] === undefined || obj[field] === null);
-    if (missingFields.length > 0) {
-        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-    }
+  // Check for missing required fields
+  const missingFields = fields.filter(
+    (field) => obj[field] === undefined || obj[field] === null,
+  );
+  if (missingFields.length > 0) {
+    throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+  }
 
-    return { fields, values };
+  return { fields, values };
 }
 
 /**
@@ -31,8 +33,8 @@ export function destructureAndValidate(obj) {
  * @returns {{success: boolean, message: string, error: string|null}}
  */
 export function validateId(id, errorObject, errorMessage) {
-    if (!id || typeof id !== 'number') {
-        return handleServiceError(errorObject, errorMessage);
-    }
-    return { success: true, message: "ID is valid", error: null };
+  if (!id || typeof id !== "number") {
+    return handleServiceError(errorObject, errorMessage);
+  }
+  return { success: true, message: "ID is valid", error: null };
 }

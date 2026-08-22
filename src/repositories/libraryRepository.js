@@ -4,7 +4,7 @@
  */
 
 import pool from "../db/pool.js";
-import {destructureAndValidate} from "../utils/validationHandler.js";
+import { destructureAndValidate } from "../utils/validationHandler.js";
 
 /**
  * Retrieves all library books from the database.
@@ -12,7 +12,7 @@ import {destructureAndValidate} from "../utils/validationHandler.js";
  * @returns {Promise<Array>} A promise that resolves to an array of library book objects.
  */
 export async function getLibraryBooks() {
-    const query = `SELECT
+  const query = `SELECT
                        lb.library_book_id,
                        lb.status,
                        b.book_id,
@@ -45,8 +45,8 @@ export async function getLibraryBooks() {
                        b.book_id,
                        b.title`;
 
-    const {rows} = await pool.query(query);
-    return rows;
+  const { rows } = await pool.query(query);
+  return rows;
 }
 
 /**
@@ -55,7 +55,7 @@ export async function getLibraryBooks() {
  * @returns {Promise<Object|null>} A promise that resolves to the library book object if found, or null if not found.
  */
 export async function getLibraryBookById(id) {
-    const query = `SELECT
+  const query = `SELECT
                        lb.library_book_id,
                        lb.status,
                        b.book_id,
@@ -90,8 +90,8 @@ export async function getLibraryBookById(id) {
                        b.book_id,
                        b.title`;
 
-    const {rows} = await pool.query(query, [id]);
-    return rows[0] ?? null;
+  const { rows } = await pool.query(query, [id]);
+  return rows[0] ?? null;
 }
 
 /**
@@ -101,9 +101,10 @@ export async function getLibraryBookById(id) {
  * @returns {Promise<Object>} A promise that resolves to the added library book object.
  */
 export async function addBookToLibrary(bookId, status) {
-    const query = 'INSERT INTO library_books (book_id, status) VALUES ($1, $2) RETURNING *';
-    const {rows} = await pool.query(query, [bookId, status]);
-    return rows[0];
+  const query =
+    "INSERT INTO library_books (book_id, status) VALUES ($1, $2) RETURNING *";
+  const { rows } = await pool.query(query, [bookId, status]);
+  return rows[0];
 }
 
 /**
@@ -113,12 +114,14 @@ export async function addBookToLibrary(bookId, status) {
  * @returns {Promise<Object>} A promise that resolves to the updated library book object.
  */
 export async function updateLibraryBook(id, updates) {
-    const {fields, values} = destructureAndValidate(updates);
-    const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+  const { fields, values } = destructureAndValidate(updates);
+  const setClause = fields
+    .map((field, index) => `${field} = $${index + 1}`)
+    .join(", ");
 
-    const query = `UPDATE library_books SET ${setClause} WHERE library_book_id = $${values.length + 1} RETURNING *`;
-    const {rows} = await pool.query(query, [...values, id]);
-    return rows[0];
+  const query = `UPDATE library_books SET ${setClause} WHERE library_book_id = $${values.length + 1} RETURNING *`;
+  const { rows } = await pool.query(query, [...values, id]);
+  return rows[0];
 }
 
 /**
@@ -127,6 +130,6 @@ export async function updateLibraryBook(id, updates) {
  * @returns {Promise<void>} A promise that resolves when the book is removed from the library.
  */
 export async function removeBookFromLibrary(id) {
-    const query = 'DELETE FROM library_books WHERE library_book_id = $1';
-    await pool.query(query, [id]);
+  const query = "DELETE FROM library_books WHERE library_book_id = $1";
+  await pool.query(query, [id]);
 }

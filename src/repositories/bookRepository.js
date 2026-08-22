@@ -2,15 +2,15 @@
  * This module provides functions to interact with the books table in the database.
  * @module bookRepository
  */
-import pool from '../db/pool.js';
-import {destructureAndValidate} from "../utils/validationHandler.js";
+import pool from "../db/pool.js";
+import { destructureAndValidate } from "../utils/validationHandler.js";
 
 /**
  * Retrieves all books from the database, including their authors.
  * @returns {Promise<Array>} A promise that resolves to an array of book objects with authors.
  */
 export async function getAllBooks() {
-    const query = `SELECT
+  const query = `SELECT
                        b.book_id,
                        b.openlibrary_id,
                        b.title,
@@ -45,8 +45,8 @@ export async function getAllBooks() {
                        b.cover_url,
                        b.published_date`;
 
-    const { rows } = await pool.query(query);
-    return rows;
+  const { rows } = await pool.query(query);
+  return rows;
 }
 
 /**
@@ -55,7 +55,7 @@ export async function getAllBooks() {
  * @returns {Promise<Object|null>} A promise that resolves to the book object with authors if found, or null if not found.
  */
 export async function getBookById(id) {
-    const query = `SELECT
+  const query = `SELECT
                        b.book_id,
                        b.openlibrary_id,
                        b.title,
@@ -92,8 +92,8 @@ export async function getBookById(id) {
                        b.cover_url,
                        b.published_date`;
 
-    const { rows } = await pool.query(query, [id]);
-    return rows[0] ?? null;
+  const { rows } = await pool.query(query, [id]);
+  return rows[0] ?? null;
 }
 
 /**
@@ -107,17 +107,17 @@ export async function getBookById(id) {
  * @returns {Promise<Object>} A promise that resolves to the created book object.
  */
 export async function createBook(book) {
-    const query =
-        'INSERT INTO books (openlibrary_id, title,description,cover_url, published_date) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-    const values = [
-        book.openlibrary_id,
-        book.title,
-        book.description,
-        book.cover_url,
-        book.published_date,
-    ];
-    const { rows } = await pool.query(query, values);
-    return rows[0];
+  const query =
+    "INSERT INTO books (openlibrary_id, title,description,cover_url, published_date) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+  const values = [
+    book.openlibrary_id,
+    book.title,
+    book.description,
+    book.cover_url,
+    book.published_date,
+  ];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
 }
 
 /**
@@ -132,19 +132,19 @@ export async function createBook(book) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
  */
 export async function putBook(id, book) {
-    const query =
-        'UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5, updated_at = CURRENT_TIMESTAMP WHERE book_id = $6 RETURNING *';
-    const values = [
-        book.openlibrary_id,
-        book.title,
-        book.description,
-        book.cover_url,
-        book.published_date,
-        id,
-    ];
+  const query =
+    "UPDATE books SET openlibrary_id = $1, title = $2, description = $3, cover_url = $4, published_date = $5, updated_at = CURRENT_TIMESTAMP WHERE book_id = $6 RETURNING *";
+  const values = [
+    book.openlibrary_id,
+    book.title,
+    book.description,
+    book.cover_url,
+    book.published_date,
+    id,
+  ];
 
-    const { rows } = await pool.query(query, values);
-    return rows[0] ?? null;
+  const { rows } = await pool.query(query, values);
+  return rows[0] ?? null;
 }
 
 /**
@@ -154,15 +154,17 @@ export async function putBook(id, book) {
  * @returns {Promise<Object|null>} A promise that resolves to the updated book object if found, or null if not found.
  */
 export async function patchBook(id, book) {
-    const {fields, values} = destructureAndValidate(book);
-    const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+  const { fields, values } = destructureAndValidate(book);
+  const setClause = fields
+    .map((field, index) => `${field} = $${index + 1}`)
+    .join(", ");
 
-    // Add the id as the last parameter for the WHERE clause
-    values.push(id);
-    const query = `UPDATE books SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE book_id = $${fields.length + 1} RETURNING *`;
+  // Add the id as the last parameter for the WHERE clause
+  values.push(id);
+  const query = `UPDATE books SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE book_id = $${fields.length + 1} RETURNING *`;
 
-    const { rows } = await pool.query(query, values);
-    return rows[0] ?? null;
+  const { rows } = await pool.query(query, values);
+  return rows[0] ?? null;
 }
 
 /**
@@ -171,8 +173,8 @@ export async function patchBook(id, book) {
  * @returns {Promise<Object|null>} A promise that resolves to the deleted book object if found, or null if not found.
  */
 export async function deleteBook(book_id) {
-    const query = 'DELETE FROM books WHERE book_id = $1 RETURNING *';
+  const query = "DELETE FROM books WHERE book_id = $1 RETURNING *";
 
-    const { rows } = await pool.query(query, [book_id]);
-    return rows[0] ?? null;
+  const { rows } = await pool.query(query, [book_id]);
+  return rows[0] ?? null;
 }

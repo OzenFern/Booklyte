@@ -6,8 +6,8 @@
  * @module libraryController
  */
 
-import * as libraryService from '../services/libraryService.js';
-import {handleControllerError} from '../utils/errorHandler.js';
+import * as libraryService from "../services/libraryService.js";
+import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
  * Handles the case when a library book is not found.
@@ -17,8 +17,8 @@ import {handleControllerError} from '../utils/errorHandler.js';
  * @returns {*} Redirects to the library index page with an error flash message.
  */
 function libraryBookNotFound(req, id, res) {
-    req.flash('error', `Library book with ID ${id} not found.`);
-    return res.redirect('/library');
+  req.flash("error", `Library book with ID ${id} not found.`);
+  return res.redirect("/library");
 }
 
 /**
@@ -29,16 +29,16 @@ function libraryBookNotFound(req, id, res) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function getAllLibraryBooks(req, res, next) {
-    try {
-        const libraryBooks = await libraryService.getAllLibraryBooks();
+  try {
+    const libraryBooks = await libraryService.getAllLibraryBooks();
 
-        res.render('library/index', {
-            title: 'My Library',
-            libraryBooks,
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, 'Error retrieving library books.');
-    }
+    res.render("library/index", {
+      title: "My Library",
+      libraryBooks,
+    });
+  } catch (error) {
+    handleControllerError(error, req, next, "Error retrieving library books.");
+  }
 }
 
 /**
@@ -49,22 +49,27 @@ export async function getAllLibraryBooks(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function getLibraryBookById(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const libraryBook = await libraryService.getLibraryBookById(id);
+  try {
+    const libraryBook = await libraryService.getLibraryBookById(id);
 
-        if (!libraryBook) {
-            return libraryBookNotFound(req, id, res);
-        }
-
-        res.render('library/show', {
-            title: libraryBook.title,
-            libraryBook,
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, `Error retrieving library book with ID ${id}.`);
+    if (!libraryBook) {
+      return libraryBookNotFound(req, id, res);
     }
+
+    res.render("library/show", {
+      title: libraryBook.title,
+      libraryBook,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving library book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -80,16 +85,19 @@ export async function getLibraryBookById(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function addBookToLibrary(req, res, next) {
-    try {
-        const { book_id, status } = req.body;
-        const newLibraryBook = await libraryService.addBookToLibrary(book_id, status);
+  try {
+    const { book_id, status } = req.body;
+    const newLibraryBook = await libraryService.addBookToLibrary(
+      book_id,
+      status,
+    );
 
-        req.flash('success', 'Book added to library successfully.');
+    req.flash("success", "Book added to library successfully.");
 
-        res.redirect(`/library/${newLibraryBook.library_book_id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, 'Error adding book to library.');
-    }
+    res.redirect(`/library/${newLibraryBook.library_book_id}`);
+  } catch (error) {
+    handleControllerError(error, req, next, "Error adding book to library.");
+  }
 }
 
 /**
@@ -100,22 +108,27 @@ export async function addBookToLibrary(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function showEditLibraryBookForm(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const libraryBook = await libraryService.getLibraryBookById(id);
+  try {
+    const libraryBook = await libraryService.getLibraryBookById(id);
 
-        if (!libraryBook) {
-            return libraryBookNotFound(req, id, res);
-        }
-
-        res.render('library/edit', {
-            title: `Edit ${libraryBook.title}`,
-            libraryBook,
-        });
-    } catch (error) {
-        handleControllerError(error, req, next, `Error retrieving library book with ID ${id}.`);
+    if (!libraryBook) {
+      return libraryBookNotFound(req, id, res);
     }
+
+    res.render("library/edit", {
+      title: `Edit ${libraryBook.title}`,
+      libraryBook,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving library book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -126,21 +139,29 @@ export async function showEditLibraryBookForm(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function updateLibraryBook(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const updatedLibraryBook = await libraryService.updateLibraryBook(id, req.body);
+  try {
+    const updatedLibraryBook = await libraryService.updateLibraryBook(
+      id,
+      req.body,
+    );
 
-        if (!updatedLibraryBook) {
-            return libraryBookNotFound(req, id, res);
-        }
-
-        req.flash('success', 'Library book updated successfully.');
-
-        res.redirect(`/library/${updatedLibraryBook.library_book_id}`);
-    } catch (error) {
-        handleControllerError(error, req, next, `Error updating library book with ID ${id}.`);
+    if (!updatedLibraryBook) {
+      return libraryBookNotFound(req, id, res);
     }
+
+    req.flash("success", "Library book updated successfully.");
+
+    res.redirect(`/library/${updatedLibraryBook.library_book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error updating library book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -151,17 +172,22 @@ export async function updateLibraryBook(req, res, next) {
  * @param {Function} next - Express middleware function used to pass errors.
  */
 export async function removeBookFromLibrary(req, res, next) {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        await libraryService.removeBookFromLibrary(id);
+  try {
+    await libraryService.removeBookFromLibrary(id);
 
-        req.flash('success', 'Book removed from library successfully.');
+    req.flash("success", "Book removed from library successfully.");
 
-        res.redirect('/library');
-    } catch (error) {
-        handleControllerError(error, req, next, `Error removing library book with ID ${id}.`);
-    }
+    res.redirect("/library");
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error removing library book with ID ${id}.`,
+    );
+  }
 }
 
 /**
@@ -170,7 +196,7 @@ export async function removeBookFromLibrary(req, res, next) {
  * @param {Object} res - The HTTP response object.
  */
 export function displayNewLibraryBook(req, res) {
-    res.render('library/new', {
-        title: 'Add Book to Library',
-    });
+  res.render("library/new", {
+    title: "Add Book to Library",
+  });
 }

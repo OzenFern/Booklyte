@@ -1,17 +1,17 @@
 {
-    "source": {
-        "include": ["src", "public/js"],
-        "includePattern": ".+\\.js$",
-        "excludePattern": "(^|\\/|\\\\)_"
-    },
-    "plugins": [],
-    "opts": {
-        "destination": "./docs/",
-        "recurse": true
-    },
-    "templates": {
-        "default": {
-            "includeDate": false
-        }
+  "source": {
+    "include": ["src", "public/js"],
+    "includePattern": ".+\\.js$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "plugins": [],
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true
+  },
+  "templates": {
+    "default": {
+      "includeDate": false
     }
+  }
 }

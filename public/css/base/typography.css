@@ -38,7 +38,7 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: var(--space-2);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .page-intro__lead {

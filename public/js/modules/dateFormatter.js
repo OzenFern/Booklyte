@@ -42,8 +42,6 @@
         const dateElements = document.querySelectorAll('.published-date');
         dateElements.forEach((element) => {
             const dateString = element.textContent;
-            console.log(`Formatting date: ${dateString}`); // Debugging log
-            console.log(`Formatted date: ${formatPublishedDate(dateString)}`); // Debugging log
             element.textContent = formatPublishedDate(dateString);
         });
     });

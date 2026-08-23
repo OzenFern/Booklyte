@@ -79,7 +79,7 @@ export function normalizeId(keyOrId) {
  * Safely extracts a value from an object that may be a string or nested object.
  * Commonly used for API responses where descriptions can be either format.
  *
- * @param {string|{value?: string}|null|undefined} value - The value to extract.
+ * @param {string|Object|null|undefined} value - The value to extract.
  * @returns {string|null} The extracted string value, or null if invalid.
  *
  * @example
@@ -127,7 +127,7 @@ export function strictJsonParse(value, fallback) {
 /**
  * Executes a database operation within a transaction with automatic rollback on error.
  *
- * @param {import("pg").PoolClient} client - The database client.
+ * @param {Object} client - The database client.
  * @param {Function} operation - The async operation to execute within the transaction.
  * @returns {Promise<T>} The result of the operation.
  * @throws {Error} If the operation fails, transaction is rolled back.

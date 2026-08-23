@@ -9,7 +9,7 @@ import { normalizeId } from "../../utils/validationHandler.js";
 
 /**
  * Axios client configured for Open Library API.
- * @constant {import("axios").AxiosInstance}
+ * @constant {Object}
  */
 const client = axios.create({
   baseURL: "https://openlibrary.org",

@@ -7,4 +7,10 @@ import * as pc from "../controllers/pageController.js";
 
 const router = express.Router();
 
+/**
+ * GET /
+ * Render the home page of the application.
+ */
 router.get("/", pc.getHomePage);
+
+export default router;

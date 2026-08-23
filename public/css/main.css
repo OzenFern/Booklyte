@@ -15,6 +15,7 @@
 @import url("./components/empty-state.css");
 @import url("./components/loading.css");
 @import url("./components/review.css");
+@import url("./pages/home.css");
 @import url("./pages/books.css");
 @import url("./pages/library.css");
 @import url("./pages/reviews.css");

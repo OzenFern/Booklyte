@@ -35,7 +35,6 @@ export async function getAllLibraryBooks(req, res, next) {
     res.render("library/index", {
       title: "My Library",
       libraryBooks,
-      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(error, req, next, "Error retrieving library books.");
@@ -62,7 +61,6 @@ export async function getLibraryBookById(req, res, next) {
     res.render("library/show", {
       title: libraryBook.title,
       libraryBook,
-      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(
@@ -119,7 +117,6 @@ export async function showEditLibraryBookForm(req, res, next) {
     res.render("library/edit", {
       title: `Edit ${libraryBook.title}`,
       libraryBook,
-      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(
@@ -239,6 +236,5 @@ export async function removeBookFromLibrary(req, res, next) {
 export function displayNewLibraryBook(req, res) {
   res.render("library/new", {
     title: "Add Book to Library",
-    currentPath: req.path
   });
 }

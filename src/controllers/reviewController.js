@@ -74,7 +74,6 @@ export async function getReviewByLibraryBookId(req, res, next) {
       title: "Review",
       review: review ?? null,
       libraryBookId: id,
-      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(

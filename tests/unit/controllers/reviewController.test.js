@@ -35,7 +35,7 @@ describe("reviewController", () => {
 
   it("getReviewByLibraryBookId renders the review page when the review exists", async () => {
     // Arrange: the service finds a valid review for the supplied library book ID.
-    const req = { params: { id: "5" } };
+    const req = { params: { id: "5" }, get: vi.fn().mockReturnValue(undefined) };
     const res = { render: vi.fn() };
     const next = vi.fn();
     const review = {
@@ -81,6 +81,7 @@ describe("reviewController", () => {
       params: { id: "5" },
       body: { rating: 4.5, review_text: "Great book!" },
       flash: vi.fn(),
+      get: vi.fn().mockReturnValue(undefined),
     };
     const res = { redirect: vi.fn() };
     const next = vi.fn();
@@ -134,6 +135,7 @@ describe("reviewController", () => {
       params: { id: "5" },
       body: { rating: 5.0, review_text: "Updated review" },
       flash: vi.fn(),
+      get: vi.fn().mockReturnValue(undefined),
     };
     const res = { redirect: vi.fn() };
     const next = vi.fn();
@@ -244,6 +246,7 @@ describe("reviewController", () => {
     const req = {
       params: { id: "5" },
       flash: vi.fn(),
+      get: vi.fn().mockReturnValue(undefined),
     };
     const res = { redirect: vi.fn() };
     const next = vi.fn();
@@ -354,5 +357,118 @@ describe("reviewController", () => {
       next,
       "Error retrieving review for library book with ID 5.",
     );
+  });
+
+  it("getReviewByLibraryBookId renders partial for HTMX requests", async () => {
+    // Arrange: the service finds a valid review for the supplied library book ID.
+    const req = { params: { id: "5" }, get: vi.fn().mockReturnValue("true") };
+    const res = { render: vi.fn() };
+    const next = vi.fn();
+    const review = {
+      review_id: 1,
+      library_book_id: 5,
+      rating: 4.5,
+      review_text: "Great book!",
+      created_at: "2024-01-15T10:30:00Z",
+      updated_at: "2024-01-15T10:30:00Z",
+    };
+    mocks.getReviewByLibraryBookId.mockResolvedValue(review);
+
+    await reviewController.getReviewByLibraryBookId(req, res, next);
+
+    expect(res.render).toHaveBeenCalledWith("reviews/partials/review-panel", {
+      review,
+      libraryBookId: "5",
+    });
+  });
+
+  it("createReview renders partial for HTMX requests", async () => {
+    // Arrange: the create call resolves to a saved review object.
+    const req = {
+      params: { id: "5" },
+      body: { rating: 4.5, review_text: "Great book!" },
+      get: vi.fn().mockReturnValue("true"),
+    };
+    const res = { render: vi.fn() };
+    const next = vi.fn();
+    const createdReview = {
+      review_id: 1,
+      library_book_id: 5,
+      rating: 4.5,
+      review_text: "Great book!",
+      created_at: "2024-01-15T10:30:00Z",
+      updated_at: "2024-01-15T10:30:00Z",
+    };
+    mocks.createReview.mockResolvedValue(createdReview);
+
+    await reviewController.createReview(req, res, next);
+
+    expect(res.render).toHaveBeenCalledWith("reviews/partials/review-panel", {
+      review: createdReview,
+      libraryBookId: "5",
+    });
+  });
+
+  it("updateReview renders partial for HTMX requests", async () => {
+    // Arrange: the update operation resolves to a saved review object.
+    const req = {
+      params: { id: "5" },
+      body: { rating: 5.0, review_text: "Updated review" },
+      get: vi.fn().mockReturnValue("true"),
+    };
+    const res = { render: vi.fn() };
+    const next = vi.fn();
+    const existingReview = {
+      review_id: 1,
+      library_book_id: 5,
+      rating: 4.5,
+      review_text: "Great book!",
+      created_at: "2024-01-15T10:30:00Z",
+      updated_at: "2024-01-15T10:30:00Z",
+    };
+    const updatedReview = {
+      ...existingReview,
+      rating: 5.0,
+      review_text: "Updated review",
+      updated_at: "2024-01-16T14:45:00Z",
+    };
+    mocks.getReviewByLibraryBookId.mockResolvedValueOnce(existingReview);
+    mocks.updateReview.mockResolvedValue(updatedReview);
+    mocks.getReviewByLibraryBookId.mockResolvedValueOnce(updatedReview);
+
+    await reviewController.updateReview(req, res, next);
+
+    expect(res.render).toHaveBeenCalledWith("reviews/partials/review-panel", {
+      review: updatedReview,
+      libraryBookId: "5",
+    });
+  });
+
+  it("deleteReview renders partial for HTMX requests", async () => {
+    // Arrange: the delete service completes successfully.
+    const req = {
+      params: { id: "5" },
+      get: vi.fn().mockReturnValue("true"),
+    };
+    const res = { render: vi.fn() };
+    const next = vi.fn();
+    const existingReview = {
+      review_id: 1,
+      library_book_id: 5,
+      rating: 4.5,
+      review_text: "Great book!",
+      created_at: "2024-01-15T10:30:00Z",
+      updated_at: "2024-01-15T10:30:00Z",
+    };
+    const deletedReview = { ...existingReview };
+    mocks.getReviewByLibraryBookId.mockResolvedValue(existingReview);
+    mocks.deleteReview.mockResolvedValue(deletedReview);
+
+    await reviewController.deleteReview(req, res, next);
+
+    expect(res.render).toHaveBeenCalledWith("reviews/partials/review-panel", {
+      review: null,
+      libraryBookId: "5",
+    });
   });
 });

@@ -216,6 +216,7 @@ describe("libraryController", () => {
       params: { id: "1" },
       body: { status: "completed" },
       flash: vi.fn(),
+      get: vi.fn().mockReturnValue(undefined),
     };
     const res = { redirect: vi.fn() };
     const next = vi.fn();
@@ -261,6 +262,7 @@ describe("libraryController", () => {
     const req = {
       params: { id: "1" },
       flash: vi.fn(),
+      get: vi.fn().mockReturnValue(undefined),
     };
     const res = { redirect: vi.fn() };
     const next = vi.fn();
@@ -291,5 +293,57 @@ describe("libraryController", () => {
       next,
       "Error retrieving library book with ID 1.",
     );
+  });
+
+  it("patchLibraryBook renders partial for HTMX requests", async () => {
+    // Arrange: the partial update operation resolves to a saved library book object.
+    const req = {
+      params: { id: "1" },
+      body: { status: "completed" },
+      get: vi.fn().mockReturnValue("true"),
+    };
+    const res = { render: vi.fn() };
+    const next = vi.fn();
+    const updatedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      status: "completed",
+    };
+    const libraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+      title: "Dune",
+      status: "completed",
+      authors: [{ author_id: 1, name: "Frank Herbert" }],
+    };
+    mocks.updateLibraryBook.mockResolvedValue(updatedLibraryBook);
+    mocks.getLibraryBookById.mockResolvedValue(libraryBook);
+
+    await libraryController.patchLibraryBook(req, res, next);
+
+    expect(mocks.updateLibraryBook).toHaveBeenCalledWith("1", req.body);
+    expect(res.render).toHaveBeenCalledWith("library/partials/book-row", {
+      libraryBook,
+    });
+  });
+
+  it("removeBookFromLibrary returns 204 for HTMX requests", async () => {
+    // Arrange: the remove service completes without error.
+    const req = {
+      params: { id: "1" },
+      get: vi.fn().mockReturnValue("true"),
+    };
+    const res = { status: vi.fn().mockReturnThis(), send: vi.fn() };
+    const next = vi.fn();
+    const deletedLibraryBook = {
+      library_book_id: 1,
+      book_id: 42,
+    };
+    mocks.removeBookFromLibrary.mockResolvedValue(deletedLibraryBook);
+
+    await libraryController.removeBookFromLibrary(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.send).toHaveBeenCalledWith("");
   });
 });

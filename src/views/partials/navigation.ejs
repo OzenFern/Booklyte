@@ -1,10 +1,14 @@
 <%
   const path = currentPath || "";
-  const isBooks = path.startsWith("/books");
-  const isLibrary = path.startsWith("/library");
+  const isHome = path === "/" || path === "";
+  const isBooks = path.startsWith("/books") && !isHome;
+  const isLibrary = path.startsWith("/library") && !isHome;
 %>
 
 <nav class="site-nav" aria-label="Primary">
+  <a href="/" class="site-nav__link <%= isHome ? 'is-active' : '' %>">
+    Home
+  </a>
   <a href="/books" class="site-nav__link <%= isBooks ? 'is-active' : '' %>">
     Books
   </a>

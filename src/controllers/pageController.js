@@ -4,5 +4,5 @@
  */
 
 export const getHomePage = (req, res) => {
-  res.render("pages/index", { title: "Home" });
+  res.render("pages/home", { title: "Home" });
 };

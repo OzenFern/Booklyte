@@ -50,3 +50,31 @@ p {
   text-decoration: underline;
   text-underline-offset: 0.25em;
 }
+
+/* Mobile Typography Improvements */
+@media (max-width: 48rem) {
+  body {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+  }
+
+  h3 {
+    font-size: 1.15rem;
+  }
+
+  .page-intro__kicker {
+    font-size: 0.9rem;
+  }
+
+  .page-intro__lead {
+    font-size: 1.05rem;
+  }
+}

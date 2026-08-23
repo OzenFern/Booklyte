@@ -5,6 +5,10 @@
   const isLibrary = path.startsWith("/library") && !isHome;
 %>
 
+<button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+  <span class="hamburger"></span>
+</button>
+
 <nav class="site-nav" aria-label="Primary">
   <a href="/" class="site-nav__link <%= isHome ? 'is-active' : '' %>">
     Home

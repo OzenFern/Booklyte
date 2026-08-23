@@ -186,3 +186,65 @@
 .feature-card__link:hover {
   gap: var(--space-3);
 }
+
+/* Mobile Responsiveness for Home Page */
+@media (max-width: 48rem) {
+  .hero {
+    padding: var(--space-6) 0;
+    gap: var(--space-5);
+  }
+
+  .hero__kicker {
+    font-size: 0.75rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+    margin-bottom: var(--space-5);
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero__button {
+    width: 100%;
+    text-align: center;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .hero__visual {
+    min-height: 200px;
+  }
+
+  .features {
+    padding: var(--space-6) 0;
+  }
+
+  .features__grid {
+    gap: var(--space-4);
+  }
+
+  .feature-card {
+    padding: var(--space-5);
+  }
+
+  .feature-card__icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .feature-card__title {
+    font-size: 1.2rem;
+  }
+
+  .feature-card__description {
+    font-size: 0.95rem;
+  }
+}

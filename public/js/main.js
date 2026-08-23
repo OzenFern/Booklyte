@@ -7,6 +7,9 @@ import { initFlashMessages } from './modules/flash.js';
 import { initImageFallback } from './modules/imageFallback.js';
 import { initHtmxRedirect } from './modules/htmxRedirect.js';
 import { initMobileNavigation } from './modules/mobileNavigation.js';
+// import { initFormValidation } from './modules/formValidation.js';
+// import { initSearch } from './modules/search.js';
+import './modules/dateHelpers.js';
 
 // Initialize all modules when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {

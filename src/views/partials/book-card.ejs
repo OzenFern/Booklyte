@@ -34,8 +34,8 @@
       </a>
     </h3>
     <p class="book-card__author"><%= authorText %></p>
-    <p class="book-card__meta">
-      <%= sourceBook.published_date || "Unknown publication date" %>
+    <p class="book-card__meta published-date">
+      <%= sourceBook.published_date %>
     </p>
     <div class="book-card__actions">
       <a class="button button--ghost" href="/books/<%= sourceBook.book_id %>">

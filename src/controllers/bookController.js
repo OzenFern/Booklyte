@@ -35,6 +35,7 @@ export async function getAllBooks(req, res, next) {
     res.render("books/index", {
       title: "My Books",
       books,
+      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(error, req, next, "Error retrieving books.");
@@ -61,6 +62,7 @@ export async function getBookById(req, res, next) {
     res.render("books/show", {
       title: book.title,
       book,
+      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(
@@ -81,6 +83,7 @@ export async function getBookById(req, res, next) {
 export function showCreateBookForm(req, res) {
   res.render("books/new", {
     title: "Add Book",
+    currentPath: req.path
   });
 }
 
@@ -132,6 +135,7 @@ export async function showEditBookForm(req, res, next) {
     res.render("books/edit", {
       title: `Edit ${book.title}`,
       book,
+      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(
@@ -255,6 +259,7 @@ export async function searchExternalBooks(req, res, next) {
       title: `Search: ${normalizedQuery || "Books"}`,
       results,
       query: normalizedQuery,
+      currentPath: req.path
     });
   } catch (error) {
     handleControllerError(error, req, next, "Error searching external books.");

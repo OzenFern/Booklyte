@@ -4,5 +4,8 @@
  */
 
 export const getHomePage = (req, res) => {
-  res.render("pages/home", { title: "Home" });
+  res.render("pages/home", { 
+    title: "Home",
+    currentPath: req.path || "/"
+  });
 };

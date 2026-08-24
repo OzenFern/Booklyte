@@ -7,6 +7,7 @@
  */
 
 import * as ls from "../services/libraryService.js";
+import * as bs from "../services/bookService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
@@ -87,13 +88,55 @@ export async function getLibraryBookById(req, res, next) {
 export async function addBookToLibrary(req, res, next) {
   try {
     const { book_id, status } = req.body;
-    const newLibraryBook = await ls.addBookToLibrary(book_id, status);
+    const result = await ls.addBookToLibrary(book_id, status);
 
-    req.flash("success", "Book added to library successfully.");
+    // Check if the result is an error object
+    if (!result.success && result.success !== undefined) {
+      if (req.get("HX-Request")) {
+        res.status(400).render("partials/htmx-error", {
+          error: result.message || result.error,
+        });
+      } else {
+        req.flash("error", result.message || result.error);
+        return res.redirect("back");
+      }
+      return;
+    }
 
-    res.redirect(`/library/${newLibraryBook.library_book_id}`);
+    if (req.get("HX-Request")) {
+      // Check the HX-Current-URL header to determine which page the request came from
+      const currentUrl = req.get("HX-Current-URL") || "";
+      const isFromLibraryForm = currentUrl.includes("/library/new");
+      const isFromDetailPage = currentUrl.includes("/books/") && status && status !== "want_to_read";
+
+      if (isFromLibraryForm) {
+        // From library new form page
+        res.render("partials/library-form-success", {
+          library_book_id: result.library_book_id,
+        });
+      } else if (isFromDetailPage) {
+        // From book detail page
+        res.render("partials/book-detail-actions", {
+          book: { book_id: result.book_id, in_library: true },
+        });
+      } else {
+        // From book card
+        res.render("partials/book-card-actions", {
+          book: { book_id: result.book_id, in_library: true },
+        });
+      }
+    } else {
+      req.flash("success", "Book added to library successfully.");
+      res.redirect(`/library/${result.library_book_id}`);
+    }
   } catch (error) {
-    handleControllerError(error, req, next, "Error adding book to library.");
+    if (req.get("HX-Request")) {
+      res.status(500).render("partials/htmx-error", {
+        error: "Failed to add book to library. Please try again.",
+      });
+    } else {
+      handleControllerError(error, req, next, "Error adding book to library.");
+    }
   }
 }
 

@@ -5,6 +5,7 @@
 @import url("./layout/container.css");
 @import url("./layout/header.css");
 @import url("./layout/navigation.css");
+@import url("./layout/footer.css");
 @import url("./components/button.css");
 @import url("./components/book-card.css");
 @import url("./components/book-grid.css");

@@ -33,10 +33,39 @@
   --duration-normal: 260ms;
 }
 
+[data-theme="light"] {
+  --color-bg: #f5f3ef;
+  --color-bg-soft: #ebe8e1;
+  --color-surface: #ffffff;
+  --color-surface-strong: #f8f6f2;
+  --color-text: #2c2824;
+  --color-text-muted: #6b665f;
+  --color-muted: #6b665f;
+  --color-border: #d4cfc4;
+  --color-accent: #c49a3d;
+  --color-accent-strong: #d4a24f;
+  --color-success: #4a9a6d;
+  --color-warning: #b8893f;
+  --color-danger: #c45a54;
+  --color-info: #6a9dc4;
+}
+
 body {
   background:
     radial-gradient(circle at 0% 0%, #19211d, transparent 45%),
     radial-gradient(circle at 100% 100%, #1f1910, transparent 50%),
     var(--color-bg);
   color: var(--color-text);
+  transition: background-color var(--duration-normal), color var(--duration-normal);
+}
+
+.page-shell { animation: page-enter 420ms cubic-bezier(.2,.8,.2,1) both; }
+@keyframes page-enter { from { opacity: 0; transform: translateY(0.6rem); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+
+[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 0% 0%, #ebe8e1, transparent 45%),
+    radial-gradient(circle at 100% 100%, #e8e4db, transparent 50%),
+    var(--color-bg);
 }

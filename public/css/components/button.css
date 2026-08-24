@@ -26,6 +26,20 @@
   background: var(--color-surface);
 }
 
+.button--back {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+  padding-left: 0;
+}
+
+.button--back:hover {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-accent-strong);
+  transform: translateX(-0.18rem);
+}
+
 .button--danger {
   border-color: color-mix(
     in srgb,

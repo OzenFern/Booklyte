@@ -7,7 +7,6 @@
  */
 
 import * as ls from "../services/libraryService.js";
-import * as bs from "../services/bookService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**

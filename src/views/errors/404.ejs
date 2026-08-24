@@ -1,13 +1,17 @@
 <%- include("../partials/layout-start", { title: "Page Not Found", pageClass: "page-error" }) %>
 
 <section class="error-page">
-  <p class="page-intro__kicker">404</p>
+  <p class="error-page__code" aria-hidden="true">404</p>
+  <p class="page-intro__kicker">Lost between the shelves</p>
   <h1>That page is not in this chapter.</h1>
   <p>
-    The URL does not match a Booklyte route. Head back to your catalog and
-    continue reading.
+    It may have moved, or the address may be incomplete. Your reading list is
+    still safely on the shelf.
   </p>
-  <a class="button button--solid" href="/books">Go to Books</a>
+  <div class="error-page__actions">
+    <a class="button button--solid" href="/library">Open Library</a>
+    <a class="button button--ghost" href="/books">Browse Books</a>
+  </div>
 </section>
 
 <%- include("../partials/layout-end") %>

@@ -10,18 +10,24 @@
 
 <section class="form-panel">
   <div id="library-form-container">
-    <form action="/library" method="post" class="form-stack"
-          hx-post="/library"
-          hx-target="#library-form-container"
-          hx-swap="outerHTML">
+    <form action="/library" method="post" class="form-stack">
       <div class="form-field">
         <label for="book_id">Book ID</label>
-        <input id="book_id" name="book_id" type="number" required />
+        <input id="book_id" name="book_id" type="number" required min="1"
+               placeholder="Enter a valid book ID"
+               hx-get="/library/validate-book"
+               hx-trigger="change, blur"
+               hx-target="#book-id-validation"
+               hx-indicator="#book-id-loading" />
+        <div id="book-id-validation" class="form-validation"></div>
+        <small class="form-hint">Enter the ID of an existing book from your collection</small>
+        <span id="book-id-loading" class="htmx-indicator">Validating...</span>
       </div>
 
       <div class="form-field">
         <label for="status">Status</label>
         <select id="status" name="status" required>
+          <option value="" disabled selected>Select a status</option>
           <option value="want_to_read">Want to Read</option>
           <option value="reading">Reading</option>
           <option value="completed">Completed</option>
@@ -30,14 +36,10 @@
       </div>
 
       <div class="cluster">
-        <button type="submit" class="button button--solid"
-                hx-indicator="#loading-indicator-library-form">
+        <button type="submit" class="button button--solid">
           Add to Library
         </button>
-        <a href="/library" class="button button--ghost">Cancel</a>
-        <span id="loading-indicator-library-form" class="htmx-indicator">
-          Adding...
-        </span>
+        <a href="/library" class="button button--back">← Back to Library</a>
       </div>
     </form>
   </div>

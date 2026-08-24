@@ -54,6 +54,41 @@ export async function getAllBooks(req, res, next) {
 }
 
 /**
+ * Returns a single book card HTML for HTMX refresh.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function getBookCard(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const book = await bs.getBookById(id);
+
+    if (!book) {
+      return bookNotFound(req, id, res);
+    }
+
+    // Check if book is already in library
+    const inLibrary = await ls.isBookInLibrary(book.book_id);
+
+    res.render("partials/book-card", {
+      book: {
+        ...book,
+        in_library: inLibrary === true,
+      },
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving book card with ID ${id}.`,
+    );
+  }
+}
+
+/**
  * Retrieves a book by its ID and renders the book details page.
  *
  * @param {Object} req - The HTTP request object.

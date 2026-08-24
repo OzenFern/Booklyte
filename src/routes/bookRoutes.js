@@ -8,6 +8,7 @@ import express from "express";
 import {
   getAllBooks,
   getBookById,
+  getBookCard,
   showCreateBookForm,
   createBook,
   showEditBookForm,
@@ -49,6 +50,12 @@ router.post("/", createBook);
  * Display a single book.
  */
 router.get("/:id", getBookById);
+
+/**
+ * GET /books/:id/card
+ * Get a single book card for HTMX refresh.
+ */
+router.get("/:id/card", getBookCard);
 
 /**
  * GET /books/:id/edit

@@ -9,27 +9,38 @@
 </section>
 
 <section class="form-panel">
-  <form action="/library" method="post" class="form-stack">
-    <div class="form-field">
-      <label for="book_id">Book ID</label>
-      <input id="book_id" name="book_id" type="number" required />
-    </div>
+  <div id="library-form-container">
+    <form action="/library" method="post" class="form-stack"
+          hx-post="/library"
+          hx-target="#library-form-container"
+          hx-swap="outerHTML">
+      <div class="form-field">
+        <label for="book_id">Book ID</label>
+        <input id="book_id" name="book_id" type="number" required />
+      </div>
 
-    <div class="form-field">
-      <label for="status">Status</label>
-      <select id="status" name="status" required>
-        <option value="want_to_read">Want to Read</option>
-        <option value="reading">Reading</option>
-        <option value="completed">Completed</option>
-        <option value="dropped">Dropped</option>
-      </select>
-    </div>
+      <div class="form-field">
+        <label for="status">Status</label>
+        <select id="status" name="status" required>
+          <option value="want_to_read">Want to Read</option>
+          <option value="reading">Reading</option>
+          <option value="completed">Completed</option>
+          <option value="dropped">Dropped</option>
+        </select>
+      </div>
 
-    <div class="cluster">
-      <button type="submit" class="button button--solid">Add to Library</button>
-      <a href="/library" class="button button--ghost">Cancel</a>
-    </div>
-  </form>
+      <div class="cluster">
+        <button type="submit" class="button button--solid"
+                hx-indicator="#loading-indicator-library-form">
+          Add to Library
+        </button>
+        <a href="/library" class="button button--ghost">Cancel</a>
+        <span id="loading-indicator-library-form" class="htmx-indicator">
+          Adding...
+        </span>
+      </div>
+    </form>
+  </div>
 </section>
 
 <%- include("../partials/layout-end") %>

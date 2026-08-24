@@ -41,11 +41,27 @@
       <a class="button button--ghost" href="/books/<%= sourceBook.book_id %>">
         Read details
       </a>
-      <form action="/library" method="post" class="book-card__library-form">
-        <input type="hidden" name="book_id" value="<%= sourceBook.book_id %>" />
-        <input type="hidden" name="status" value="want_to_read" />
-        <button type="submit" class="button button--solid">Add to Library</button>
-      </form>
+      <% if (sourceBook.in_library) { %>
+        <a class="button button--solid button--disabled" href="/library" disabled>
+          In Library
+        </a>
+      <% } else { %>
+        <form action="/library" method="post" class="book-card__library-form"
+              hx-post="/library"
+              hx-target="closest .book-card__actions"
+              hx-swap="outerHTML">
+          <input type="hidden" name="book_id" value="<%= sourceBook.book_id %>" />
+          <input type="hidden" name="status" value="want_to_read" />
+          <button type="submit" class="button button--solid"
+                  data-loading-text="Adding..."
+                  hx-indicator="#loading-indicator-<%= sourceBook.book_id %>">
+            Add to Library
+          </button>
+          <span id="loading-indicator-<%= sourceBook.book_id %>" class="htmx-indicator">
+            Adding...
+          </span>
+        </form>
+      <% } %>
     </div>
   </div>
 </article>

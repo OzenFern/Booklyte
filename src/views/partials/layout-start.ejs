@@ -16,6 +16,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/main.css" />
+    <script>
+      const savedTheme = localStorage.getItem('booklyte-theme');
+      const theme = savedTheme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.dataset.theme = theme;
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
     <script type="module" src="/js/main.js"></script>
   </head>
@@ -26,7 +31,12 @@
     <header class="site-header">
       <div class="container site-header__inner">
         <a class="site-logo" href="/">Booklyte</a>
-        <%- include("navigation", { currentPath: typeof currentPath !== 'undefined' ? currentPath : '' }) %>
+        <div class="site-header__controls">
+          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" aria-pressed="true">
+            <span class="theme-toggle__icon" aria-hidden="true">☾</span>
+          </button>
+          <%- include("navigation", { currentPath: typeof currentPath !== 'undefined' ? currentPath : '' }) %>
+        </div>
       </div>
     </header>
 

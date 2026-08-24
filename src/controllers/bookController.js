@@ -7,6 +7,7 @@
  */
 
 import * as bs from "../services/bookService.js";
+import * as ls from "../services/libraryService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
@@ -32,9 +33,20 @@ export async function getAllBooks(req, res, next) {
   try {
     const books = await bs.getAllBooks();
 
+    // Check library status for each book
+    const booksWithLibraryStatus = await Promise.all(
+      books.map(async (book) => {
+        const inLibrary = await ls.isBookInLibrary(book.book_id);
+        return {
+          ...book,
+          in_library: inLibrary === true, // Handle both boolean and error object
+        };
+      })
+    );
+
     res.render("books/index", {
       title: "My Books",
-      books,
+      books: booksWithLibraryStatus,
     });
   } catch (error) {
     handleControllerError(error, req, next, "Error retrieving books.");
@@ -58,9 +70,15 @@ export async function getBookById(req, res, next) {
       return bookNotFound(req, id, res);
     }
 
+    // Check if book is already in library
+    const inLibrary = await ls.isBookInLibrary(book.book_id);
+
     res.render("books/show", {
       title: book.title,
-      book,
+      book: {
+        ...book,
+        in_library: inLibrary === true,
+      },
     });
   } catch (error) {
     handleControllerError(

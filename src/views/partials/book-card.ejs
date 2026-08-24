@@ -16,7 +16,11 @@
     : "Unknown author";
 %>
 
-<article class="book-card">
+<article class="book-card"
+         hx-get="/books/<%= sourceBook.book_id %>/card"
+         hx-trigger="refreshBookCards from:body"
+         hx-swap="outerHTML"
+         hx-target="this">
   <a class="book-card__cover-link" href="/books/<%= sourceBook.book_id %>">
     <img
       class="book-card__cover"

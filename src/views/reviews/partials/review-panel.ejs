@@ -2,25 +2,39 @@
   const hasReview = !!review;
   const ratingValue = hasReview ? Number(review.rating || 0) : 0;
   const roundedRating = Math.round(ratingValue);
+  const isEditing = typeof editMode !== "undefined" && editMode === true;
 %>
 
-<% if (hasReview) { %>
+<% if (hasReview && !isEditing) { %>
   <article class="review-display">
-    <h2>Current Review</h2>
+    <div class="review-display__header">
+      <h2>Current Review</h2>
+      <button
+        class="button button--ghost"
+        hx-get="/library/books/<%= libraryBookId %>/review?edit=true"
+        hx-target="#review-panel"
+        hx-swap="innerHTML"
+      >
+        Edit
+      </button>
+    </div>
     <p class="rating" aria-label="<%= ratingValue %> out of 5 stars">
       <span aria-hidden="true">
         <% for (let i = 1; i <= 5; i += 1) { %>
           <span class="<%= i <= roundedRating ? 'star is-filled' : 'star' %>">★</span>
         <% } %>
       </span>
-      <span class="rating__text"><%= ratingValue %> / 5</span>
     </p>
     <p class="review-display__text"><%= review.review_text || "No review text." %></p>
   </article>
 <% } %>
 
+<% if (!hasReview || isEditing) { %>
 <section class="review-form-panel">
-  <h3><%= hasReview ? "Edit Review" : "Create Review" %></h3>
+  <h3><%= hasReview ? "Edit Review" : "Share your thoughts" %></h3>
+  <% if (!hasReview) { %>
+    <p class="review-form-panel__empty">No review has been added yet. Leave a rating and a note for your future self.</p>
+  <% } %>
   <% if (hasReview) { %>
     <form
       action="/library/books/<%= libraryBookId %>/review"
@@ -29,6 +43,7 @@
       hx-patch="/library/books/<%= libraryBookId %>/review"
       hx-target="#review-panel"
       hx-swap="innerHTML"
+      hx-validate="true"
     >
   <% } else { %>
     <form
@@ -38,25 +53,34 @@
       hx-post="/library/books/<%= libraryBookId %>/review"
       hx-target="#review-panel"
       hx-swap="innerHTML"
+      hx-validate="true"
     >
   <% } %>
     <div class="form-field">
-      <label for="rating">Rating</label>
-      <input
-        id="rating"
-        name="rating"
-        type="number"
-        min="0"
-        max="5"
-        step="0.5"
-        required
-        value="<%= hasReview ? review.rating : '' %>"
-      />
+      <fieldset class="rating-input">
+        <legend>Rating</legend>
+        <p class="form-hint">Select a rating from one to five stars.</p>
+        <div class="rating-input__stars">
+          <% for (let i = 5; i >= 1; i -= 1) { %>
+            <input
+              id="rating-<%= i %>"
+              name="rating"
+              type="radio"
+              value="<%= i %>"
+              <%= ratingValue === i ? "checked" : "" %>
+              required
+            />
+            <label for="rating-<%= i %>" title="<%= i %> out of 5 stars">
+              <span class="visually-hidden"><%= i %> out of 5 stars</span>★
+            </label>
+          <% } %>
+        </div>
+      </fieldset>
     </div>
 
     <div class="form-field">
       <label for="review_text">Review</label>
-      <textarea id="review_text" name="review_text" rows="5"><%= hasReview ? review.review_text : '' %></textarea>
+      <textarea id="review_text" name="review_text" rows="5" required minlength="3"><%= hasReview ? review.review_text : '' %></textarea>
     </div>
 
     <div class="cluster">
@@ -74,7 +98,17 @@
         >
           Delete Review
         </button>
+        <button
+          class="button button--ghost"
+          type="button"
+          hx-get="/library/books/<%= libraryBookId %>/review"
+          hx-target="#review-panel"
+          hx-swap="innerHTML"
+        >
+          Cancel
+        </button>
       <% } %>
     </div>
     </form>
 </section>
+<% } %>

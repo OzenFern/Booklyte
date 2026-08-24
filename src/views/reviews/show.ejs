@@ -4,11 +4,13 @@
   <p class="page-intro__kicker">Review</p>
   <h1>Library Book Review</h1>
   <p class="page-intro__lead">Add or revise your notes for this library entry.</p>
-  <a href="/library/<%= libraryBookId %>" class="text-link">Back to library book</a>
+  <div class="page-intro__actions">
+    <a href="/library/<%= libraryBookId %>" class="button button--back">← Back to Library</a>
+  </div>
 </section>
 
 <section id="review-panel" class="review-panel">
-  <%- include("partials/review-panel", { review, libraryBookId }) %>
+  <%- include("partials/review-panel", { review, libraryBookId, editMode: typeof editMode !== "undefined" && editMode === true }) %>
 </section>
 
 <%- include("../partials/layout-end") %>

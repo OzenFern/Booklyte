@@ -14,6 +14,7 @@ import {
   showEditLibraryBookForm,
   putLibraryBook,
   patchLibraryBook,
+  validateBookId,
 } from "../controllers/libraryController.js";
 
 const router = express.Router();
@@ -35,6 +36,12 @@ router.get("/new", displayNewLibraryBook);
  * Add a book to the library.
  */
 router.post("/", addBookToLibrary);
+
+/**
+ * GET /library/validate-book
+ * Validate a book ID for the library form.
+ */
+router.get("/validate-book", validateBookId);
 
 /**
  * GET /library/:id

@@ -33,9 +33,9 @@ export async function isBookInLibrary(bookId) {
  * Retrieves all library books from the database.
  * @returns {Promise<Array | Object>} A promise that resolves to an array of library book objects or an error object if not found.
  */
-export async function getAllLibraryBooks() {
+export async function getAllLibraryBooks(searchQuery = "") {
   try {
-    return await lr.getLibraryBooks();
+    return await lr.getLibraryBooks(searchQuery);
   } catch (error) {
     return handleServiceError(error, "Failed to fetch library books.");
   }

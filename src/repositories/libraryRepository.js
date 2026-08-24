@@ -11,7 +11,8 @@ import { destructureAndValidate } from "../utils/validationHandler.js";
  * Uses a SQL query to join the library_books, books, book_authors, and authors tables to get the necessary information.
  * @returns {Promise<Array>} A promise that resolves to an array of library book objects.
  */
-export async function getLibraryBooks() {
+export async function getLibraryBooks(searchQuery = "") {
+  const searchTerm = `%${searchQuery.trim()}%`;
   const query = `SELECT
                        lb.library_book_id,
                        lb.status,
@@ -39,13 +40,23 @@ export async function getLibraryBooks() {
                             LEFT JOIN authors a
                                       ON ba.author_id = a.author_id
 
+                   WHERE b.title ILIKE $1
+                      OR EXISTS (
+                          SELECT 1
+                          FROM book_authors search_ba
+                          JOIN authors search_author
+                            ON search_author.author_id = search_ba.author_id
+                          WHERE search_ba.book_id = b.book_id
+                            AND search_author.name ILIKE $1
+                      )
+
                    GROUP BY
                        lb.library_book_id,
                        lb.status,
                        b.book_id,
                        b.title`;
 
-  const { rows } = await pool.query(query);
+  const { rows } = await pool.query(query, [searchTerm]);
   return rows;
 }
 

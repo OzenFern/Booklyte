@@ -55,6 +55,7 @@ function handleServiceErrorResponse(id, serviceResponse, req, res) {
  */
 export async function getReviewByLibraryBookId(req, res, next) {
   const { id } = req.params;
+  const editMode = req.query?.edit === 'true';
 
   try {
     const review = await rs.getReviewByLibraryBookId(id);
@@ -67,6 +68,7 @@ export async function getReviewByLibraryBookId(req, res, next) {
       return res.render("reviews/partials/review-panel", {
         review: review ?? null,
         libraryBookId: id,
+        ...(editMode ? { editMode } : {}),
       });
     }
 
@@ -74,6 +76,7 @@ export async function getReviewByLibraryBookId(req, res, next) {
       title: "Review",
       review: review ?? null,
       libraryBookId: id,
+      ...(editMode ? { editMode } : {}),
     });
   } catch (error) {
     handleControllerError(
@@ -104,7 +107,7 @@ export async function createReview(req, res, next) {
   try {
     const reviewData = {
       library_book_id: parseInt(id),
-      rating: req.body.rating,
+      rating: Number(req.body.rating),
       review_text: req.body.review_text,
     };
 
@@ -158,7 +161,7 @@ export async function updateReview(req, res, next) {
 
     // Update the review using the review_id
     const reviewData = {
-      rating: req.body.rating,
+      rating: Number(req.body.rating),
       review_text: req.body.review_text,
     };
 

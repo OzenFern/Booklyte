@@ -50,6 +50,17 @@ export async function getLibraryBooks() {
 }
 
 /**
+ * Checks if a book is already in the library.
+ * @param {number} bookId - The ID of the book to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if the book is in the library, false otherwise.
+ */
+export async function isBookInLibrary(bookId) {
+  const query = "SELECT 1 FROM library_books WHERE book_id = $1 LIMIT 1";
+  const { rows } = await pool.query(query, [bookId]);
+  return rows.length > 0;
+}
+
+/**
  * Retrieves a library book by its ID from the database.
  * @param {number} id - The ID of the library book to retrieve.
  * @returns {Promise<Object|null>} A promise that resolves to the library book object if found, or null if not found.

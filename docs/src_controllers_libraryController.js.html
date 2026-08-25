@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/controllers/libraryController.js</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link type="text/css" rel="stylesheet" href="styles/base.min.css">
+</head>
+
+<body class="body">
+
+    <div class="container">
+
+        <nav class="sidenav">
+            <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-authorRepository.html">authorRepository</a></li><li><a href="module-bookController.html">bookController</a></li><li><a href="module-bookRepository.html">bookRepository</a></li><li><a href="module-bookRoutes.html">bookRoutes</a></li><li><a href="module-bookService.html">bookService</a></li><li><a href="module-db_pool.html">db/pool</a></li><li><a href="module-env.html">env</a></li><li><a href="module-errorHandler.html">errorHandler</a></li><li><a href="module-libraryController.html">libraryController</a></li><li><a href="module-libraryRepository.html">libraryRepository</a></li><li><a href="module-libraryRoutes.html">libraryRoutes</a></li><li><a href="module-libraryService.html">libraryService</a></li><li><a href="module-middlewares.html">middlewares</a></li><li><a href="module-middlewares_cache.html">middlewares/cache</a></li><li><a href="module-middlewares_errorHandler.html">middlewares/errorHandler</a></li><li><a href="module-middlewares_notFound.html">middlewares/notFound</a></li><li><a href="module-openLibraryClient.html">openLibraryClient</a></li><li><a href="module-openLibraryService.html">openLibraryService</a></li><li><a href="module-page.html">page</a></li><li><a href="module-pageController.html">pageController</a></li><li><a href="module-reviewController.html">reviewController</a></li><li><a href="module-reviewRepository.html">reviewRepository</a></li><li><a href="module-reviewService.html">reviewService</a></li><li><a href="module-reviewsRoutes.html">reviewsRoutes</a></li><li><a href="module-routes.html">routes</a></li><li><a href="module-server.html">server</a></li><li><a href="module-validationHandler.html">validationHandler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#formatPublishedDate">formatPublishedDate</a></li><li><a href="global.html#initFlashMessages">initFlashMessages</a></li><li><a href="global.html#initFormValidation">initFormValidation</a></li><li><a href="global.html#initHtmxFeedback">initHtmxFeedback</a></li><li><a href="global.html#initHtmxRedirect">initHtmxRedirect</a></li><li><a href="global.html#initImageFallback">initImageFallback</a></li><li><a href="global.html#initLibrarySearch">initLibrarySearch</a></li><li><a href="global.html#initMobileNavigation">initMobileNavigation</a></li><li><a href="global.html#initThemeToggle">initThemeToggle</a></li></ul>
+        </nav>
+
+        <main id="main" class="main">
+            <div id="content" class="content">
+                <h1 class="page-title">Source: src/controllers/libraryController.js</h1>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Controller for handling library-related operations.
+ * Interfaces with HTTP requests and responses and uses the libraryService
+ * to perform operations on library books.
+ *
+ * @module libraryController
+ */
+
+import * as ls from "../services/libraryService.js";
+import * as bs from "../services/bookService.js";
+import { handleControllerError } from "../utils/errorHandler.js";
+
+/**
+ * Handles the case when a library book is not found.
+ * @param req - The HTTP request object.
+ * @param id - The ID of the library book that was not found.
+ * @param res - The HTTP response object.
+ * @returns {*} Redirects to the library index page with an error flash message.
+ */
+function libraryBookNotFound(req, id, res) {
+  req.flash("error", `Library book with ID ${id} not found.`);
+  return res.redirect("/library");
+}
+
+/**
+ * Retrieves all library books and renders the library index page.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function getAllLibraryBooks(req, res, next) {
+  try {
+    const searchQuery = String(req.query?.q || "").trim();
+    const libraryBooks = await ls.getAllLibraryBooks(searchQuery);
+
+    res.render("library/index", {
+      title: "My Library",
+      libraryBooks,
+      ...(searchQuery ? { searchQuery } : {}),
+    });
+  } catch (error) {
+    handleControllerError(error, req, next, "Error retrieving library books.");
+  }
+}
+
+/**
+ * Retrieves a library book by its ID and renders the library book details page.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function getLibraryBookById(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const libraryBook = await ls.getLibraryBookById(id);
+
+    if (!libraryBook) {
+      return libraryBookNotFound(req, id, res);
+    }
+
+    res.render("library/show", {
+      title: libraryBook.title,
+      libraryBook,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving library book with ID ${id}.`,
+    );
+  }
+}
+
+/**
+ * Adds a book to the library and redirects to the library index page.
+ * Expects req.body to contain:
+ * {
+ *   book_id: number,
+ *   status: string
+ * }
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function addBookToLibrary(req, res, next) {
+  try {
+    const { book_id, status, source } = req.body;
+    const result = await ls.addBookToLibrary(book_id, status);
+    const isHtmxRequest = Boolean(req.get?.("HX-Request"));
+
+    // Check if the result is an error object
+    if (!result.success &amp;&amp; result.success !== undefined) {
+      if (isHtmxRequest) {
+        res.status(400).render("partials/htmx-error", {
+          error: result.message || result.error,
+        });
+      } else {
+        req.flash("error", result.message || result.error);
+        return res.redirect("back");
+      }
+      return;
+    }
+
+    if (isHtmxRequest) {
+      // Check the HX-Current-URL header to determine which page the request came from
+      const currentUrl = req.get("HX-Current-URL") || "";
+      const isFromLibraryForm = source === "manual-library-form";
+      const isFromDetailPage =
+        currentUrl.includes("/books/") &amp;&amp; status &amp;&amp; status !== "want_to_read";
+
+      // Set header to trigger refresh of book cards
+      res.setHeader("HX-Trigger", "refreshBookCards");
+
+      if (isFromLibraryForm) {
+        // From library new form page
+        res.render("partials/library-form-success", {
+          library_book_id: result.library_book_id,
+        });
+      } else if (isFromDetailPage) {
+        // From book detail page
+        res.render("partials/book-detail-actions", {
+          book: { book_id: result.book_id, in_library: true },
+        });
+      } else {
+        // From book card
+        res.render("partials/book-card-actions", {
+          book: { book_id: result.book_id, in_library: true },
+        });
+      }
+    } else {
+      req.flash("success", "Book added to library successfully.");
+      res.redirect(`/library/${result.library_book_id}`);
+    }
+  } catch (error) {
+    if (req.get?.("HX-Request")) {
+      res.status(500).render("partials/htmx-error", {
+        error: "Failed to add book to library. Please try again.",
+      });
+    } else {
+      handleControllerError(error, req, next, "Error adding book to library.");
+    }
+  }
+}
+
+/**
+ * Renders the form for editing an existing library book.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function showEditLibraryBookForm(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const libraryBook = await ls.getLibraryBookById(id);
+
+    if (!libraryBook) {
+      return libraryBookNotFound(req, id, res);
+    }
+
+    res.render("library/edit", {
+      title: `Edit ${libraryBook.title}`,
+      libraryBook,
+    });
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error retrieving library book with ID ${id}.`,
+    );
+  }
+}
+
+/**
+ * Completely updates a library book and redirects to its details page.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function putLibraryBook(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const updatedLibraryBook = await ls.updateLibraryBook(id, req.body, false);
+
+    if (!updatedLibraryBook) {
+      return libraryBookNotFound(req, id, res);
+    }
+
+    req.flash("success", "Library book updated successfully.");
+
+    res.redirect(`/library/${updatedLibraryBook.library_book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error updating library book with ID ${id}.`,
+    );
+  }
+}
+
+/**
+ * Partially updates a library book and redirects to its details page.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function patchLibraryBook(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const updatedLibraryBook = await ls.updateLibraryBook(id, req.body);
+
+    if (!updatedLibraryBook) {
+      return libraryBookNotFound(req, id, res);
+    }
+
+    if (req.get?.("HX-Request")) {
+      const libraryBook = await ls.getLibraryBookById(
+        updatedLibraryBook.library_book_id,
+      );
+      return res.render("library/partials/book-row", { libraryBook });
+    }
+
+    req.flash("success", "Library book updated successfully.");
+
+    res.redirect(`/library/${updatedLibraryBook.library_book_id}`);
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error partially updating library book with ID ${id}.`,
+    );
+  }
+}
+
+/**
+ * Removes a book from the library and redirects to the library index page.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - Express middleware function used to pass errors.
+ */
+export async function removeBookFromLibrary(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const deletedLibraryBook = await ls.removeBookFromLibrary(id);
+
+    if (req.get("HX-Request")) {
+      if (!deletedLibraryBook) {
+        return libraryBookNotFound(req, id, res);
+      }
+
+      // Set header to trigger refresh of book cards
+      res.setHeader("HX-Trigger", "refreshBookCards");
+
+      return res.status(200).send("");
+    }
+
+    req.flash("success", "Book removed from library successfully.");
+
+    res.redirect("/library");
+  } catch (error) {
+    handleControllerError(
+      error,
+      req,
+      next,
+      `Error removing library book with ID ${id}.`,
+    );
+  }
+}
+
+/**
+ * Renders the form for adding a new book to the library.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
+export function displayNewLibraryBook(req, res) {
+  res.render("library/new", {
+    title: "Add Book to Library",
+  });
+}
+
+/**
+ * Validates if a book ID exists in the database.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
+export async function validateBookId(req, res) {
+  const { book_id } = req.query;
+
+  try {
+    if (!book_id || isNaN(book_id)) {
+      return res.send(
+        `&lt;span class="form-validation__error">Please enter a valid book ID&lt;/span>`,
+      );
+    }
+
+    const bookId = parseInt(book_id);
+    const inLibrary = await ls.isBookInLibrary(bookId);
+
+    if (inLibrary === true) {
+      return res.send(
+        `&lt;span class="form-validation__error">This book is already in your library&lt;/span>`,
+      );
+    }
+
+    if (inLibrary &amp;&amp; !inLibrary.success) {
+      return res.send(
+        `&lt;span class="form-validation__error">Error validating book ID&lt;/span>`,
+      );
+    }
+
+    // Check if book exists in books table
+    const book = await bs.getBookById(bookId);
+
+    if (!book) {
+      return res.send(
+        `&lt;span class="form-validation__error">Book with ID ${bookId} not found&lt;/span>`,
+      );
+    }
+
+    res.send(
+      `&lt;span class="form-validation__success">✓ Book found: ${book.title}&lt;/span>`,
+    );
+  } catch {
+    res.send(
+      `&lt;span class="form-validation__error">Error validating book ID&lt;/span>`,
+    );
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+
+            <div class="toc">
+                <h2>Table of contents</h2>
+                <div class="toc-nav"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script >
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.prettyprint.linenums code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+                hljs.lineNumbersBlock(el);
+            });
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+            });
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js"></script>
+    <script>
+        tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc-nav',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.main article',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1.name, h2.name, h3.name, h4.name',
+        headingLabelCallback: (string) => string
+    });
+    </script>
+</body>
+</html>

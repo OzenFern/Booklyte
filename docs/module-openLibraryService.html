@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: openLibraryService</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link type="text/css" rel="stylesheet" href="styles/base.min.css">
+</head>
+
+<body class="body">
+
+    <div class="container">
+
+        <nav class="sidenav">
+            <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-authorRepository.html">authorRepository</a></li><li><a href="module-bookController.html">bookController</a></li><li><a href="module-bookRepository.html">bookRepository</a></li><li><a href="module-bookRoutes.html">bookRoutes</a></li><li><a href="module-bookService.html">bookService</a></li><li><a href="module-db_pool.html">db/pool</a></li><li><a href="module-env.html">env</a></li><li><a href="module-errorHandler.html">errorHandler</a></li><li><a href="module-libraryController.html">libraryController</a></li><li><a href="module-libraryRepository.html">libraryRepository</a></li><li><a href="module-libraryRoutes.html">libraryRoutes</a></li><li><a href="module-libraryService.html">libraryService</a></li><li><a href="module-middlewares.html">middlewares</a></li><li><a href="module-middlewares_cache.html">middlewares/cache</a></li><li><a href="module-middlewares_errorHandler.html">middlewares/errorHandler</a></li><li><a href="module-middlewares_notFound.html">middlewares/notFound</a></li><li><a href="module-openLibraryClient.html">openLibraryClient</a></li><li><a href="module-openLibraryService.html">openLibraryService</a></li><li><a href="module-page.html">page</a></li><li><a href="module-pageController.html">pageController</a></li><li><a href="module-reviewController.html">reviewController</a></li><li><a href="module-reviewRepository.html">reviewRepository</a></li><li><a href="module-reviewService.html">reviewService</a></li><li><a href="module-reviewsRoutes.html">reviewsRoutes</a></li><li><a href="module-routes.html">routes</a></li><li><a href="module-server.html">server</a></li><li><a href="module-validationHandler.html">validationHandler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#formatPublishedDate">formatPublishedDate</a></li><li><a href="global.html#initFlashMessages">initFlashMessages</a></li><li><a href="global.html#initFormValidation">initFormValidation</a></li><li><a href="global.html#initHtmxFeedback">initHtmxFeedback</a></li><li><a href="global.html#initHtmxRedirect">initHtmxRedirect</a></li><li><a href="global.html#initImageFallback">initImageFallback</a></li><li><a href="global.html#initLibrarySearch">initLibrarySearch</a></li><li><a href="global.html#initMobileNavigation">initMobileNavigation</a></li><li><a href="global.html#initThemeToggle">initThemeToggle</a></li></ul>
+        </nav>
+
+        <main id="main" class="main">
+            <div id="content" class="content">
+                <h1 class="page-title">Module: openLibraryService</h1>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">This module provides functions to interact with the Open Library API.
+It includes methods for searching books and retrieving detailed information about works.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_integrations_openLibrary_openLibraryService.js.html">src/integrations/openLibrary/openLibraryService.js</a>, <a href="src_integrations_openLibrary_openLibraryService.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getWorkDetails" data-heading-label=".getWorkDetails" ><span class="type-signature">(static) </span>getWorkDetails<span class="signature">(openLibraryId)</span><span class="type-signature"> &rarr; {Promise.&lt;{openlibrary_id: (string|null), title: (string|null), description: (string|null), cover_url: (string|null), published_date: (string|null), authors: Array.&lt;{openlibrary_id: (string|null), name: (string|null)}>}>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retrieves detailed information about a specific work including author details.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="responsive-table">
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>openLibraryId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Open Library work ID or key.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_integrations_openLibrary_openLibraryService.js.html">src/integrations/openLibrary/openLibraryService.js</a>, <a href="src_integrations_openLibrary_openLibraryService.js.html#line61">line 61</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the work is not found or the API request fails.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The normalized work details with authors.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;{openlibrary_id: (string|null), title: (string|null), description: (string|null), cover_url: (string|null), published_date: (string|null), authors: Array.&lt;{openlibrary_id: (string|null), name: (string|null)}>}></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".searchExternalBooks" data-heading-label=".searchExternalBooks" ><span class="type-signature">(static) </span>searchExternalBooks<span class="signature">(query, limit)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Searches for books in the Open Library database and normalizes the response.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<div class="responsive-table">
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>query</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The search query string.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Maximum number of results to return.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</div>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_integrations_openLibrary_openLibraryService.js.html">src/integrations/openLibrary/openLibraryService.js</a>, <a href="src_integrations_openLibrary_openLibraryService.js.html#line30">line 30</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the API request fails.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Each object in the array contains the following fields:
+  - `openlibrary_id`: The normalized Open Library ID of the book.
+  - `title`: The title of the book.
+  - `description`: A brief description or subtitle of the book.
+  - `cover_url`: URL to the book's cover image, if available.
+  - `published_date`: The year the book was first published, as a string.
+  - `authors`: An array of author objects, each containing:
+  - `openlibrary_id`: The normalized Open Library ID of the author.
+   - `name`: The name of the author.
+  Array of normalized book objects with standard fields.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array.&lt;Object>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+
+            <div class="toc">
+                <h2>Table of contents</h2>
+                <div class="toc-nav"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script >
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.prettyprint.linenums code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+                hljs.lineNumbersBlock(el);
+            });
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+            });
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js"></script>
+    <script>
+        tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc-nav',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.main article',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1.name, h2.name, h3.name, h4.name',
+        headingLabelCallback: (string) => string
+    });
+    </script>
+</body>
+</html>

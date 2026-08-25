@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/integrations/openLibrary/openLibraryClient.js</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link type="text/css" rel="stylesheet" href="styles/base.min.css">
+</head>
+
+<body class="body">
+
+    <div class="container">
+
+        <nav class="sidenav">
+            <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-authorRepository.html">authorRepository</a></li><li><a href="module-bookController.html">bookController</a></li><li><a href="module-bookRepository.html">bookRepository</a></li><li><a href="module-bookRoutes.html">bookRoutes</a></li><li><a href="module-bookService.html">bookService</a></li><li><a href="module-db_pool.html">db/pool</a></li><li><a href="module-env.html">env</a></li><li><a href="module-errorHandler.html">errorHandler</a></li><li><a href="module-libraryController.html">libraryController</a></li><li><a href="module-libraryRepository.html">libraryRepository</a></li><li><a href="module-libraryRoutes.html">libraryRoutes</a></li><li><a href="module-libraryService.html">libraryService</a></li><li><a href="module-middlewares.html">middlewares</a></li><li><a href="module-middlewares_cache.html">middlewares/cache</a></li><li><a href="module-middlewares_errorHandler.html">middlewares/errorHandler</a></li><li><a href="module-middlewares_notFound.html">middlewares/notFound</a></li><li><a href="module-openLibraryClient.html">openLibraryClient</a></li><li><a href="module-openLibraryService.html">openLibraryService</a></li><li><a href="module-page.html">page</a></li><li><a href="module-pageController.html">pageController</a></li><li><a href="module-reviewController.html">reviewController</a></li><li><a href="module-reviewRepository.html">reviewRepository</a></li><li><a href="module-reviewService.html">reviewService</a></li><li><a href="module-reviewsRoutes.html">reviewsRoutes</a></li><li><a href="module-routes.html">routes</a></li><li><a href="module-server.html">server</a></li><li><a href="module-validationHandler.html">validationHandler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#formatPublishedDate">formatPublishedDate</a></li><li><a href="global.html#initFlashMessages">initFlashMessages</a></li><li><a href="global.html#initFormValidation">initFormValidation</a></li><li><a href="global.html#initHtmxFeedback">initHtmxFeedback</a></li><li><a href="global.html#initHtmxRedirect">initHtmxRedirect</a></li><li><a href="global.html#initImageFallback">initImageFallback</a></li><li><a href="global.html#initLibrarySearch">initLibrarySearch</a></li><li><a href="global.html#initMobileNavigation">initMobileNavigation</a></li><li><a href="global.html#initThemeToggle">initThemeToggle</a></li></ul>
+        </nav>
+
+        <main id="main" class="main">
+            <div id="content" class="content">
+                <h1 class="page-title">Source: src/integrations/openLibrary/openLibraryClient.js</h1>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Open Library API Client
+ * Provides methods to interact with the Open Library API for searching books,
+ * retrieving work and author details, and constructing cover image URLs.
+ * @module openLibraryClient
+ */
+import axios from "axios";
+import { normalizeId } from "../../utils/validationHandler.js";
+
+/**
+ * Axios client configured for Open Library API.
+ * @constant {Object}
+ */
+const client = axios.create({
+  baseURL: "https://openlibrary.org",
+  timeout: 10000,
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+// Interceptor to handle errors from Open Library API responses.
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("Open Library API Error:", error);
+    throw new Error("Failed to fetch data from Open Library");
+  },
+);
+
+/**
+ * Searches for books in the Open Library database.
+ *
+ * @param {string} query - The search query string.
+ * @param {number} [limit=20] - Maximum number of results to return.
+ * @returns {Promise&lt;{docs: Array}>} The search results containing book documents.
+ * @throws {Error} If the API request fails.
+ */
+export async function searchBooks(query, limit = 20) {
+  const res = await client.get("/search.json", { params: { q: query, limit } });
+  return res.data;
+}
+
+/**
+ * Retrieves detailed information about a specific work from Open Library.
+ *
+ * @param {string|number} openLibraryId - The Open Library work ID or key.
+ * @returns {Promise&lt;Object>} The work details including title, description, covers, and authors.
+ * @throws {Error} If the work is not found or the API request fails.
+ */
+export async function getWork(openLibraryId) {
+  const id = normalizeId(openLibraryId);
+  const res = await client.get(`/works/${id}.json`);
+  return res.data;
+}
+
+/**
+ * Retrieves detailed information about a specific author from Open Library.
+ *
+ * @param {string|number} authorKeyOrId - The Open Library author key or ID.
+ * @returns {Promise&lt;Object>} The author details including name and bio.
+ * @throws {Error} If the author is not found or the API request fails.
+ */
+export async function getAuthor(authorKeyOrId) {
+  const id = normalizeId(authorKeyOrId);
+  const res = await client.get(`/authors/${id}.json`);
+  return res.data;
+}
+
+/**
+ * Builds a cover URL from a cover ID using a template pattern.
+ *
+ * @param {string|number|null|undefined} coverId - The cover ID.
+ * @param {string} [baseUrl="https://covers.openlibrary.org/b/id"] - The base URL for the cover service.
+ * @param {string} [size="L"] - The image size (S, M, or L).
+ * @returns {string|null} The complete cover URL, or null if coverId is invalid.
+ */
+export function buildCoverUrl(
+  coverId,
+  baseUrl = "https://covers.openlibrary.org/b/id",
+  size = "L",
+) {
+  if (!coverId) return null;
+  return `${baseUrl}/${coverId}-${size}.jpg`;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+
+            <div class="toc">
+                <h2>Table of contents</h2>
+                <div class="toc-nav"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script >
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.prettyprint.linenums code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+                hljs.lineNumbersBlock(el);
+            });
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+            });
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js"></script>
+    <script>
+        tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc-nav',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.main article',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1.name, h2.name, h3.name, h4.name',
+        headingLabelCallback: (string) => string
+    });
+    </script>
+</body>
+</html>

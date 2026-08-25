@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link type="text/css" rel="stylesheet" href="styles/base.min.css">
+</head>
+
+<body class="body">
+
+    <div class="container">
+
+        <nav class="sidenav">
+            <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-authorRepository.html">authorRepository</a></li><li><a href="module-bookController.html">bookController</a></li><li><a href="module-bookRepository.html">bookRepository</a></li><li><a href="module-bookRoutes.html">bookRoutes</a></li><li><a href="module-bookService.html">bookService</a></li><li><a href="module-db_pool.html">db/pool</a></li><li><a href="module-env.html">env</a></li><li><a href="module-errorHandler.html">errorHandler</a></li><li><a href="module-libraryController.html">libraryController</a></li><li><a href="module-libraryRepository.html">libraryRepository</a></li><li><a href="module-libraryRoutes.html">libraryRoutes</a></li><li><a href="module-libraryService.html">libraryService</a></li><li><a href="module-middlewares.html">middlewares</a></li><li><a href="module-middlewares_cache.html">middlewares/cache</a></li><li><a href="module-middlewares_errorHandler.html">middlewares/errorHandler</a></li><li><a href="module-middlewares_notFound.html">middlewares/notFound</a></li><li><a href="module-openLibraryClient.html">openLibraryClient</a></li><li><a href="module-openLibraryService.html">openLibraryService</a></li><li><a href="module-page.html">page</a></li><li><a href="module-pageController.html">pageController</a></li><li><a href="module-reviewController.html">reviewController</a></li><li><a href="module-reviewRepository.html">reviewRepository</a></li><li><a href="module-reviewService.html">reviewService</a></li><li><a href="module-reviewsRoutes.html">reviewsRoutes</a></li><li><a href="module-routes.html">routes</a></li><li><a href="module-server.html">server</a></li><li><a href="module-validationHandler.html">validationHandler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#formatPublishedDate">formatPublishedDate</a></li><li><a href="global.html#initFlashMessages">initFlashMessages</a></li><li><a href="global.html#initFormValidation">initFormValidation</a></li><li><a href="global.html#initHtmxFeedback">initHtmxFeedback</a></li><li><a href="global.html#initHtmxRedirect">initHtmxRedirect</a></li><li><a href="global.html#initImageFallback">initImageFallback</a></li><li><a href="global.html#initLibrarySearch">initLibrarySearch</a></li><li><a href="global.html#initMobileNavigation">initMobileNavigation</a></li><li><a href="global.html#initThemeToggle">initThemeToggle</a></li></ul>
+        </nav>
+
+        <main id="main" class="main">
+            <div id="content" class="content">
+                <h1 class="page-title">Home</h1>
+                
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section class="readme">
+        <article><h1>Booklyte</h1>
+<p>A lightweight book tracking application built with Node.js, Express, and PostgreSQL. Booklyte helps you manage your personal library, track reading progress, and discover new books through integration with the Open Library API.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Book Discovery</strong>: Search and import books from the Open Library API</li>
+<li><strong>Personal Library</strong>: Manage your personal book collection with custom statuses</li>
+<li><strong>Reading Progress</strong>: Track books with statuses (Want to Read, Reading, Completed, Dropped)</li>
+<li><strong>Reviews &amp; Ratings</strong>: Add personal reviews and ratings to your library entries</li>
+<li><strong>Modern UI</strong>: Clean, responsive interface built with EJS and HTMX</li>
+<li><strong>Session Management</strong>: Secure session-based authentication</li>
+<li><strong>Comprehensive Documentation</strong>: Auto-generated API documentation from JSDoc comments</li>
+</ul>
+<h2>Tech Stack</h2>
+<h3>Backend</h3>
+<ul>
+<li><strong>Node.js</strong> - JavaScript runtime</li>
+<li><strong>Express</strong> - Web application framework</li>
+<li><strong>PostgreSQL</strong> - Relational database</li>
+<li><strong>EJS</strong> - Template engine for server-side rendering</li>
+<li><strong>HTMX</strong> - Dynamic frontend interactions</li>
+</ul>
+<h3>Security &amp; Performance</h3>
+<ul>
+<li><strong>Helmet</strong> - Security headers</li>
+<li><strong>Compression</strong> - Response compression</li>
+<li><strong>Express Session</strong> - Session management</li>
+<li><strong>Connect Flash</strong> - Flash messages</li>
+</ul>
+<h3>Development Tools</h3>
+<ul>
+<li><strong>Vitest</strong> - Testing framework</li>
+<li><strong>ESLint</strong> - Code linting</li>
+<li><strong>Prettier</strong> - Code formatting</li>
+<li><strong>JSDoc</strong> - Documentation generation</li>
+</ul>
+<h2>Installation</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Node.js (v18 or higher)</li>
+<li>PostgreSQL (v12 or higher)</li>
+<li>npm or yarn</li>
+</ul>
+<h3>Setup</h3>
+<ol>
+<li>
+<p><strong>Clone the repository</strong></p>
+<pre class="prettyprint source lang-bash"><code>git clone https://github.com/OzenFern/Booklyte.git
+cd Booklyte
+</code></pre>
+</li>
+<li>
+<p><strong>Install dependencies</strong></p>
+<pre class="prettyprint source lang-bash"><code>npm install
+</code></pre>
+</li>
+<li>
+<p><strong>Set up environment variables</strong></p>
+<pre class="prettyprint source lang-bash"><code>cp .env.example .env
+</code></pre>
+<p>Edit <code>.env</code> and configure the following variables:</p>
+<pre class="prettyprint source lang-env"><code># Server
+APP_PORT=3000
+
+# Database
+DB_USER=your_database_user
+DB_HOST=localhost
+DB_NAME=booklyte
+DB_PASSWORD=your_database_password
+DB_PORT=5432
+
+# Session
+SESSION_SECRET=your_session_secret_here
+</code></pre>
+</li>
+<li>
+<p><strong>Set up the database</strong></p>
+<pre class="prettyprint source lang-bash"><code># Create the database
+createdb booklyte
+
+# Run the schema
+psql -U your_user -d booklyte -f sql/schema.sql
+
+# (Optional) Run seed data
+psql -U your_user -d booklyte -f sql/seed.sql
+</code></pre>
+</li>
+<li>
+<p><strong>Start the development server</strong></p>
+<pre class="prettyprint source lang-bash"><code>npm run dev
+</code></pre>
+<p>The application will be available at <code>http://localhost:3000</code></p>
+</li>
+</ol>
+<h2>Usage</h2>
+<h3>Running the Application</h3>
+<ul>
+<li>
+<p><strong>Development mode</strong> (with hot reload):</p>
+<pre class="prettyprint source lang-bash"><code>npm run dev
+</code></pre>
+</li>
+<li>
+<p><strong>Production mode</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm start
+</code></pre>
+</li>
+</ul>
+<h3>Testing</h3>
+<ul>
+<li>
+<p><strong>Run tests in watch mode</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm test
+</code></pre>
+</li>
+<li>
+<p><strong>Run tests once</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run test:run
+</code></pre>
+</li>
+</ul>
+<h3>Code Quality</h3>
+<ul>
+<li>
+<p><strong>Lint code</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run lint
+</code></pre>
+</li>
+<li>
+<p><strong>Fix linting issues</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run lint:fix
+</code></pre>
+</li>
+<li>
+<p><strong>Format code</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run format
+</code></pre>
+</li>
+<li>
+<p><strong>Check formatting</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run format:check
+</code></pre>
+</li>
+</ul>
+<h3>Documentation</h3>
+<ul>
+<li>
+<p><strong>Generate HTML documentation</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run docs
+</code></pre>
+</li>
+<li>
+<p><strong>Generate wiki documentation</strong>:</p>
+<pre class="prettyprint source lang-bash"><code>npm run docs:wiki
+</code></pre>
+</li>
+</ul>
+<h2>Project Structure</h2>
+<pre class="prettyprint source"><code>Booklyte/
+├── src/
+│   ├── controllers/       # Request handlers
+│   │   ├── bookController.js
+│   │   ├── libraryController.js
+│   │   ├── pageController.js
+│   │   └── reviewController.js
+│   ├── services/          # Business logic
+│   │   ├── bookService.js
+│   │   ├── libraryService.js
+│   │   └── reviewService.js
+│   ├── repositories/      # Database access layer
+│   │   ├── authorRepository.js
+│   │   ├── bookRepository.js
+│   │   ├── libraryRepository.js
+│   │   └── reviewRepository.js
+│   ├── routes/           # Route definitions
+│   │   ├── bookRoutes.js
+│   │   ├── libraryRoutes.js
+│   │   ├── pageRoutes.js
+│   │   ├── reviewsRoutes.js
+│   │   └── index.js
+│   ├── middlewares/      # Express middleware
+│   │   ├── cache.js
+│   │   ├── errorHandler.js
+│   │   ├── notFound.js
+│   │   └── index.js
+│   ├── integrations/     # External API integrations
+│   │   └── openLibrary/
+│   │       ├── openLibraryClient.js
+│   │       └── openLibraryService.js
+│   ├── utils/            # Utility functions
+│   │   ├── errorHandler.js
+│   │   └── validationHandler.js
+│   ├── config/           # Configuration files
+│   │   └── env.js
+│   ├── db/               # Database connection
+│   │   └── pool.js
+│   ├── views/            # EJS templates
+│   │   ├── books/
+│   │   ├── library/
+│   │   ├── pages/
+│   │   ├── errors/
+│   │   └── partials/
+│   ├── app.js            # Express app configuration
+│   └── server.js         # Server entry point
+├── public/               # Static assets
+│   ├── css/
+│   │   ├── base/
+│   │   ├── components/
+│   │   ├── layout/
+│   │   └── pages/
+│   └── js/
+│       ├── main.js
+│       └── modules/
+├── scripts/              # Utility scripts
+│   └── sync-wiki.js
+├── sql/                  # Database files
+│   ├── schema.sql
+│   └── seed.sql
+├── tests/                # Test files
+├── docs/                 # Generated JSDoc HTML documentation
+└── .github/              # GitHub workflows
+    └── workflows/
+        └── documentation.yml
+</code></pre>
+<h2>Database Schema</h2>
+<p>The application uses PostgreSQL with the following main tables:</p>
+<ul>
+<li><strong>books</strong> - Book metadata from Open Library</li>
+<li><strong>authors</strong> - Author information</li>
+<li><strong>book_authors</strong> - Many-to-many relationship between books and authors</li>
+<li><strong>library_books</strong> - User's personal library entries with reading status</li>
+<li><strong>reviews</strong> - User reviews and ratings for library entries</li>
+</ul>
+<h3>Reading Status Types</h3>
+<ul>
+<li><code>want_to_read</code> - Books you plan to read</li>
+<li><code>reading</code> - Books currently being read</li>
+<li><code>completed</code> - Books you've finished</li>
+<li><code>dropped</code> - Books you've stopped reading</li>
+</ul>
+<h2>API Routes</h2>
+<h3>Pages</h3>
+<ul>
+<li><code>GET /</code> - Home page</li>
+<li><code>GET /books</code> - Book browsing page</li>
+<li><code>GET /library</code> - Personal library page</li>
+</ul>
+<h3>Books</h3>
+<ul>
+<li><code>GET /books/search</code> - Search books from Open Library API</li>
+<li><code>GET /books/:id</code> - View book details</li>
+<li><code>POST /books</code> - Add new book manually</li>
+</ul>
+<h3>Library</h3>
+<ul>
+<li><code>GET /library</code> - View personal library</li>
+<li><code>GET /library/new</code> - Add book to library form</li>
+<li><code>POST /library</code> - Add book to library</li>
+<li><code>GET /library/:id</code> - View library entry details</li>
+<li><code>GET /library/:id/edit</code> - Edit library entry</li>
+<li><code>POST /library/:id</code> - Update library entry status</li>
+<li><code>DELETE /library/:id</code> - Remove book from library</li>
+</ul>
+<h3>Reviews</h3>
+<ul>
+<li><code>GET /library/books/:id/reviews</code> - View reviews for a library entry</li>
+<li><code>POST /library/books/:id/reviews</code> - Add or update review</li>
+</ul>
+<h2>Documentation</h2>
+<p>Comprehensive documentation is available in multiple formats:</p>
+<ul>
+<li><strong><a href="https://OzenFern.github.io/Booklyte/docs/">HTML Documentation</a></strong> - Detailed API documentation generated from JSDoc comments</li>
+<li><strong><a href="https://github.com/OzenFern/Booklyte/wiki">GitHub Wiki</a></strong> - Project documentation, API reference, and guides</li>
+<li><strong><a href="DOCUMENTATION.md">Documentation Guide</a></strong> - How to use and contribute to the documentation system</li>
+</ul>
+<h2>Contributing</h2>
+<p>Contributions are welcome! Please follow these guidelines:</p>
+<ol>
+<li>Fork the repository</li>
+<li>Create a feature branch (<code>git checkout -b feature/amazing-feature</code>)</li>
+<li>Make your changes</li>
+<li>Run tests and linting (<code>npm test &amp;&amp; npm run lint</code>)</li>
+<li>Commit your changes (<code>git commit -m 'Add amazing feature'</code>)</li>
+<li>Push to the branch (<code>git push origin feature/amazing-feature</code>)</li>
+<li>Open a Pull Request</li>
+</ol>
+<h3>Code Style</h3>
+<ul>
+<li>Follow ESLint configuration</li>
+<li>Use Prettier for code formatting</li>
+<li>Add JSDoc comments for functions and modules</li>
+<li>Write tests for new features</li>
+</ul>
+<h2>License</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+<h2>Acknowledgments</h2>
+<ul>
+<li><a href="https://openlibrary.org/">Open Library API</a> for providing book data</li>
+<li>Built with modern web technologies and best practices</li>
+</ul>
+<h2>Support</h2>
+<p>For issues, questions, or contributions, please visit:</p>
+<ul>
+<li><a href="https://github.com/OzenFern/Booklyte/issues">GitHub Issues</a></li>
+<li><a href="https://github.com/OzenFern/Booklyte/discussions">GitHub Discussions</a></li>
+</ul>
+<hr>
+<p><strong>Booklyte</strong> - A lightweight book tracker for light reading.</p></article>
+    </section>
+
+
+
+
+
+
+            </div>
+
+            <div class="toc">
+                <h2>Table of contents</h2>
+                <div class="toc-nav"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script >
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.prettyprint.linenums code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+                hljs.lineNumbersBlock(el);
+            });
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+            });
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js"></script>
+    <script>
+        tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc-nav',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.main article',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1.name, h2.name, h3.name, h4.name',
+        headingLabelCallback: (string) => string
+    });
+    </script>
+</body>
+</html>

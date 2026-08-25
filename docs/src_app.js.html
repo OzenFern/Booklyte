@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/app.js</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link type="text/css" rel="stylesheet" href="styles/base.min.css">
+</head>
+
+<body class="body">
+
+    <div class="container">
+
+        <nav class="sidenav">
+            <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-authorRepository.html">authorRepository</a></li><li><a href="module-bookController.html">bookController</a></li><li><a href="module-bookRepository.html">bookRepository</a></li><li><a href="module-bookRoutes.html">bookRoutes</a></li><li><a href="module-bookService.html">bookService</a></li><li><a href="module-db_pool.html">db/pool</a></li><li><a href="module-env.html">env</a></li><li><a href="module-errorHandler.html">errorHandler</a></li><li><a href="module-libraryController.html">libraryController</a></li><li><a href="module-libraryRepository.html">libraryRepository</a></li><li><a href="module-libraryRoutes.html">libraryRoutes</a></li><li><a href="module-libraryService.html">libraryService</a></li><li><a href="module-middlewares.html">middlewares</a></li><li><a href="module-middlewares_cache.html">middlewares/cache</a></li><li><a href="module-middlewares_errorHandler.html">middlewares/errorHandler</a></li><li><a href="module-middlewares_notFound.html">middlewares/notFound</a></li><li><a href="module-openLibraryClient.html">openLibraryClient</a></li><li><a href="module-openLibraryService.html">openLibraryService</a></li><li><a href="module-page.html">page</a></li><li><a href="module-pageController.html">pageController</a></li><li><a href="module-reviewController.html">reviewController</a></li><li><a href="module-reviewRepository.html">reviewRepository</a></li><li><a href="module-reviewService.html">reviewService</a></li><li><a href="module-reviewsRoutes.html">reviewsRoutes</a></li><li><a href="module-routes.html">routes</a></li><li><a href="module-server.html">server</a></li><li><a href="module-validationHandler.html">validationHandler</a></li></ul><h3>Global</h3><ul><li><a href="global.html#formatPublishedDate">formatPublishedDate</a></li><li><a href="global.html#initFlashMessages">initFlashMessages</a></li><li><a href="global.html#initFormValidation">initFormValidation</a></li><li><a href="global.html#initHtmxFeedback">initHtmxFeedback</a></li><li><a href="global.html#initHtmxRedirect">initHtmxRedirect</a></li><li><a href="global.html#initImageFallback">initImageFallback</a></li><li><a href="global.html#initLibrarySearch">initLibrarySearch</a></li><li><a href="global.html#initMobileNavigation">initMobileNavigation</a></li><li><a href="global.html#initThemeToggle">initThemeToggle</a></li></ul>
+        </nav>
+
+        <main id="main" class="main">
+            <div id="content" class="content">
+                <h1 class="page-title">Source: src/app.js</h1>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Main application entry point for Booklyte
+ * Configures Express server with middleware, routes, and error handling
+ * @module app
+ */
+import express from "express";
+import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
+import env from "./config/env.js";
+import session from "express-session";
+import flash from "connect-flash";
+import {
+  pageRoutes,
+  bookRoutes,
+  reviewsRoutes,
+  libraryRoutes,
+} from "./routes/index.js";
+import { notFoundHandler, errorHandler } from "./middlewares/index.js";
+import helmet from "helmet";
+import compression from "compression";
+import "./db/pool.js";
+
+/**
+ * Express application instance
+ * @type {Object}
+ */
+const app = express();
+
+// Setup __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+/**
+ * Configure EJS template engine for server-side rendering
+ */
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Security &amp; Core Middleware (Order matters for security)
+
+/**
+ * Helmet middleware for security headers
+ * Must be applied early to protect all subsequent middleware
+ * Configured to be HTMX-compatible by disabling Content Security Policy
+ * which often conflicts with HTMX's inline JavaScript
+ */
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+);
+
+/**
+ * Compress response bodies for all requests to improve performance
+ * Configured with optimal settings for web applications
+ */
+app.use(
+  compression({
+    filter: (req, res) => {
+      // Don't compress if client doesn't accept encoding
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      // Compress all responses that should be compressed
+      return compression.filter(req, res);
+    },
+    threshold: 1024, // Only compress responses larger than 1KB
+    level: 6, // Compression level (1-9, 6 is default balance)
+  }),
+);
+
+/**
+ * Log HTTP requests using Morgan middleware
+ */
+app.use(morgan("dev"));
+
+/**
+ * Parse URL-encoded request bodies
+ */
+app.use(express.urlencoded({ extended: true }));
+
+/**
+ * Parse JSON request bodies
+ */
+app.use(express.json());
+
+/**
+ * Serve static files from the public directory with caching
+ * Static assets are cached for 30 days to improve performance
+ */
+app.use(
+  express.static(path.join(__dirname, "../public"), {
+    maxAge: "30d",
+  }),
+);
+
+// Session Middleware
+
+/**
+ * Configure session middleware for flash messages
+ */
+app.use(
+  session({
+    secret: env.sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+
+/**
+ * Configure flash messages for temporary notifications
+ */
+app.use(flash());
+
+/**
+ * Middleware to make flash messages and current path available in all views
+ * Sets up success, error, warning, and info message types
+ */
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  res.locals.warning = req.flash("warning");
+  res.locals.info = req.flash("info");
+  res.locals.currentPath = req.path;
+
+  next();
+});
+
+// Application Routes
+
+/**
+ * Register application routes
+ */
+app.use("/", pageRoutes);
+app.use("/books", bookRoutes);
+app.use("/library/books", reviewsRoutes);
+app.use("/library", libraryRoutes);
+
+// Error Handling Middleware (Must be last)
+
+/**
+ * 404 Not Found handler - must be after all routes
+ */
+app.use(notFoundHandler);
+
+/**
+ * Global error handler - must be last in middleware chain
+ */
+app.use(errorHandler);
+
+/**
+ * Export the Express application instance
+ * This allows for testing and flexible server initialization
+ */
+export default app;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+
+            <div class="toc">
+                <h2>Table of contents</h2>
+                <div class="toc-nav"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script >
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.prettyprint.linenums code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+                hljs.lineNumbersBlock(el);
+            });
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.configure({
+                    languages: ['javascript'],
+                });
+                hljs.highlightElement(el);
+            });
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js"></script>
+    <script>
+        tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc-nav',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.main article',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1.name, h2.name, h3.name, h4.name',
+        headingLabelCallback: (string) => string
+    });
+    </script>
+</body>
+</html>

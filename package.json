@@ -25,8 +25,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "docs": "jsdoc -c jsdoc.json",
-    "docs:wiki": "node scripts/sync-wiki.js",
-    "docs:wiki:local": "node scripts/generate-wiki-local.js"
+    "docs:wiki": "node scripts/sync-wiki.js"
   },
   "dependencies": {
     "axios": "^1.19.0",

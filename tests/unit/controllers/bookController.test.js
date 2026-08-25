@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   putBook: vi.fn(),
   patchBook: vi.fn(),
   deleteBook: vi.fn(),
+  isBookInLibrary: vi.fn(),
   handleControllerError: vi.fn(),
 }));
 
@@ -26,6 +27,10 @@ vi.mock("../../../src/services/bookService.js", () => ({
   putBook: mocks.putBook,
   patchBook: mocks.patchBook,
   deleteBook: mocks.deleteBook,
+}));
+
+vi.mock("../../../src/services/libraryService.js", () => ({
+  isBookInLibrary: mocks.isBookInLibrary,
 }));
 
 vi.mock("../../../src/utils/errorHandler.js", () => ({
@@ -44,6 +49,7 @@ describe("bookController", () => {
     const res = { render: vi.fn() };
     const next = vi.fn();
     mocks.getAllBooks.mockResolvedValue(books);
+    mocks.isBookInLibrary.mockResolvedValue(true);
 
     // Act: call the controller action.
     await bookController.getAllBooks(req, res, next);
@@ -52,8 +58,9 @@ describe("bookController", () => {
     expect(mocks.getAllBooks).toHaveBeenCalledTimes(1);
     expect(res.render).toHaveBeenCalledWith("books/index", {
       title: "My Books",
-      books,
+      books: [{ ...books[0], in_library: true }],
     });
+    expect(mocks.isBookInLibrary).toHaveBeenCalledWith(1);
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -64,12 +71,13 @@ describe("bookController", () => {
     const next = vi.fn();
     const book = { book_id: 42, title: "The Hobbit" };
     mocks.getBookById.mockResolvedValue(book);
+    mocks.isBookInLibrary.mockResolvedValue(false);
 
     await bookController.getBookById(req, res, next);
 
     expect(res.render).toHaveBeenCalledWith("books/show", {
       title: book.title,
-      book,
+      book: { ...book, in_library: false },
     });
   });
 

@@ -10,10 +10,33 @@
 
 <section class="library-panel">
   <div class="library-panel__head">
-    <h2>Your entries</h2>
+    <div>
+      <h2>Your entries</h2>
+      <p class="library-panel__count" data-library-count></p>
+    </div>
     <a href="/library/new" class="button button--ghost">Add by Book ID</a>
   </div>
+  <form class="library-search" action="/library" method="get" role="search">
+    <label for="library-search">Find a book on your shelf</label>
+    <div class="library-search__control">
+      <span aria-hidden="true">⌕</span>
+      <input
+        id="library-search"
+        name="q"
+        type="search"
+        placeholder="Search by title or author"
+        value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+        autocomplete="off"
+        data-library-search
+      />
+      <button class="library-search__clear" type="button" data-library-search-clear hidden>Clear</button>
+      <button class="library-search__submit" type="submit">Search</button>
+    </div>
+  </form>
   <%- include("partials/library-list", { libraryBooks }) %>
+  <p class="library-search__empty" data-library-search-empty hidden>
+    No books match that search. Try a different title or author.
+  </p>
 </section>
 
 <%- include("../partials/layout-end") %>

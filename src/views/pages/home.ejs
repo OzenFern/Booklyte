@@ -1,0 +1,77 @@
+<%- include("../partials/layout-start", { title: "Home", pageClass: "page-home" }) %>
+
+<section class="hero">
+  <div class="hero__content">
+    <p class="hero__kicker">Welcome to</p>
+    <h1 class="hero__title">Booklyte</h1>
+    <p class="hero__subtitle">
+      Your personal reading sanctuary. Track books, curate your library, and document your literary journey.
+    </p>
+    
+    <div class="hero__actions">
+      <a href="/books" class="button button--solid hero__button" hx-boost="true">
+        Explore Books
+      </a>
+      <a href="/library" class="button button--ghost hero__button" hx-boost="true">
+        Your Library
+      </a>
+    </div>
+  </div>
+  
+  <div class="hero__visual">
+    <div class="hero__pattern" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="features__grid">
+    <article class="feature-card">
+      <div class="feature-card__icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <h2 class="feature-card__title">Books Catalog</h2>
+      <p class="feature-card__description">
+        Import from Open Library or add manually. Build your personal book database with clean, organized records.
+      </p>
+      <a href="/books" class="feature-card__link" hx-boost="true">
+        Browse catalog →
+      </a>
+    </article>
+
+    <article class="feature-card">
+      <div class="feature-card__icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 21a9 9 0 0 0 9-9c0-4.97-4.03-9-9-9S3 7.03 3 12a9 9 0 0 0 9 9Z"/>
+          <path d="M12 7v5l3 3"/>
+        </svg>
+      </div>
+      <h2 class="feature-card__title">Reading Progress</h2>
+      <p class="feature-card__description">
+        Track what you want to read, what you're currently reading, and what you've finished. Your reading life, organized.
+      </p>
+      <a href="/library" class="feature-card__link" hx-boost="true">
+        View library →
+      </a>
+    </article>
+
+    <article class="feature-card">
+      <div class="feature-card__icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <h2 class="feature-card__title">Reviews & Notes</h2>
+      <p class="feature-card__description">
+        Capture your thoughts, rate your reads, and build a personal archive of literary reflections.
+      </p>
+      <a href="/library" class="feature-card__link" hx-boost="true">
+        Start reviewing →
+      </a>
+    </article>
+  </div>
+</section>
+
+<%- include("../partials/layout-end") %>

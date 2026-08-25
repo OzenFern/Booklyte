@@ -63,6 +63,23 @@ describe("libraryController", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it("getAllLibraryBooks forwards a title or author search query", async () => {
+    const libraryBooks = [];
+    const req = { query: { q: "  Herbert  " } };
+    const res = { render: vi.fn() };
+    const next = vi.fn();
+    mocks.getAllLibraryBooks.mockResolvedValue(libraryBooks);
+
+    await libraryController.getAllLibraryBooks(req, res, next);
+
+    expect(mocks.getAllLibraryBooks).toHaveBeenCalledWith("Herbert");
+    expect(res.render).toHaveBeenCalledWith("library/index", {
+      title: "My Library",
+      libraryBooks,
+      searchQuery: "Herbert",
+    });
+  });
+
   it("getLibraryBookById renders the library book detail view when the library book exists", async () => {
     // Arrange: the service finds a valid library book for the supplied ID.
     const req = { params: { id: "1" } };
@@ -327,13 +344,17 @@ describe("libraryController", () => {
     });
   });
 
-  it("removeBookFromLibrary returns 204 for HTMX requests", async () => {
+  it("removeBookFromLibrary removes the row for HTMX requests", async () => {
     // Arrange: the remove service completes without error.
     const req = {
       params: { id: "1" },
       get: vi.fn().mockReturnValue("true"),
     };
-    const res = { status: vi.fn().mockReturnThis(), send: vi.fn() };
+    const res = {
+      setHeader: vi.fn(),
+      status: vi.fn().mockReturnThis(),
+      send: vi.fn(),
+    };
     const next = vi.fn();
     const deletedLibraryBook = {
       library_book_id: 1,
@@ -343,7 +364,7 @@ describe("libraryController", () => {
 
     await libraryController.removeBookFromLibrary(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith("");
   });
 });

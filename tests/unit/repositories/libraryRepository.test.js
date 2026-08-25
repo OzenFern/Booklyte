@@ -59,6 +59,9 @@ describe("libraryRepository", () => {
     expect(queryCall).toContain("JSON_AGG");
     expect(queryCall).toContain("JSON_BUILD_OBJECT");
     expect(queryCall).toContain("GROUP BY");
+    expect(queryCall).toContain("b.title ILIKE $1");
+    expect(queryCall).toContain("search_author.name ILIKE $1");
+    expect(pool.query.mock.calls[0][1]).toEqual(["%%"]);
   });
 
   it("getLibraryBookById returns the library book with its authors when found", async () => {

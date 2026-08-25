@@ -7,7 +7,7 @@
   ];
 %>
 
-<section class="flash-stack" aria-live="polite">
+<section id="flash-stack" class="flash-stack" aria-live="polite" aria-atomic="true">
   <% flashTypes.forEach((type) => { %>
     <%
       const messages = locals[type.key];

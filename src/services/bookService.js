@@ -241,11 +241,12 @@ export async function patchBook(id, book) {
 }
 
 /**
- * Deletes a book from the database.
+ * Deletes a book from the database and removes it from library if present.
  * @param {number} id - The ID of the book to delete.
  * @returns {Promise<Object|null>} A promise that resolves to the deleted book object if found, or null if not found.
  */
 export async function deleteBook(id) {
+  const client = await pool.connect();
   try {
     const idValidation = validateId(
       id,
@@ -256,8 +257,18 @@ export async function deleteBook(id) {
       return idValidation;
     }
 
-    return await bk.deleteBook(id);
+    const result = await executeTransaction(client, async () => {
+      // First remove from library if present
+      await client.query("DELETE FROM library_books WHERE book_id = $1", [id]);
+
+      // Then delete the book
+      return await bk.deleteBook(id, client);
+    });
+
+    return result;
   } catch (error) {
     return handleServiceError(error, `Failed to delete book with id ${id}.`);
+  } finally {
+    client.release();
   }
 }

@@ -12,7 +12,12 @@
     : "Unknown author";
 %>
 
-<article class="library-book" id="library-book-<%= libraryBook.library_book_id %>">
+<article
+  class="library-book"
+  id="library-book-<%= libraryBook.library_book_id %>"
+  data-library-book
+  data-search-text="<%= `${libraryBook.title || ''} ${authorText}`.toLowerCase() %>"
+>
   <div class="library-book__main">
     <h3>
       <a href="/library/<%= libraryBook.library_book_id %>">

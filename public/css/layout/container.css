@@ -10,9 +10,9 @@
 
 .cluster {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: var(--space-3);
-  align-items: center;
 }
 
 .site-footer {
@@ -31,5 +31,20 @@
 @media (max-width: 40rem) {
   .site-footer__inner {
     flex-direction: column;
+  }
+}
+
+/* Mobile Container Improvements */
+@media (max-width: 48rem) {
+  .container {
+    width: min(100% - 1.5rem, var(--container-max));
+  }
+
+  .page-shell {
+    padding-bottom: var(--space-6);
+  }
+
+  .cluster {
+    gap: var(--space-2);
   }
 }

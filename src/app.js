@@ -17,6 +17,9 @@ import {
   libraryRoutes,
 } from "./routes/index.js";
 import { notFoundHandler, errorHandler } from "./middlewares/index.js";
+import helmet from "helmet";
+import compression from "compression";
+import "./db/pool.js";
 
 /**
  * Express application instance
@@ -34,10 +37,68 @@ const __dirname = path.dirname(__filename);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Middleware
+// Security & Core Middleware (Order matters for security)
 
 /**
- * Configure session middleware for user authentication and flash messages
+ * Helmet middleware for security headers
+ * Must be applied early to protect all subsequent middleware
+ * Configured to be HTMX-compatible by disabling Content Security Policy
+ * which often conflicts with HTMX's inline JavaScript
+ */
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+);
+
+/**
+ * Compress response bodies for all requests to improve performance
+ * Configured with optimal settings for web applications
+ */
+app.use(
+  compression({
+    filter: (req, res) => {
+      // Don't compress if client doesn't accept encoding
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      // Compress all responses that should be compressed
+      return compression.filter(req, res);
+    },
+    threshold: 1024, // Only compress responses larger than 1KB
+    level: 6, // Compression level (1-9, 6 is default balance)
+  }),
+);
+
+/**
+ * Log HTTP requests using Morgan middleware
+ */
+app.use(morgan("dev"));
+
+/**
+ * Parse URL-encoded request bodies
+ */
+app.use(express.urlencoded({ extended: true }));
+
+/**
+ * Parse JSON request bodies
+ */
+app.use(express.json());
+
+/**
+ * Serve static files from the public directory with caching
+ * Static assets are cached for 30 days to improve performance
+ */
+app.use(
+  express.static(path.join(__dirname, "../public"), {
+    maxAge: "30d",
+  }),
+);
+
+// Session Middleware
+
+/**
+ * Configure session middleware for flash messages
  */
 app.use(
   session({
@@ -53,7 +114,7 @@ app.use(
 app.use(flash());
 
 /**
- * Middleware to make flash messages available in all views
+ * Middleware to make flash messages and current path available in all views
  * Sets up success, error, warning, and info message types
  */
 app.use((req, res, next) => {
@@ -66,39 +127,7 @@ app.use((req, res, next) => {
   next();
 });
 
-/**
- * Parse URL-encoded request bodies
- */
-app.use(express.urlencoded({ extended: true }));
-
-/**
- * Serve static files from the public directory
- */
-app.use(express.static("public"));
-
-// TODO: Add docstring for the following middleware
-
-// TODO: Uncomment this middleware after completing the public folder setup
-// Cache public folder
-// app.use(
-//     express.static(path.join(__dirname, "public"), {
-//         maxAge: "30d",
-//     }),
-// );
-
-/**
- * Log HTTP requests using Morgan middleware in development mode
- */
-app.use(morgan("dev"));
-// TODO: Add helmet middleware for security
-// TODO: Add compression middleware for response compression
-// TODO: Add cache middleware for caching static assets
-
-// TODO: Delete the following comment after development
-// app.get("/", (req, res) => {
-//   res.redirect("/books");
-//   //   res.render("errors/500");// Temporary placeholder for the home route
-// });
+// Application Routes
 
 /**
  * Register application routes
@@ -107,6 +136,8 @@ app.use("/", pageRoutes);
 app.use("/books", bookRoutes);
 app.use("/library/books", reviewsRoutes);
 app.use("/library", libraryRoutes);
+
+// Error Handling Middleware (Must be last)
 
 /**
  * 404 Not Found handler - must be after all routes
@@ -119,8 +150,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 /**
- * Start the Express server on the configured port
+ * Export the Express application instance
+ * This allows for testing and flexible server initialization
  */
-app.listen(env.appPort, () => {
-  console.log(`Booklyte running on http://localhost:${env.appPort}`);
-});
+export default app;

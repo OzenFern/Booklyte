@@ -11,7 +11,6 @@ import { initMobileNavigation } from "./modules/mobileNavigation.js";
 import { initFormValidation } from "./modules/formValidation.js";
 import { initThemeToggle } from "./modules/themeToggle.js";
 import { initLibrarySearch } from "./modules/librarySearch.js";
-// import { initSearch } from './modules/search.js';
 import "./modules/dateFormatter.js";
 
 // Initialize all modules when DOM is ready

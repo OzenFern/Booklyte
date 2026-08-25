@@ -289,7 +289,7 @@ The application uses PostgreSQL with the following main tables:
 
 Comprehensive documentation is available in multiple formats:
 
-- **[HTML Documentation](https://OzenFern.github.io/Booklyte/docs/)** - Detailed API documentation generated from JSDoc comments
+- **[HTML Documentation](https://OzenFern.github.io/Booklyte/)** - Detailed API documentation generated from JSDoc comments
 - **[GitHub Wiki](https://github.com/OzenFern/Booklyte/wiki)** - Project documentation, API reference, and guides
 - **[Documentation Guide](DOCUMENTATION.md)** - How to use and contribute to the documentation system
 

@@ -55,7 +55,7 @@ function handleServiceErrorResponse(id, serviceResponse, req, res) {
  */
 export async function getReviewByLibraryBookId(req, res, next) {
   const { id } = req.params;
-  const editMode = req.query?.edit === 'true';
+  const editMode = req.query?.edit === "true";
 
   try {
     const review = await rs.getReviewByLibraryBookId(id);

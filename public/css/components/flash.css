@@ -7,7 +7,11 @@
 .flash {
   border: 1px solid var(--flash-color, var(--color-border));
   border-left: 0.35rem solid var(--flash-color, var(--color-border));
-  background: color-mix(in srgb, var(--flash-color, var(--color-surface)) 12%, var(--color-surface));
+  background: color-mix(
+    in srgb,
+    var(--flash-color, var(--color-surface)) 12%,
+    var(--color-surface)
+  );
   border-radius: var(--radius);
   padding: var(--space-3) var(--space-4);
   display: flex;

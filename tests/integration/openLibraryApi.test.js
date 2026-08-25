@@ -110,7 +110,11 @@ describe("openLibraryApi", () => {
     const size = "M";
 
     // Act: build the cover URL with custom size.
-    const url = buildCoverUrl(coverId, "https://covers.openlibrary.org/b/id", size);
+    const url = buildCoverUrl(
+      coverId,
+      "https://covers.openlibrary.org/b/id",
+      size,
+    );
 
     // Assert: the URL includes the custom size.
     expect(url).toBe("https://covers.openlibrary.org/b/id/12345-M.jpg");

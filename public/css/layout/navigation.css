@@ -59,12 +59,14 @@
 
 .hamburger::before,
 .hamburger::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 1.25rem;
   height: 0.125rem;
   background: var(--color-text);
-  transition: transform var(--duration-normal), background var(--duration-fast);
+  transition:
+    transform var(--duration-normal),
+    background var(--duration-fast);
   left: 0;
 }
 
@@ -109,7 +111,7 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: 
+    transition:
       opacity var(--duration-normal),
       visibility var(--duration-normal),
       transform var(--duration-normal);

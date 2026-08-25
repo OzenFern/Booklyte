@@ -110,7 +110,8 @@ export async function addBookToLibrary(req, res, next) {
       // Check the HX-Current-URL header to determine which page the request came from
       const currentUrl = req.get("HX-Current-URL") || "";
       const isFromLibraryForm = source === "manual-library-form";
-      const isFromDetailPage = currentUrl.includes("/books/") && status && status !== "want_to_read";
+      const isFromDetailPage =
+        currentUrl.includes("/books/") && status && status !== "want_to_read";
 
       // Set header to trigger refresh of book cards
       res.setHeader("HX-Trigger", "refreshBookCards");
@@ -302,29 +303,41 @@ export async function validateBookId(req, res) {
 
   try {
     if (!book_id || isNaN(book_id)) {
-      return res.send(`<span class="form-validation__error">Please enter a valid book ID</span>`);
+      return res.send(
+        `<span class="form-validation__error">Please enter a valid book ID</span>`,
+      );
     }
 
     const bookId = parseInt(book_id);
     const inLibrary = await ls.isBookInLibrary(bookId);
 
     if (inLibrary === true) {
-      return res.send(`<span class="form-validation__error">This book is already in your library</span>`);
+      return res.send(
+        `<span class="form-validation__error">This book is already in your library</span>`,
+      );
     }
 
     if (inLibrary && !inLibrary.success) {
-      return res.send(`<span class="form-validation__error">Error validating book ID</span>`);
+      return res.send(
+        `<span class="form-validation__error">Error validating book ID</span>`,
+      );
     }
 
     // Check if book exists in books table
     const book = await bs.getBookById(bookId);
 
     if (!book) {
-      return res.send(`<span class="form-validation__error">Book with ID ${bookId} not found</span>`);
+      return res.send(
+        `<span class="form-validation__error">Book with ID ${bookId} not found</span>`,
+      );
     }
 
-    res.send(`<span class="form-validation__success">✓ Book found: ${book.title}</span>`);
+    res.send(
+      `<span class="form-validation__success">✓ Book found: ${book.title}</span>`,
+    );
   } catch {
-    res.send(`<span class="form-validation__error">Error validating book ID</span>`);
+    res.send(
+      `<span class="form-validation__error">Error validating book ID</span>`,
+    );
   }
 }

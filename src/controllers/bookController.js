@@ -41,7 +41,7 @@ export async function getAllBooks(req, res, next) {
           ...book,
           in_library: inLibrary === true, // Handle both boolean and error object
         };
-      })
+      }),
     );
 
     res.render("books/index", {

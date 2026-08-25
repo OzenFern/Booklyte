@@ -35,7 +35,10 @@ describe("reviewController", () => {
 
   it("getReviewByLibraryBookId renders the review page when the review exists", async () => {
     // Arrange: the service finds a valid review for the supplied library book ID.
-    const req = { params: { id: "5" }, get: vi.fn().mockReturnValue(undefined) };
+    const req = {
+      params: { id: "5" },
+      get: vi.fn().mockReturnValue(undefined),
+    };
     const res = { render: vi.fn() };
     const next = vi.fn();
     const review = {

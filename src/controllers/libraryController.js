@@ -7,6 +7,7 @@
  */
 
 import * as ls from "../services/libraryService.js";
+import * as bs from "../services/bookService.js";
 import { handleControllerError } from "../utils/errorHandler.js";
 
 /**
@@ -30,11 +31,13 @@ function libraryBookNotFound(req, id, res) {
  */
 export async function getAllLibraryBooks(req, res, next) {
   try {
-    const libraryBooks = await ls.getAllLibraryBooks();
+    const searchQuery = String(req.query?.q || "").trim();
+    const libraryBooks = await ls.getAllLibraryBooks(searchQuery);
 
     res.render("library/index", {
       title: "My Library",
       libraryBooks,
+      ...(searchQuery ? { searchQuery } : {}),
     });
   } catch (error) {
     handleControllerError(error, req, next, "Error retrieving library books.");
@@ -86,14 +89,61 @@ export async function getLibraryBookById(req, res, next) {
  */
 export async function addBookToLibrary(req, res, next) {
   try {
-    const { book_id, status } = req.body;
-    const newLibraryBook = await ls.addBookToLibrary(book_id, status);
+    const { book_id, status, source } = req.body;
+    const result = await ls.addBookToLibrary(book_id, status);
+    const isHtmxRequest = Boolean(req.get?.("HX-Request"));
 
-    req.flash("success", "Book added to library successfully.");
+    // Check if the result is an error object
+    if (!result.success && result.success !== undefined) {
+      if (isHtmxRequest) {
+        res.status(400).render("partials/htmx-error", {
+          error: result.message || result.error,
+        });
+      } else {
+        req.flash("error", result.message || result.error);
+        return res.redirect("back");
+      }
+      return;
+    }
 
-    res.redirect(`/library/${newLibraryBook.library_book_id}`);
+    if (isHtmxRequest) {
+      // Check the HX-Current-URL header to determine which page the request came from
+      const currentUrl = req.get("HX-Current-URL") || "";
+      const isFromLibraryForm = source === "manual-library-form";
+      const isFromDetailPage =
+        currentUrl.includes("/books/") && status && status !== "want_to_read";
+
+      // Set header to trigger refresh of book cards
+      res.setHeader("HX-Trigger", "refreshBookCards");
+
+      if (isFromLibraryForm) {
+        // From library new form page
+        res.render("partials/library-form-success", {
+          library_book_id: result.library_book_id,
+        });
+      } else if (isFromDetailPage) {
+        // From book detail page
+        res.render("partials/book-detail-actions", {
+          book: { book_id: result.book_id, in_library: true },
+        });
+      } else {
+        // From book card
+        res.render("partials/book-card-actions", {
+          book: { book_id: result.book_id, in_library: true },
+        });
+      }
+    } else {
+      req.flash("success", "Book added to library successfully.");
+      res.redirect(`/library/${result.library_book_id}`);
+    }
   } catch (error) {
-    handleControllerError(error, req, next, "Error adding book to library.");
+    if (req.get?.("HX-Request")) {
+      res.status(500).render("partials/htmx-error", {
+        error: "Failed to add book to library. Please try again.",
+      });
+    } else {
+      handleControllerError(error, req, next, "Error adding book to library.");
+    }
   }
 }
 
@@ -175,7 +225,7 @@ export async function patchLibraryBook(req, res, next) {
       return libraryBookNotFound(req, id, res);
     }
 
-    if (req.get("HX-Request")) {
+    if (req.get?.("HX-Request")) {
       const libraryBook = await ls.getLibraryBookById(
         updatedLibraryBook.library_book_id,
       );
@@ -212,7 +262,11 @@ export async function removeBookFromLibrary(req, res, next) {
       if (!deletedLibraryBook) {
         return libraryBookNotFound(req, id, res);
       }
-      return res.status(204).send("");
+
+      // Set header to trigger refresh of book cards
+      res.setHeader("HX-Trigger", "refreshBookCards");
+
+      return res.status(200).send("");
     }
 
     req.flash("success", "Book removed from library successfully.");
@@ -237,4 +291,53 @@ export function displayNewLibraryBook(req, res) {
   res.render("library/new", {
     title: "Add Book to Library",
   });
+}
+
+/**
+ * Validates if a book ID exists in the database.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
+export async function validateBookId(req, res) {
+  const { book_id } = req.query;
+
+  try {
+    if (!book_id || isNaN(book_id)) {
+      return res.send(
+        `<span class="form-validation__error">Please enter a valid book ID</span>`,
+      );
+    }
+
+    const bookId = parseInt(book_id);
+    const inLibrary = await ls.isBookInLibrary(bookId);
+
+    if (inLibrary === true) {
+      return res.send(
+        `<span class="form-validation__error">This book is already in your library</span>`,
+      );
+    }
+
+    if (inLibrary && !inLibrary.success) {
+      return res.send(
+        `<span class="form-validation__error">Error validating book ID</span>`,
+      );
+    }
+
+    // Check if book exists in books table
+    const book = await bs.getBookById(bookId);
+
+    if (!book) {
+      return res.send(
+        `<span class="form-validation__error">Book with ID ${bookId} not found</span>`,
+      );
+    }
+
+    res.send(
+      `<span class="form-validation__success">✓ Book found: ${book.title}</span>`,
+    );
+  } catch {
+    res.send(
+      `<span class="form-validation__error">Error validating book ID</span>`,
+    );
+  }
 }

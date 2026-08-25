@@ -212,6 +212,10 @@ describe("bookService", () => {
 
   it("putBook, patchBook, and deleteBook delegate through the repository", async () => {
     // Arrange: each repository method resolves with a value.
+    const client = {
+      query: vi.fn(),
+      release: vi.fn(),
+    };
     const updatedBook = { book_id: 7, title: "Updated title" };
     const bookWithAuthors = { book_id: 7, title: "Updated title", authors: [] };
     const patchedBook = { book_id: 9, title: "Patched title" };
@@ -228,6 +232,7 @@ describe("bookService", () => {
       .mockResolvedValueOnce(patchedWithAuthors);
     mocks.patchBook.mockResolvedValue(patchedBook);
     mocks.deleteBook.mockResolvedValue(deletedBook);
+    mocks.connect.mockResolvedValue(client);
 
     // Act/Assert: service methods should wrap repository calls and fetch authors.
     await expect(
@@ -241,7 +246,12 @@ describe("bookService", () => {
     expect(mocks.getBookById).toHaveBeenCalledWith(7);
     expect(mocks.patchBook).toHaveBeenCalledWith(9, { title: "Patched title" });
     expect(mocks.getBookById).toHaveBeenCalledWith(9);
-    expect(mocks.deleteBook).toHaveBeenCalledWith(11);
+    expect(mocks.deleteBook).toHaveBeenCalledWith(11, client);
+    expect(client.query).toHaveBeenCalledWith(
+      "DELETE FROM library_books WHERE book_id = $1",
+      [11],
+    );
+    expect(client.release).toHaveBeenCalledTimes(1);
 
     // Arrange: error normalization keeps the service contract consistent.
     const error = new Error("Update failed");

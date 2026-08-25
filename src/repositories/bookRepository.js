@@ -171,11 +171,12 @@ export async function patchBook(id, book) {
 /**
  * Deletes a book from the database.
  * @param {number} book_id - The ID of the book to delete.
+ * @param {Object} client - Optional database client for transactions.
  * @returns {Promise<Object|null>} A promise that resolves to the deleted book object if found, or null if not found.
  */
-export async function deleteBook(book_id) {
+export async function deleteBook(book_id, client = pool) {
   const query = "DELETE FROM books WHERE book_id = $1 RETURNING *";
 
-  const { rows } = await pool.query(query, [book_id]);
+  const { rows } = await client.query(query, [book_id]);
   return rows[0] ?? null;
 }

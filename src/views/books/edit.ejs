@@ -12,6 +12,7 @@
     method="post"
     hx-put="/books/<%= book.book_id %>"
     class="form-stack"
+    hx-validate="true"
   >
     <div class="form-field">
       <label for="openlibrary_id">Open Library ID</label>
@@ -49,6 +50,7 @@
       <input
         id="published_date"
         name="published_date"
+        type="date"
         value="<%= book.published_date || '' %>"
       />
     </div>

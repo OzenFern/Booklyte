@@ -14,7 +14,23 @@
   margin-bottom: var(--space-4);
 }
 
+.review-display__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.review-display__header h2 {
+  margin: 0;
+}
+
 .review-display__text {
   color: var(--color-muted);
   white-space: pre-wrap;
+}
+
+.review-form-panel__empty {
+  color: var(--color-muted);
+  max-width: 55ch;
 }

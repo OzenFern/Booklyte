@@ -8,12 +8,34 @@ import { handleServiceError } from "../utils/errorHandler.js";
 import { validateId } from "../utils/validationHandler.js";
 
 /**
+ * Checks if a book is already in the library.
+ * @param {number} bookId - The ID of the book to check.
+ * @returns {Promise<boolean|Object>} A promise that resolves to true if the book is in the library, false otherwise, or an error object.
+ */
+export async function isBookInLibrary(bookId) {
+  try {
+    const idValidation = validateId(
+      bookId,
+      new Error("Invalid book ID."),
+      "Book ID must be a valid number.",
+    );
+    if (!idValidation.success) {
+      return idValidation;
+    }
+
+    return await lr.isBookInLibrary(bookId);
+  } catch (error) {
+    return handleServiceError(error, "Failed to check if book is in library.");
+  }
+}
+
+/**
  * Retrieves all library books from the database.
  * @returns {Promise<Array | Object>} A promise that resolves to an array of library book objects or an error object if not found.
  */
-export async function getAllLibraryBooks() {
+export async function getAllLibraryBooks(searchQuery = "") {
   try {
-    return await lr.getLibraryBooks();
+    return await lr.getLibraryBooks(searchQuery);
   } catch (error) {
     return handleServiceError(error, "Failed to fetch library books.");
   }

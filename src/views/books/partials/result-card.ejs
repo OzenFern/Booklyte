@@ -17,8 +17,8 @@
     <p class="book-card__eyebrow">Open Library</p>
     <h3 class="book-card__title"><%= externalBook.title || "Untitled book" %></h3>
     <p class="book-card__author"><%= authorText %></p>
-    <p class="book-card__meta">
-      <%= externalBook.published_date || "Unknown publication date" %>
+    <p class="book-card__meta published-date">
+      <%= externalBook.published_date %>
     </p>
     <div id="import-action-<%= externalBook.openlibrary_id %>">
       <%- include("import-action", { externalBook, importedBook: null }) %>

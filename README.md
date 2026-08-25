@@ -15,6 +15,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ## Tech Stack
 
 ### Backend
+
 - **Node.js** - JavaScript runtime
 - **Express** - Web application framework
 - **PostgreSQL** - Relational database
@@ -22,12 +23,14 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 - **HTMX** - Dynamic frontend interactions
 
 ### Security & Performance
+
 - **Helmet** - Security headers
 - **Compression** - Response compression
 - **Express Session** - Session management
 - **Connect Flash** - Flash messages
 
 ### Development Tools
+
 - **Vitest** - Testing framework
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
@@ -36,6 +39,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ## Installation
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - PostgreSQL (v12 or higher)
 - npm or yarn
@@ -43,22 +47,26 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/OzenFern/Booklyte.git
    cd Booklyte
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
 
    Edit `.env` and configure the following variables:
+
    ```env
    # Server
    APP_PORT=3000
@@ -75,6 +83,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
    ```
 
 4. **Set up the database**
+
    ```bash
    # Create the database
    createdb booklyte
@@ -87,6 +96,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
    ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -98,6 +108,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ### Running the Application
 
 - **Development mode** (with hot reload):
+
   ```bash
   npm run dev
   ```
@@ -110,6 +121,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ### Testing
 
 - **Run tests in watch mode**:
+
   ```bash
   npm test
   ```
@@ -122,16 +134,19 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ### Code Quality
 
 - **Lint code**:
+
   ```bash
   npm run lint
   ```
 
 - **Fix linting issues**:
+
   ```bash
   npm run lint:fix
   ```
 
 - **Format code**:
+
   ```bash
   npm run format
   ```
@@ -144,6 +159,7 @@ A lightweight book tracking application built with Node.js, Express, and Postgre
 ### Documentation
 
 - **Generate HTML documentation**:
+
   ```bash
   npm run docs
   ```
@@ -234,6 +250,7 @@ The application uses PostgreSQL with the following main tables:
 - **reviews** - User reviews and ratings for library entries
 
 ### Reading Status Types
+
 - `want_to_read` - Books you plan to read
 - `reading` - Books currently being read
 - `completed` - Books you've finished
@@ -242,16 +259,19 @@ The application uses PostgreSQL with the following main tables:
 ## API Routes
 
 ### Pages
+
 - `GET /` - Home page
 - `GET /books` - Book browsing page
 - `GET /library` - Personal library page
 
 ### Books
+
 - `GET /books/search` - Search books from Open Library API
 - `GET /books/:id` - View book details
 - `POST /books` - Add new book manually
 
 ### Library
+
 - `GET /library` - View personal library
 - `GET /library/new` - Add book to library form
 - `POST /library` - Add book to library
@@ -261,6 +281,7 @@ The application uses PostgreSQL with the following main tables:
 - `DELETE /library/:id` - Remove book from library
 
 ### Reviews
+
 - `GET /library/books/:id/reviews` - View reviews for a library entry
 - `POST /library/books/:id/reviews` - Add or update review
 
@@ -285,6 +306,7 @@ Contributions are welcome! Please follow these guidelines:
 7. Open a Pull Request
 
 ### Code Style
+
 - Follow ESLint configuration
 - Use Prettier for code formatting
 - Add JSDoc comments for functions and modules
@@ -302,6 +324,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For issues, questions, or contributions, please visit:
+
 - [GitHub Issues](https://github.com/OzenFern/Booklyte/issues)
 - [GitHub Discussions](https://github.com/OzenFern/Booklyte/discussions)
 

@@ -1,0 +1,61 @@
+<%- include("../partials/layout-start", { title, pageClass: "page-library page-library-show" }) %>
+
+<article class="library-detail">
+  <a href="/library" class="text-link">Back to library</a>
+  <h1><%= libraryBook.title || "Library Book" %></h1>
+
+  <%
+    const statusLabelMap = {
+      want_to_read: "Want to Read",
+      reading: "Reading",
+      completed: "Completed",
+      dropped: "Dropped",
+    };
+    const statusLabel = statusLabelMap[libraryBook.status] || "Unknown";
+    const authors = Array.isArray(libraryBook.authors) ? libraryBook.authors : [];
+  %>
+
+  <p class="library-detail__meta">
+    <span class="status-badge status-badge--<%= libraryBook.status %>"><%= statusLabel %></span>
+    <span>
+      <%= authors.length
+        ? authors.map((author) => author?.name).filter(Boolean).join(", ")
+        : "Unknown author" %>
+    </span>
+  </p>
+
+  <section class="library-detail__controls">
+    <a class="button button--ghost" href="/library/<%= libraryBook.library_book_id %>/edit">
+      Edit status
+    </a>
+    <form
+      action="/library/<%= libraryBook.library_book_id %>"
+      method="post"
+      hx-delete="/library/<%= libraryBook.library_book_id %>"
+      hx-confirm="Remove this book from your library?"
+      hx-swap="none"
+      class="js-redirect-on-success"
+      data-success-redirect="/library"
+    >
+      <button class="button button--danger" type="submit">Remove</button>
+    </form>
+    <a
+      class="button button--ghost"
+      href="/library/books/<%= libraryBook.library_book_id %>/review"
+    >
+      Open review page
+    </a>
+  </section>
+
+  <section
+    id="review-panel"
+    class="review-panel"
+    hx-get="/library/books/<%= libraryBook.library_book_id %>/review"
+    hx-trigger="load"
+    hx-target="#review-panel"
+  >
+    <div class="loading-indicator">Loading review...</div>
+  </section>
+</article>
+
+<%- include("../partials/layout-end") %>

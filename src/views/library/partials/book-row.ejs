@@ -1,0 +1,50 @@
+<%
+  const statusLabelMap = {
+    want_to_read: "Want to Read",
+    reading: "Reading",
+    completed: "Completed",
+    dropped: "Dropped",
+  };
+  const statusLabel = statusLabelMap[libraryBook.status] || "Unknown";
+  const authors = Array.isArray(libraryBook.authors) ? libraryBook.authors : [];
+  const authorText = authors.length
+    ? authors.map((author) => author?.name).filter(Boolean).join(", ")
+    : "Unknown author";
+%>
+
+<article
+  class="library-book"
+  id="library-book-<%= libraryBook.library_book_id %>"
+  data-library-book
+  data-search-text="<%= `${libraryBook.title || ''} ${authorText}`.toLowerCase() %>"
+>
+  <div class="library-book__main">
+    <h3>
+      <a href="/library/<%= libraryBook.library_book_id %>">
+        <%= libraryBook.title || "Untitled book" %>
+      </a>
+    </h3>
+    <p class="library-book__author"><%= authorText %></p>
+    <p class="library-book__meta">
+      <span class="status-badge status-badge--<%= libraryBook.status %>"><%= statusLabel %></span>
+      <span>Book #<%= libraryBook.book_id %></span>
+    </p>
+  </div>
+
+  <div class="library-book__controls">
+    <%- include("status-control", { libraryBook }) %>
+    <a class="button button--ghost" href="/library/<%= libraryBook.library_book_id %>">
+      View
+    </a>
+    <form
+      action="/library/<%= libraryBook.library_book_id %>"
+      method="post"
+      hx-delete="/library/<%= libraryBook.library_book_id %>"
+      hx-target="#library-book-<%= libraryBook.library_book_id %>"
+      hx-swap="outerHTML"
+      hx-confirm="Remove this book from your library?"
+    >
+      <button class="button button--danger" type="submit">Remove</button>
+    </form>
+  </div>
+</article>

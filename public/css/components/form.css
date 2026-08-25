@@ -1,0 +1,127 @@
+.form-panel,
+.search-panel,
+.library-panel,
+.review-form-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.9rem;
+  padding: var(--space-5);
+}
+
+.form-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form-field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+label,
+legend {
+  font-weight: 500;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.7rem;
+}
+
+input.invalid,
+select.invalid,
+textarea.invalid {
+  border-color: var(--color-danger);
+}
+
+select {
+  appearance: base-select;
+  border-radius: var(--radius);
+  padding-right: var(--space-3);
+}
+
+input[type="date"] {
+  color-scheme: dark;
+  min-height: 2.75rem;
+}
+
+[data-theme="light"] input[type="date"] {
+  color-scheme: light;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.inline-form {
+  display: grid;
+  gap: var(--space-3);
+  align-items: center;
+  max-width: 28rem;
+}
+
+.search-panel__head,
+.library-panel__head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.search-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.form-success {
+  text-align: center;
+  padding: var(--space-4);
+}
+
+.form-success h2 {
+  color: var(--color-success);
+  margin-bottom: var(--space-2);
+}
+
+.form-success p {
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.form-validation {
+  min-height: 1.5rem;
+  margin-top: var(--space-1);
+  font-size: 0.875rem;
+}
+
+.form-validation__error {
+  color: var(--color-danger);
+  display: block;
+}
+
+.form-validation__success {
+  color: var(--color-success);
+  display: block;
+}
+
+.form-hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

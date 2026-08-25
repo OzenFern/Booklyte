@@ -147,3 +147,6 @@ vite.config.ts.timestamp-*
 
 # Temporary files
 temp/
+
+# Testing Local Wiki
+wiki-local/

@@ -1,0 +1,31 @@
+<%
+  const path = currentPath || "";
+  const isHome = path === "/" || path === "";
+  const isBooks = path.startsWith("/books") && !isHome;
+  const isLibrary = path.startsWith("/library") && !isHome;
+%>
+
+<button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+  <span class="hamburger"></span>
+</button>
+
+<nav class="site-nav" aria-label="Primary">
+  <a href="/" class="site-nav__link <%= isHome ? 'is-active' : '' %>">
+    Home
+  </a>
+  <a href="/books" class="site-nav__link <%= isBooks ? 'is-active' : '' %>">
+    Books
+  </a>
+  <a
+    href="/library"
+    class="site-nav__link <%= isLibrary ? 'is-active' : '' %>"
+  >
+    Library
+  </a>
+  <a href="/books/new" class="site-nav__link">
+    Add Book
+  </a>
+  <a href="/library/new" class="site-nav__link">
+    Add to Library
+  </a>
+</nav>

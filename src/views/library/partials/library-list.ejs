@@ -1,0 +1,13 @@
+<% if (Array.isArray(libraryBooks) && libraryBooks.length > 0) { %>
+  <div class="library-list" id="library-list">
+    <% libraryBooks.forEach((libraryBook) => { %>
+      <%- include("book-row", { libraryBook }) %>
+    <% }) %>
+  </div>
+<% } else { %>
+  <section class="empty-state">
+    <h2>Your reading shelf is empty</h2>
+    <p>Search books and add your first title to start tracking status.</p>
+    <a href="/books" class="button button--solid">Browse Books</a>
+  </section>
+<% } %>

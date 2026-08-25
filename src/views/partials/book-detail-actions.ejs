@@ -1,0 +1,29 @@
+<section class="book-detail__actions">
+  <% if (book.in_library) { %>
+    <div class="inline-form">
+      <span class="book-detail__status">This book is already in your library.</span>
+      <a href="/library" class="button button--solid">View Library</a>
+    </div>
+  <% } else { %>
+    <form action="/library" method="post" class="inline-form"
+          hx-post="/library"
+          hx-target="closest .book-detail__actions"
+          hx-swap="outerHTML">
+      <input type="hidden" name="book_id" value="<%= book.book_id %>" />
+      <label for="add-status">Add to Library as</label>
+      <select id="add-status" name="status">
+        <option value="want_to_read">Want to Read</option>
+        <option value="reading">Reading</option>
+        <option value="completed">Completed</option>
+        <option value="dropped">Dropped</option>
+      </select>
+      <button type="submit" class="button button--solid"
+              hx-indicator="#loading-indicator-detail">
+        Save to Library
+      </button>
+      <span id="loading-indicator-detail" class="htmx-indicator">
+        Adding...
+      </span>
+    </form>
+  <% } %>
+</section>

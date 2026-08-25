@@ -1,0 +1,17 @@
+<%- include("../partials/layout-start", { title: "Server Error", pageClass: "page-error" }) %>
+
+<section class="error-page">
+  <p class="error-page__code" aria-hidden="true">500</p>
+  <p class="page-intro__kicker">A page needs mending</p>
+  <h1>We could not finish that chapter.</h1>
+  <p>
+    Something unexpected interrupted the request. Please try again in a moment;
+    your saved books have not been changed.
+  </p>
+  <div class="error-page__actions">
+    <button class="button button--solid" type="button" onclick="window.location.reload()">Try again</button>
+    <a class="button button--ghost" href="/library">Return to Library</a>
+  </div>
+</section>
+
+<%- include("../partials/layout-end") %>

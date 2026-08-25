@@ -1,0 +1,29 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.status-badge--want_to_read {
+  color: #ddd7bd;
+  border-color: #8e8459;
+}
+
+.status-badge--reading {
+  color: #c3ead9;
+  border-color: #4d8c6b;
+}
+
+.status-badge--completed {
+  color: #b8d9f2;
+  border-color: #4e7799;
+}
+
+.status-badge--dropped {
+  color: #efc0bc;
+  border-color: #9d5a56;
+}

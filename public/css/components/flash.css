@@ -1,0 +1,48 @@
+.flash-stack {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.flash {
+  border: 1px solid var(--flash-color, var(--color-border));
+  border-left: 0.35rem solid var(--flash-color, var(--color-border));
+  background: color-mix(
+    in srgb,
+    var(--flash-color, var(--color-surface)) 12%,
+    var(--color-surface)
+  );
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.flash__message {
+  margin: 0;
+}
+
+.flash__dismiss {
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.flash-success {
+  --flash-color: var(--color-success);
+}
+
+.flash-error {
+  --flash-color: var(--color-danger);
+}
+
+.flash-warning {
+  --flash-color: var(--color-warning);
+}
+
+.flash-info {
+  --flash-color: var(--color-info);
+}

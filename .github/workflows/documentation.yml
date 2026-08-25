@@ -1,0 +1,41 @@
+name: Publish documentation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run docs
+
+      - name: Clone the GitHub Wiki
+        env:
+          WIKI_TOKEN: ${{ secrets.WIKI_TOKEN }}
+        run: git clone "https://x-access-token:${WIKI_TOKEN}@github.com/OzenFern/Booklyte.wiki.git" wiki
+
+      - run: npm run docs:wiki
+        env:
+          WIKI_DIR: wiki
+
+      - name: Commit generated Markdown
+        working-directory: wiki
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Home.md
+          git diff --cached --quiet || git commit -m "docs: update wiki"
+          git push

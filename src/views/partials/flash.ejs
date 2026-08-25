@@ -1,0 +1,30 @@
+<%
+  const flashTypes = [
+    { key: "success", className: "flash-success" },
+    { key: "error", className: "flash-error" },
+    { key: "warning", className: "flash-warning" },
+    { key: "info", className: "flash-info" },
+  ];
+%>
+
+<section id="flash-stack" class="flash-stack" aria-live="polite" aria-atomic="true">
+  <% flashTypes.forEach((type) => { %>
+    <%
+      const messages = locals[type.key];
+      const list = Array.isArray(messages) ? messages : [];
+    %>
+    <% list.forEach((message) => { %>
+      <article class="flash <%= type.className %>" role="status">
+        <p class="flash__message"><%= message %></p>
+        <button
+          type="button"
+          class="flash__dismiss"
+          data-flash-dismiss
+          aria-label="Dismiss message"
+        >
+          Dismiss
+        </button>
+      </article>
+    <% }) %>
+  <% }) %>
+</section>
